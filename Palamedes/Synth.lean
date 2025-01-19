@@ -225,21 +225,25 @@ abbrev synth_bind
       exists a
       apply And.intro ha
       exact ((hf _).property _).mpr hQ
-  | x =>
-    exists .bind x (λ a => (hf a).val)
+  | _ =>
+    exists .bind hb.val (λ a => (hf a).val)
     intro v
     simp_all
     apply Iff.intro
     . intro ⟨v', hP, hv'⟩
       exists v'
-      apply And.intro hP
-      apply ((hf v').property v).mp
-      assumption
+      apply And.intro
+      . apply (hb.property _).mp
+        assumption
+      . apply ((hf v').property v).mp
+        assumption
     . intro ⟨v', hP, hv'⟩
       exists v'
-      apply And.intro hP
-      apply ((hf v').property v).mpr
-      assumption
+      apply And.intro
+      . apply (hb.property _).mpr
+        assumption
+      . apply ((hf v').property v).mpr
+        assumption
 
 abbrev synth_bind_arb
     [Arbitrary α]
