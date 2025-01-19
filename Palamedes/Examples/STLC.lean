@@ -1,5 +1,6 @@
 import Palamedes.Synth
 import Palamedes.Sample
+import Palamedes.Util
 
 inductive Ty : Type where
   | unit
@@ -34,15 +35,15 @@ theorem genTy_monotonic
   | zero => simp_all
   | succ n' ih =>
     match v with
-    | .unit => simp_all [Nat.fold, wpick, optPick_pick, bind, optBind_bind]
+    | .unit => simp_all [Nat.fold, wpick, bind]
     | .arrow τ₁ τ₂ =>
-      simp [Nat.fold, wpick, optPick_pick, bind, optBind_bind] at hn
+      simp [Nat.fold, wpick, bind] at hn
       have ⟨τ₁', hτ₁, ⟨τ₂', hτ₂, heq⟩⟩ := hn
       have ⟨rfl, rfl⟩ : τ₁ = τ₁' ∧ τ₂ = τ₂' := by
         cases τ₁' <;> cases τ₂' <;> (simp_all [Option.map, Seq.seq]; try contradiction)
       clear heq
       unfold Nat.fold
-      simp [wpick, optPick_pick, bind, optBind_bind]
+      simp [wpick, bind]
       exists some τ₁
       apply And.intro (ih hτ₁)
       exists some τ₂
@@ -58,13 +59,13 @@ instance : Arbitrary Ty where
       | unit =>
         simp_all
         exists 1
-        simp [Nat.fold, wpick, optPick_pick]
+        simp [Nat.fold, wpick]
       | arrow τ₁ τ₂ ih₁ ih₂ =>
         simp_all
         have ⟨n₁, ih₁⟩ := ih₁
         have ⟨n₂, ih₂⟩ := ih₂
         exists n₁ + n₂ + 1
-        simp_all [Nat.fold, wpick, optPick_pick, bind, optBind_bind]
+        simp_all [Nat.fold, wpick, bind]
         exists some τ₁
         apply And.intro
         . conv =>
@@ -153,46 +154,42 @@ theorem Term.unfold'_monotonic
   induction n generalizing v b with
   | zero => simp_all
   | succ n' ih =>
-    simp [Nat.fold, bind, optBind_bind] at hn
+    simp [Nat.fold, bind] at hn
     have ⟨v', hv'1, hv'2⟩ := hn
     match v' with
     | .unitStep =>
       unfold Nat.fold
-      simp [bind, optBind_bind]
+      simp [bind]
       exists .unitStep
     | .varStep n =>
       unfold Nat.fold
-      simp [bind, optBind_bind]
+      simp [bind]
       exists .varStep n
     | .absStep τ t =>
       unfold Nat.fold
-      simp [bind, optBind_bind]
+      simp [bind]
       exists .absStep τ t
-      simp [optBind_bind]
       apply And.intro hv'1
-      simp [optBind_bind] at hv'2
       have ⟨v'', hv''⟩ := hv'2
       exists v''
       match v'' with
-      | none => simp_all only [Option.pure_def, Option.bind_eq_bind, Option.none_bind, reduceCtorEq, and_false]
+      | none => simp_all only [Option.pure_def, Option.bind_eq_bind, support, Option.none_bind, reduceCtorEq, and_false]
       | some v'' =>
-        simp [bind, optBind, optBind_bind] at ih
+        simp [bind] at ih
         apply And.intro
         . apply ih
           simp_all only [Option.some_bind, Option.some.injEq]
         . simp_all only [Option.some_bind, Option.some.injEq]
     | .appStep t₁ t₂ =>
       unfold Nat.fold
-      simp [bind, optBind_bind]
+      simp [bind]
       exists .appStep t₁ t₂
-      simp [optBind_bind]
       apply And.intro hv'1
-      simp [optBind_bind] at hv'2
       have ⟨v''₁, hv''₁, v''₂, hv''₂⟩ := hv'2
       match v''₁, v''₂ with
       | some v''₁, some v''₂ =>
         exists v''₁
-        simp [bind, optBind, optBind_bind] at ih
+        simp [bind] at ih
         apply And.intro
         . apply ih
           simp_all only [Option.some_bind, Option.some.injEq]
@@ -201,8 +198,8 @@ theorem Term.unfold'_monotonic
           . apply ih
             simp_all only [Option.some_bind, Option.some.injEq]
           . simp_all only [Option.some_bind, Option.some.injEq]
-      | none, _ => simp_all only [Option.pure_def, Option.bind_eq_bind, Option.none_bind, reduceCtorEq, and_false]
-      | _, none => simp_all only [Option.pure_def, Option.bind_eq_bind, Option.none_bind, Option.bind_none, reduceCtorEq, and_false]
+      | none, _ => simp_all only [Option.pure_def, Option.bind_eq_bind, support, Option.none_bind, reduceCtorEq, and_false]
+      | _, none => simp_all only [Option.pure_def, Option.bind_eq_bind, support, Option.none_bind, Option.bind_none, reduceCtorEq, and_false]
 
 def Term.unfold (f : β → Gen (TermF β)) (b : β) : Gen Term :=
   Gen.sized (λ n => Term.unfold' n f b)
@@ -228,13 +225,13 @@ theorem Term.unfold_unfold_support :
     induction n generalizing b v with
     | zero => simp_all
     | succ n' ih =>
-      simp_all [Nat.fold, optBind_bind]
+      simp_all [Nat.fold]
       have ⟨v', hv'1, hv'2⟩ := hn
       match v' with
       | .unitStep => simp_all
       | .varStep n => simp_all
       | .absStep τ t =>
-        simp_all [optBind_bind]
+        simp_all
         have ⟨v'', hv''1, hv''2⟩ := hv'2
         match v'' with
         | none => simp_all
@@ -260,7 +257,7 @@ theorem Term.unfold_unfold_support :
               · exact hv'1
               · simp_all only
       | .appStep τ t =>
-        simp_all [optBind_bind]
+        simp_all
         have ⟨v''₁, hv''1, ⟨v''₂, hv''2, hv''3⟩⟩ := hv'2
         match v''₁, v''₂ with
         | some v''₁, some v''₂ =>
@@ -294,20 +291,20 @@ theorem Term.unfold_unfold_support :
     induction v generalizing b with
     | unit =>
       exists 1
-      simp_all [Nat.fold, optBind_bind]
+      simp_all [Nat.fold]
       exists .unitStep
     | var n =>
       exists 1
-      simp_all [Nat.fold, optBind_bind]
+      simp_all [Nat.fold]
       exists .varStep n
     | abs τ t ih =>
       simp_all
       have ⟨bt, hstep, h⟩ := h
       have ⟨n, hn⟩ := ih h
       exists n + 1
-      simp_all [Nat.fold, optBind_bind]
+      simp_all [Nat.fold]
       exists .absStep τ bt
-      simp_all [optBind_bind]
+      simp_all
       exists t
     | app t₁ t₂ ih₁ ih₂ =>
       simp_all
@@ -315,9 +312,9 @@ theorem Term.unfold_unfold_support :
       have ⟨n₁, hn₁⟩ := ih₁ h₁
       have ⟨n₂, hn₂⟩ := ih₂ h₂
       exists (n₁ + n₂ + 1)
-      simp_all [Nat.fold, optBind_bind]
+      simp_all [Nat.fold]
       exists .appStep bt₁ bt₂
-      simp_all [optBind_bind]
+      simp_all
       exists t₁
       apply And.intro
       . conv =>
@@ -360,15 +357,15 @@ abbrev Term.synth_accuM
   rw [Term.unfold_unfold_support]
   induction v generalizing b s with
   | unit =>
-    simp_all [Term.accuM, bind, optBind_bind]
+    simp_all [Term.accuM, bind]
     have g_prop := (g b s).property .unitStep
     aesop
   | var n =>
-    simp_all [Term.accuM, bind, optBind_bind]
+    simp_all [Term.accuM, bind]
     have g_prop := (g b s).property (.varStep n)
     aesop
   | abs τ t ih =>
-    simp_all [Term.accuM, bind, optBind_bind]
+    simp_all [Term.accuM, bind]
     generalize ho : accuM stAbs stApp f t (stAbs τ s) = o at *
     match o with
     | none => aesop
@@ -376,7 +373,7 @@ abbrev Term.synth_accuM
       have g_prop := (g b s).property (.absStep τ bt)
       aesop
   | app t₁ t₂ ih₁ ih₂ =>
-    simp_all [Term.accuM, bind, optBind_bind]
+    simp_all [Term.accuM, bind]
     generalize ho₁ : accuM stAbs stApp f t₁ (stApp s).fst = o₁ at *
     match o₁ with
     | none => aesop
@@ -435,10 +432,10 @@ theorem support_elements
     match hxs : xs with
     | [] => simp_all
     | _ :: _ =>
-      simp [elements, pick, optPick_pick] at ih
-      simp [elements, pick, optPick_pick] at hxs
-      simp [elements, pick, optPick_pick] at h
-      simp [elements, pick, optPick_pick]
+      simp [elements, pick] at ih
+      simp [elements, pick] at hxs
+      simp [elements, pick] at h
+      simp [elements, pick]
       subst hxs
       simp_all only [List.length_cons, gt_iff_lt, Nat.lt_add_left_iff_pos, Nat.zero_lt_succ]
 
@@ -629,7 +626,7 @@ add_aesop_rules unsafe [
   (by (conv => congr; intro v; rw [exists_comm]); apply synth_bind_arb),
 ]
 
-def genWellTyped (Γ : Ctx) : CGen (λ (v : Term) =>
+abbrev genWellTyped (Γ : Ctx) : CGen (λ (v : Term) =>
     match hasType Γ v with
     | some _ => True
     | none => False) := by
@@ -637,4 +634,4 @@ def genWellTyped (Γ : Ctx) : CGen (λ (v : Term) =>
     (add unsafe (by unfold hasType_natural.match_1))
     (add unsafe (by unfold genWellTyped_manual.match_1))
 
-#eval sampleN 10 (genWellTyped []).val
+-- #eval sampleN 10 (genWellTyped []).val

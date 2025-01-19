@@ -123,6 +123,6 @@ def isBST (lo hi : Nat) (t : Tree Nat) : Option Unit :=
 def genBST (lo hi : Nat) : CGen (λ v => isBST lo hi v = some ()) := by
   aesop
 
-#eval sampleN 10 (genBST 50 100).val
+-- #eval sampleN 10 (genBST 50 100).val
 
 def main := IO.print =<< sampleN 10 (genSortedBetween 2 10).val
