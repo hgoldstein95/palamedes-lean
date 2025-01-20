@@ -27,7 +27,7 @@ partial def sampleRand : Gen α → Plausible.RandT IO α
     Plausible.Random.randBound Nat 0 (w₁ + w₁ - 1) (by simp) >>= λ ⟨b, _⟩ =>
       if b < w₁ then sampleRand (x ()) else sampleRand (y ())
   | .choose lo hi pf => Plausible.Random.randBound Nat lo hi pf
-  | .sized f => sampleSized 10 100 f
+  | .sized f => sampleSized 10 10 f
   | .bind x f => sampleRand (x ()) >>= sampleRand ∘ f
   | .guardIn p _ f =>
     if h : p
