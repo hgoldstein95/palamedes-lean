@@ -3,10 +3,10 @@ import Palamedes.Free
 @[simp]
 def support : Gen α → α → Prop
   | .ret v' => (. = v')
-  | .pick _ x y => λ v => support x v ∨ support y v
+  | .pick _ x y => λ v => support (x ()) v ∨ support (y ()) v
   | .choose lo hi _ => λ v => lo ≤ v ∧ v ≤ hi
   | .sized f => λ v => ∃ n, support (f n) (some v)
-  | .bind x f => λ v => ∃ v', support x v' ∧ support (f v') v
+  | .bind x f => λ v => ∃ v', support (x ()) v' ∧ support (f v') v
   | .guardIn P _ f => λ v => ∃ h : P, support (f h) v
 
 notation v " ∈ 〚" g "〛" => support g v
@@ -26,7 +26,7 @@ class Arbitrary (α : Type) where
 instance : Arbitrary Unit where
   arbitrary := ⟨pure (), by simp⟩
 
-theorem optPick_pick (x y : Gen α) : support (optPick w x y) = support (.pick w x y) := by
+theorem optPick_pick (x y : Gen α) : support (optPick w x y) = support (.pick w (λ () => x) (λ () => y)) := by
   generalize hn : genMeasure x + genMeasure y = n
   induction n generalizing x y
   case zero =>
@@ -86,7 +86,7 @@ def arbNat (fuel : Nat) : Gen (Option Nat) :=
     pick (pure (some 0))
           (.map (1 + .) <$> arbNat n)
 
-theorem optBind_bind : support (optBind x f) = support (.bind x f) := by
+theorem optBind_bind : support (optBind x f) = support (.bind (λ () => x) f) := by
   funext v
   induction x generalizing v <;> simp_all [optBind]
   case bind x g ih1 ih2 =>

@@ -2,8 +2,8 @@ import Aesop
 
 inductive Gen : Type → Type 1 where
   | ret : α → Gen α
-  | bind : Gen α → (α → Gen β) → Gen β
-  | pick : (w : Nat × Nat) → Gen α → Gen α → Gen α
+  | bind : (Unit → Gen α) → (α → Gen β) → Gen β
+  | pick : (w : Nat × Nat) → (Unit → Gen α) → (Unit → Gen α) → Gen α
   | choose : (lo : Nat) → (hi : Nat) → lo ≤ hi → Gen Nat
   | sized : (Nat → Gen (Option α)) → Gen α
   | guardIn : (P : Prop) → Decidable P → (P → Gen α) → Gen α
@@ -12,7 +12,7 @@ def optBind : Gen α → (α → Gen β) → Gen β
   | .ret v, f => f v
   | .bind x g, f => .bind x (λ y => optBind (g y) f)
   | .guardIn P inst g, f => .guardIn P inst (λ h => optBind (g h) f)
-  | x, f => .bind x f
+  | x, f => .bind (λ () => x) f
 
 @[simp]
 def genMeasure : Gen α → Nat
@@ -22,7 +22,7 @@ def genMeasure : Gen α → Nat
 def optPick (w : Nat × Nat) : Gen α → Gen α → Gen α
   | .guardIn P _ f, y => if h : P then optPick w (f h) y else y
   | x, .guardIn Q _ g => if h : Q then optPick w x (g h) else x
-  | x, y => .pick w x y
+  | x, y => .pick w (λ () => x) (λ () => y)
   termination_by x y => genMeasure x + genMeasure y
   decreasing_by
     . by_cases P
