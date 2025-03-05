@@ -25,12 +25,23 @@ def isAllTwos (xs : List Nat) : Option Unit :=
     ()
     xs
 
+
 abbrev genAllTwos' : CGen (λ xs => isAllTwos xs = Option.some ()) := by
-  apply synth_unfoldM=>[]//==
-  constructor=>//=ls <;> constructor=>//
-  elim: ls=>//=a b->{a}
-  -- I'm not an expety by this goal seems false.
+  apply synth_unfoldM=>b
+  constructor=>//=ls
+  constructor=>//=
+  move: ls b; elim=>//==
+  -- Okay This I've got false, so how come the code below proves it?
   sorry
 
+  -- apply synth_unfoldM
+  -- intro b
+  -- simp_all only [guard, beq_iff_eq, ite, failure, Option.pure_def, deforest_decidable_eq, reduceCtorEq, decidable_or,
+  --   and_false, and_true, false_or, ListF_or, true_and, exists_and_right, exists_eq_right]
+  -- apply synth_or
+  -- · apply synth_pure
+  -- · apply synth_bind_arb
+  --   intro a
+  --   apply synth_pure
 
 #eval traceConstWithTransparency .reducible ``genAllTwos'
