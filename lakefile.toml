@@ -23,3 +23,8 @@ rev = "v4.15.0"
 name = "plausible"
 git = "https://github.com/leanprover-community/plausible"
 rev = "v4.15.0"
+
+[[require]]
+name = "ssreflect"
+git = "https://github.com/verse-lab/leanssr"
+rev = "v4.15.0"
