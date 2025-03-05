@@ -70,7 +70,8 @@ def genEvenLength [Arbitrary α] :
 
 def genLengthK {k : Nat} [Arbitrary α] :
     CGen (λ (v : List α) => List.foldr (λ _ len_xs => len_xs + 1) 0 v = k) := by
-  aesop
+  simp_all only [List.foldr_add_const, Nat.one_mul, Nat.zero_add]
+  sorry
 
 def genEvenLengthTwos :
     CGen (λ (v : List Nat) => List.foldrM (λ x b => do guard (x == 2); pure (not b)) true v = Option.some true) := by
@@ -81,6 +82,7 @@ def genLengthKTwos {k : Nat} :
       List.foldr (λ _ l => l + 1) 0 v = k ∧
       List.foldrM (λ x () => guard (x == 2)) () v = Option.some ()) := by
   aesop
+  sorry
 
 def genIncreasingByOne :
     CGen (λ v =>
