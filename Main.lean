@@ -71,33 +71,8 @@ def genEvenLength [Arbitrary α] :
 
 def genLengthK {k : Nat} [Arbitrary α] :
     CGen (λ (v : List α) => List.foldr (λ _ len_xs => len_xs + 1) 0 v = k) := by
-  simp_all only [fold_foldM]
-  apply synth_unfoldM
-  intro b
-  simp_all only [Option.some.injEq, ListF_or]
-  cases k with
-  | zero =>
-    cases b with
-    | zero =>
-      simp_all only [true_and, Nat.add_one_ne_zero, and_false, exists_const, exists_false, or_false]
-      apply synth_pure
-    | succ
-      n =>
-      simp_all only [Nat.add_one_ne_zero, false_and, Nat.add_right_cancel_iff, exists_eq_right, false_or]
-      apply synth_bind_arb
-      intro a
-      apply synth_pure
-  | succ n =>
-    cases b with
-    | zero =>
-      simp_all only [true_and, Nat.add_one_ne_zero, and_false, exists_const, exists_false, or_false]
-      apply synth_pure
-    | succ
-      n_1 =>
-      simp_all only [Nat.add_one_ne_zero, false_and, Nat.add_right_cancel_iff, exists_eq_right, false_or]
-      apply synth_bind_arb
-      intro a
-      apply synth_pure
+  simp only [fold_foldM]
+  aesop
 
 def genEvenLengthTwos :
     CGen (λ (v : List Nat) => List.foldrM (λ x b => do guard (x == 2); pure (not b)) true v = Option.some true) := by
@@ -107,40 +82,8 @@ def genLengthKTwos {k : Nat} :
     CGen (λ (v : List Nat) =>
       List.foldr (λ _ l => l + 1) 0 v = k ∧
       List.foldrM (λ x () => guard (x == 2)) () v = Option.some ()) := by
-  simp_all only [fold_foldM, guard, beq_iff_eq, ite, failure, Option.pure_def, merge_foldM, Option.bind_eq_bind,
-    deforest_decidable_bind, Option.none_bind, Option.some_bind]
-
-  apply synth_unfoldM
-  intro b
-  simp_all only [deforest_decidable_eq, reduceCtorEq, Option.some.injEq, decidable_or, beq_iff_eq, and_false,
-    false_or, ListF_or, Prod.exists, exists_and_right]
-  obtain ⟨fst, snd⟩ := b
-  simp_all only [Prod.mk.injEq, and_true]
-  cases k with
-  | zero =>
-    cases fst with
-    | zero =>
-      simp_all only [true_and, Nat.add_one_ne_zero, and_false, exists_const, or_false]
-      apply synth_pure
-    | succ
-      n =>
-      simp_all only [Nat.add_one_ne_zero, false_and, Nat.add_right_cancel_iff, exists_eq_right_right, exists_eq_right,
-        false_or]
-      apply synth_bind_arb
-      intro a
-      apply synth_pure
-  | succ n =>
-    cases fst with
-    | zero =>
-      simp_all only [true_and, Nat.add_one_ne_zero, and_false, exists_const, or_false]
-      apply synth_pure
-    | succ
-      n_1 =>
-      simp_all only [Nat.add_one_ne_zero, false_and, Nat.add_right_cancel_iff, exists_eq_right_right, exists_eq_right,
-        false_or]
-      apply synth_bind_arb
-      intro a
-      apply synth_pure
+  simp only [fold_foldM]
+  aesop
 
 def genIncreasingByOne :
     CGen (λ v =>
