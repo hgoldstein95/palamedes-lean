@@ -128,4 +128,69 @@ def genBST (lo hi : Nat) : CGen (λ v => isBST lo hi v = some ()) := by
 
 #eval sampleN 10 (genBST 50 100).val
 
+def foo (x) :=
+  let y := x + 1;
+  y + 1
+
+def bar : Gen ℕ := choose 0 100
+
+#check bar
+
+def xyGenInstance : Gen (ℕ × ℕ) := do
+  let x <- choose 0 200
+  let y <- choose 0 200
+  if x <= y
+  then pure (x, y)
+  else pure (y, x)
+
+#check Exists.intro xyGenInstance
+
+-- Verifying XY ordered
+def genXYOrdered : CGen (λ (v : Nat × Nat) =>
+                            0 ≤ v.1 ∧ v.1 ≤ v.2 ∧ v.2 ≤ 200) :=
+  Subtype.mk xyGenInstance (by
+    move=>[x y]
+    apply Iff.intro=>H//==
+    . scase: H=>//= =>w[[H1 H2]] [v][[H3 H4]]
+      scase: (w.decLe v)=>//H5 /== ->->
+      omega
+    move: H=>//=[H1 [H2 H3]]
+    exists x; constructor
+    . omega
+    exists y; constructor
+    . omega
+    move: H2
+    sby scase: (x.decLe y)
+    )
+
+------------  Experiments with dep-typed choose
+
+-- An alternative version of Gen.choose that in addition to
+-- the generator gives a proof for the range of its values
+def choose' (lo hi : Nat) (h : lo ≤ hi := by simp) :
+  CGen (λ v => lo ≤ v ∧ v ≤ hi) :=
+  Subtype.mk (Gen.choose lo hi h)
+             (by sby intro v; apply Iff.intro)
+
+/-
+Now, what we could do is to redefine the Gen constructors,
+making them keep the proofs that were used for their construction
+in a way we defined choose'.
+
+This makes this calculus of generators much closer to a
+program logic where each statement comes with pre/postconditions
+regarding the nature of its arguments and the resulting
+generator. For instance, choose' above now features the
+postcondition that preserves information about its inputs.
+
+This will allow us to write the following program, which
+is currently unexpressible:
+
+def xyGenInstance : Gen (ℕ × ℕ) := do
+  let x <- choose 0 200
+  let y <- choose x 200 // needs the proof that 0 <= x <= 200
+  pure (x, y)
+-/
+
+
 def main := IO.print =<< sampleN 10 (genSortedBetween 2 10).val
