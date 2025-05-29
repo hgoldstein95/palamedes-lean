@@ -2,7 +2,7 @@ import Palamedes.Synth
 import Palamedes.Sample
 import Palamedes.Data.Tree
 import Mathlib.Tactic.Convert
-
+import Lean.Elab.Tactic.NormCast
 /-
 Simple examples using palamedes.
 -/
@@ -158,7 +158,22 @@ elab "partResult3" : tactic => do
         logInfo newCGen
         --Change the goal
         let newEMvarId ← mkFreshExprMVar newCGen
+        --proofterming
+        let copyOfNewE ← mkFreshExprMVar newCGen
+        let simpTheorems ←  #[``and_comm,``and_assoc].foldlM (·.addConst ·) ({} : Meta.SimpTheorems)
+        --let ctx ← Simp.mkContext {} #[simpTheorems]
+        let (.some resultProof) ← NormCast.proveEqUsing simpTheorems e newCGen | throwUnsupportedSyntax
+        -- let (simpResMV,simpStats) ← simpTarget copyOfNewE.mvarId! ctx
+        -- logInfo simpStats.usedTheorems.toArray[2]!.key
+        logInfo f!"{resultProof.proof?}"
+        -- let newImpliesOld ← mkArrow newCGen e
+        -- let mvarIdImplies ← mkFreshExprMVar newImpliesOld (userName := `helper)
+        -- let proofTerm := mkApp mvarIdImplies newEMvarId
+        mvarId.assign (← resultProof.getProof)
         modify fun state => {goals := [newEMvarId.mvarId!] ++ state.goals.drop 1}
+        --run tauto to eliminate implication
+        -- let taut_stx ← `(tactic| tauto)
+        -- evalTactic taut_stx
       else throwUnsupportedSyntax
     else throwUnsupportedSyntax
 
@@ -170,6 +185,7 @@ def genTwoBetweens2 : CGen (λ (v : Nat × Nat) => ∃ x, (2 ≤ x ∧ x ≤ 6) 
     obtain ⟨left, right⟩ := property
     simp_all only
     partResult3
+    --simp_all only [and_comm,and_assoc]
     apply synth_bind
     · apply synth_between
     · intro a
