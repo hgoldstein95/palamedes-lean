@@ -84,6 +84,16 @@ def genTwoInRange : CGen (λ (v : Nat × Nat) => 0 ≤ v.1 ∧ v.1 ≤ v.2 ∧ v
     apply this
   assumption
 
+def genOneGtOther: CGen (λ (v : Nat × Nat) => v.2 < v.1) := by
+  palamedes?
+
+def genOneGtOther2: CGen (λ (v : Nat × Nat) => v.1 > 2 ∧ v.2 > v.1) := by
+  palamedes --TODO: rewrite 2 into 3
+
+def genOneGtOther3: CGen (λ (v : Nat × Nat) => ∃ x, x > 2 ∧ ∃ y, y > x ∧ v = (x,y)) := by
+  palamedes
+
+
 def genTwoBetweens : CGen (λ (v : Nat × Nat) => ∃ x, (2 ≤ x ∧ x ≤ 6) ∧ ∃ y, (2 ≤ y ∧ y ≤ 100) ∧ v = (x,y)) := by
   apply synth_bind
   · apply synth_between
@@ -99,6 +109,8 @@ def genTwoBetweens : CGen (λ (v : Nat × Nat) => ∃ x, (2 ≤ x ∧ x ≤ 6) �
       simp_all only
       apply synth_pure
 
+
+set_option pp.mvars.delayed true
 open Lean Meta Elab Tactic Term in
 elab "partResult3" : tactic => do
   let rec get_conjuncts (e: Expr) : TacticM $ (List Expr) := do
@@ -165,17 +177,18 @@ elab "partResult3" : tactic => do
         let (.some resultProof) ← NormCast.proveEqUsing simpTheorems e newCGen | throwUnsupportedSyntax
         -- let (simpResMV,simpStats) ← simpTarget copyOfNewE.mvarId! ctx
         -- logInfo simpStats.usedTheorems.toArray[2]!.key
-        logInfo f!"{resultProof.proof?}"
+        logInfo (← inferType resultProof.proof?.get!) --.proof?.get!
         -- let newImpliesOld ← mkArrow newCGen e
         -- let mvarIdImplies ← mkFreshExprMVar newImpliesOld (userName := `helper)
         -- let proofTerm := mkApp mvarIdImplies newEMvarId
-        mvarId.assign (← resultProof.getProof)
+        mvarId.assign resultProof.proof?.get!
         modify fun state => {goals := [newEMvarId.mvarId!] ++ state.goals.drop 1}
         --run tauto to eliminate implication
         -- let taut_stx ← `(tactic| tauto)
         -- evalTactic taut_stx
       else throwUnsupportedSyntax
     else throwUnsupportedSyntax
+
 
 def genTwoBetweens2 : CGen (λ (v : Nat × Nat) => ∃ x, (2 ≤ x ∧ x ≤ 6) ∧ ∃ y, 2 ≤ y ∧ y ≤ 100 ∧ v = (x,y)) := by
   apply synth_bind
