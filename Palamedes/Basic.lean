@@ -142,9 +142,9 @@ theorem chomp_t {α β : Type} {Q: α → β → Prop} :
 
 def genOneGtOther2: CGen (λ (v : Nat × Nat) => v.1 > 2 ∧ v.2 > v.1) := by
   --simp only [tup2exists] --bad, yields CGen fun v => v.fst > 2 ∧ ∃ x y, x < y ∧ v = (x, y)
-  simp only [and_comm,and_assoc,tup2exists_fst]
+  --simp only [and_comm,and_assoc,tup2exists_fst]
   --simp only [swap_e] --recursion problem
-  simp only [← and_assoc, and_comm,hoist]
+  --simp only [← and_assoc, and_comm,hoist]
   palamedes --TODO: rewrite 2 into 3
 
 
@@ -169,7 +169,7 @@ def genTwoBetweens : CGen (λ (v : Nat × Nat) => ∃ x, (2 ≤ x ∧ x ≤ 6) �
       apply synth_pure
 
 
-set_option pp.mvars.delayed true
+--set_option pp.mvars.delayed true
 open Lean Meta Elab Tactic Term in
 elab "partResult3" : tactic => do
   let rec get_conjuncts (e: Expr) : TacticM $ (List Expr) := do
@@ -199,16 +199,18 @@ elab "partResult3" : tactic => do
   mvarId.withContext do
     let mainDecl ← getMainDecl
     let e := mainDecl.type
-    if e.isAppOf `CGen then
+    logInfo e.ctorName
+    if e.isAppOf `Eq then
       --dbg_trace f!"maindecl: {t.isAppOf `CGen}"
-      let (Expr.lam outer_name outer_type t outer_binfo) := e.getAppArgs[1]! | throwUnsupportedSyntax
+      let origOuterLam := e.getAppArgs[2]!
+      let (Expr.lam outer_name outer_type t outer_binfo) := origOuterLam | throwUnsupportedSyntax
       -- outer_name is definitely #1!!! otherwise there will be an error due to structure
       if t.isAppOf `Exists then
         let (Expr.lam name type body binfo) := t.getAppArgs[1]! | throwUnsupportedSyntax
         let conjuncts ← get_conjuncts body
         logInfo conjuncts
-        let (Expr.bvar yidx) := conjuncts[0]!.getAppArgs[3]! | throwUnsupportedSyntax
-        logInfo f!"yidx: {yidx} {conjuncts[0]!.hasLooseBVar (yidx + 1)}"
+        -- let (Expr.bvar yidx) := conjuncts[0]!.getAppArgs[3]! | throwUnsupportedSyntax
+        -- logInfo f!"yidx: {yidx} {conjuncts[0]!.hasLooseBVar (yidx + 1)}"
 
         --let id ← outer_name.fvarId!
         let (varIn,varNotIn) := partition conjuncts
@@ -225,15 +227,15 @@ elab "partResult3" : tactic => do
         logInfo newE
         --Reconstruct the CGen:
         let newOuterLam := Expr.lam outer_name outer_type newE outer_binfo
-        let newCGen := mkAppN e.getAppFn #[e.getAppArgs[0]!, newOuterLam]
-        logInfo newCGen
+        --let newCGen := mkAppN e.getAppFn #[e.getAppArgs[0]!, newOuterLam]
+        logInfo newOuterLam
         --Change the goal
-        let newEMvarId ← mkFreshExprMVar newCGen
+        let newEMvarId ← mkFreshExprMVar newOuterLam
         --proofterming
-        let copyOfNewE ← mkFreshExprMVar newCGen
+        let copyOfNewE ← mkFreshExprMVar newOuterLam
         let simpTheorems ←  #[``and_comm,``and_assoc].foldlM (·.addConst ·) ({} : Meta.SimpTheorems)
         --let ctx ← Simp.mkContext {} #[simpTheorems]
-        let (.some resultProof) ← NormCast.proveEqUsing simpTheorems e newCGen | throwUnsupportedSyntax
+        let (.some resultProof) ← NormCast.proveEqUsing simpTheorems origOuterLam newOuterLam | throwUnsupportedSyntax
         -- let (simpResMV,simpStats) ← simpTarget copyOfNewE.mvarId! ctx
         -- logInfo simpStats.usedTheorems.toArray[2]!.key
         logInfo resultProof.proof?.get!
@@ -241,33 +243,57 @@ elab "partResult3" : tactic => do
         -- let newImpliesOld ← mkArrow newCGen e
         -- let mvarIdImplies ← mkFreshExprMVar newImpliesOld (userName := `helper)
         -- let proofTerm := mkApp mvarIdImplies newEMvarId
-        -- mvarId.assign resultProof.proof?.get!
 
-        let mNew ← mvarId.replaceTargetEq newCGen resultProof.proof?.get!
-        replaceMainGoal [mNew]
+        --assign the proof to get things to unify and be done with it?
+        mvarId.assign resultProof.proof?.get!
+
+        -- let mNew ← mvarId.replaceTargetEq newCGen resultProof.proof?.get!
+        -- replaceMainGoal [mNew]
+
         --run tauto to eliminate implication
         -- let taut_stx ← `(tactic| tauto)
         -- evalTactic taut_stx
       else throwUnsupportedSyntax
     else throwUnsupportedSyntax
 
+--apply synth_conv (by partResult3) _
+
+open Lean Meta Elab Tactic Term in
+elab "partResult4" : tactic => do
+  let mvarId ← getMainGoal
+  mvarId.withContext do
+    let mainDecl ← getMainDecl
+    let e := mainDecl.type
+    logInfo f!"{e.getAppArgs[2]!}"
+    let (Expr.lam outer_name outer_type t outer_binfo) := e.getAppArgs[2]! | throwUnsupportedSyntax
+    logInfo t
+    logInfo f!"{t.isAppOf `Exists}"
+    let (Expr.lam name type body binfo) := t.getAppArgs[1]! | throwUnsupportedSyntax
+    logInfo body
+
+
+def genSomethingTest : CGen (λ (v: Nat × Nat) => ∃ x, 2 ≤ x ∧ x ≤ 6 ∧ v = (2, x)) := by
+  apply synth_conv (by
+    partResult3
+  ) (synth_bind _ _)
 
 def genTwoBetweens2 : CGen (λ (v : Nat × Nat) => ∃ x, (2 ≤ x ∧ x ≤ 6) ∧ ∃ y, 2 ≤ y ∧ y ≤ 100 ∧ v = (x,y)) := by
-  apply synth_bind
-  · apply synth_between
-  · intro a
-    obtain ⟨val, property⟩ := a
-    obtain ⟨left, right⟩ := property
-    simp_all only
-    partResult3
-    --simp_all only [and_comm,and_assoc]
-    apply synth_bind
-    · apply synth_between
-    · intro a
-      obtain ⟨val_1, property⟩ := a
-      obtain ⟨left_1, right_1⟩ := property
-      simp_all only
-      apply synth_pure
+  apply synth_conv (by partResult3) (synth_bind _ _)
+  sorry
+  -- · apply synth_between
+  -- · intro a
+  --   obtain ⟨val, property⟩ := a
+  --   obtain ⟨left, right⟩ := property
+  --   simp_all only
+  --   partResult3
+  --   --simp_all only [and_comm,and_assoc]
+  --   apply synth_bind
+  --   · apply synth_between
+  --   · intro a
+  --     obtain ⟨val_1, property⟩ := a
+  --     obtain ⟨left_1, right_1⟩ := property
+  --     simp_all only
+  --     apply synth_pure
 
 -- @[aesop simp (rule_sets := [palamedes])]
 -- def evenLength : List α → Bool
