@@ -87,8 +87,67 @@ def genTwoInRange : CGen (λ (v : Nat × Nat) => 0 ≤ v.1 ∧ v.1 ≤ v.2 ∧ v
 def genOneGtOther: CGen (λ (v : Nat × Nat) => v.2 < v.1) := by
   palamedes?
 
+def genOneGtOther': CGen (λ (v : Nat × Nat) => v.2 > v.1) := by
+  palamedes
+
+def genTupleOneElem: CGen (λ (v: Int × Int) => v.1 > 2) := by
+  palamedes?
+
+def genOneGtOther3: CGen (λ (v : Nat × Nat) => ∃ x y, x > y ∧ v = (x,y)) := by
+  palamedes? --need rw swap to try different order of exists
+
+theorem tup2exists {v : α × β} (P : α → β → Prop) :
+  P v.1 v.2 ↔ ∃ x : α, ∃ y : β, P x y ∧ v = (x,y) :=
+  by aesop
+
+theorem tup2exists_fst {v : α × β} (P : α → β → Prop) (Q : α → Prop) :
+  P v.1 v.2 ∧ Q v.1 ↔ ∃ x : α, ∃ y : β, P x y ∧ Q x ∧ v = (x,y) :=
+  by aesop
+
+theorem tup2exists_snd {v : α × β} (P : α → β → Prop) (Q : β → Prop) :
+  P v.1 v.2 ∧ Q v.2 ↔ ∃ x : α, ∃ y : β, P x y ∧ Q y ∧ v = (x,y) :=
+  by aesop
+
+theorem tup2exists_ext {v : α × β} (P : α → β → Prop) (Q : α → Prop) (R: β → Prop) :
+  P v.1 v.2 ∧ Q v.1 ∧ R v.2 ↔ ∃ x : α, ∃ y : β, P x y ∧ Q x ∧ R y ∧ v = (x,y) :=
+  by aesop
+
+theorem swap_e {α β : Type} {P: α → β → Prop} :
+  (∃ t: α, ∃ u: β, P t u) ↔ (∃ u: β, ∃ t: α, P t u) := by
+    apply Iff.intro
+    · intro a
+      obtain ⟨w, h⟩ := a
+      obtain ⟨w_1, h⟩ := h
+      apply Exists.intro
+      · apply Exists.intro
+        · exact h
+    · intro a
+      obtain ⟨w, h⟩ := a
+      obtain ⟨w_1, h⟩ := h
+      apply Exists.intro
+      · apply Exists.intro
+        · exact h
+
+theorem hoist{α : Type} {P: α → Prop} {Q: Prop}:
+  (∃ t: α, Q ∧ P t) ↔ (Q ∧ ∃ t: α, P t) := by
+  simp_all only [exists_and_left]
+
+theorem chomp_a {α β : Type} {P: α → Prop} {Q: α → β → Prop} :
+  (∃ t: α, ∃ u: β, P t ∧ Q t u) ↔ ∃ t: α, (P t) ∧ ∃ u: β, Q t u := by
+  simp_all only [exists_and_left]
+
+theorem chomp_t {α β : Type} {Q: α → β → Prop} :
+  (∃ t: α, ∃ u: β, Q t u) ↔ ∃ t: α, True ∧ ∃ u: β, Q t u := by
+  simp_all only [true_and]
+
 def genOneGtOther2: CGen (λ (v : Nat × Nat) => v.1 > 2 ∧ v.2 > v.1) := by
+  --simp only [tup2exists] --bad, yields CGen fun v => v.fst > 2 ∧ ∃ x y, x < y ∧ v = (x, y)
+  simp only [and_comm,and_assoc,tup2exists_fst]
+  --simp only [swap_e] --recursion problem
+  simp only [← and_assoc, and_comm,hoist]
   palamedes --TODO: rewrite 2 into 3
+
+
 
 def genOneGtOther3: CGen (λ (v : Nat × Nat) => ∃ x, x > 2 ∧ ∃ y, y > x ∧ v = (x,y)) := by
   palamedes
@@ -177,12 +236,15 @@ elab "partResult3" : tactic => do
         let (.some resultProof) ← NormCast.proveEqUsing simpTheorems e newCGen | throwUnsupportedSyntax
         -- let (simpResMV,simpStats) ← simpTarget copyOfNewE.mvarId! ctx
         -- logInfo simpStats.usedTheorems.toArray[2]!.key
+        logInfo resultProof.proof?.get!
         logInfo (← inferType resultProof.proof?.get!) --.proof?.get!
         -- let newImpliesOld ← mkArrow newCGen e
         -- let mvarIdImplies ← mkFreshExprMVar newImpliesOld (userName := `helper)
         -- let proofTerm := mkApp mvarIdImplies newEMvarId
-        mvarId.assign resultProof.proof?.get!
-        modify fun state => {goals := [newEMvarId.mvarId!] ++ state.goals.drop 1}
+        -- mvarId.assign resultProof.proof?.get!
+
+        let mNew ← mvarId.replaceTargetEq newCGen resultProof.proof?.get!
+        replaceMainGoal [mNew]
         --run tauto to eliminate implication
         -- let taut_stx ← `(tactic| tauto)
         -- evalTactic taut_stx
