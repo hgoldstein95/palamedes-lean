@@ -175,8 +175,10 @@ elab "partResult3" : tactic => do
   let rec get_conjuncts (e: Expr) : TacticM $ (List Expr) := do
     --if let (Expr.app (Expr.app (Expr.const `And _) p) q) := e then
     if e.isAppOf `And then
-      let lhs_conjuncts ← get_conjuncts e.getAppArgs[0]!
-      let rhs_conjuncts ← get_conjuncts e.getAppArgs[1]!
+      --properly deconstructing the ∧ for termination to kick in
+      let (Expr.app (Expr.app (Expr.const `And _) p) q) := e | throwUnsupportedSyntax
+      let lhs_conjuncts ← get_conjuncts p -- e.getAppArgs[0]!
+      let rhs_conjuncts ← get_conjuncts q -- e.getAppArgs[1]!
       return lhs_conjuncts ++ rhs_conjuncts
     else if e.containsConst (λ c => c == `Exists) then
       dbg_trace "contains exists"
