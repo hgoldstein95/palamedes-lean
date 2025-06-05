@@ -3,13 +3,9 @@ import Palamedes.V2.Gen
 import Palamedes.V2.CorrectGen
 import Palamedes.V2.Optimizer
 import Palamedes.V2.Total
+import Palamedes.V2.Data.List
 
 open Lean Tactic Elab Meta Tactic
-
-macro "simp_predicate" : tactic =>
-  `(tactic|
-    aesop
-      (rule_sets := [simplification]))
 
 macro "cgenerator_search" : tactic =>
   `(tactic|
@@ -27,7 +23,19 @@ macro "totality" : tactic =>
 macro "optimality" : tactic =>
   `(tactic|
     aesop
-      (add safe (by omega)))
+      (add safe (by omega))
+      (add unsafe congrFun)
+      (add unsafe congrArg))
+
+elab "optimize_gen " t:term : tactic =>
+  withMainContext do
+    let g ← getMainGoal
+    let m ← mkFreshExprMVar none
+    let gen ← elabTerm t (some (.app (.const ``Gen []) m))
+    let gen' ← withReducible (reduce gen)
+    let gen'' ← optimizeGen gen'
+    let gen''' ← withReducible (reduce gen'')
+    g.assign gen'''
 
 -- Borrowed from Aesop
 def printAsMillis (n : Nat) : String :=
@@ -75,6 +83,19 @@ def generatorSearchElab
   let ty := .forallE `α α (.sort 0) .default
   let mpred ← elabTerm t (some ty)
 
+  if verbose then do
+    TryThis.addSuggestion stx
+      s!"-- generator_search ({← ppExpr mpred})
+  let cg : CorrectGen ({← ppExpr mpred}) := by
+    cgenerator_search
+  let g : Gen ({← ppExpr α}) := by
+    optimize_gen cg.val
+  let _ : support cg.val = support g := by
+    optimality
+  let _ : Gen.total g := by
+    totality
+  exact g"
+
   -- Synthesize a correct generator by solving `CorrectGen P` and projecting the `.val`.
   let gen ← do
     try
@@ -90,7 +111,8 @@ def generatorSearchElab
   -- Optimize the generator and prove that the optimized version is correct.
   let gen' ←
     try
-      let gen' ← withReducible (reduce (← optimizeGen gen))
+      let gen' ← optimizeGen gen
+      let gen' ← withReducible (reduce gen')
       let _ ← solveGoalWithTactic
         (← mkEq (← mkAppM ``Gen.support #[gen]) (← mkAppM ``Gen.support #[gen']))
         (← `(tactic| optimality))

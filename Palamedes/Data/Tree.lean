@@ -215,8 +215,8 @@ def Tree.unfold (f : β → Gen (TreeF α β)) (v : β) : Gen (Tree α) :=
   .indexed (λ n => Tree.unfold_aux n f v)
 
 @[simp]
-def Tree.unfold_support (P : β → TreeF α β → Prop) (b : β) (xs : Tree α) : Prop :=
-  match xs with
+def Tree.unfold_support (P : β → TreeF α β → Prop) (b : β) (t : Tree α) : Prop :=
+  match t with
   | .leaf => P b .leaf
   | .node l x r => ∃ bl br,
     P b (.node bl x br) ∧

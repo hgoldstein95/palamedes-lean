@@ -1,6 +1,6 @@
 import Palamedes.Support
 
-/- Type definition -/
+/- Type definitions -/
 /- adapted from https://github.com/QuickChick/QuickChick/tree/master/examples/ifc-basic -/
 
 inductive Label where

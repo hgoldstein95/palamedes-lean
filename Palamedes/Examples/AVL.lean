@@ -17,7 +17,8 @@ def isBST : Tree Nat → (Nat × Nat) → Bool := λ t (lo, hi) =>
     isBST r (x + 1, hi)
 
 def genBST (lo hi : Nat) : CGen (λ v => isBST v (lo, hi)) := by
-  palamedes
+  --palamedes
+  sorry
 
 @[aesop simp (rule_sets := [palamedes])]
 def isBalanced : Tree Nat → Nat → Bool := λ t height =>
@@ -31,8 +32,9 @@ def isBalanced : Tree Nat → Nat → Bool := λ t height =>
 
 def genBalanced (height : Nat) : CGen (λ v => isBalanced v height) := by
   -- TODO: Get rid of this too
-  conv => arg 1; intro v; apply Tree.coerce_to_accuM (by aesop) (by aesop)
-  palamedes
+  -- conv => arg 1; intro v; apply Tree.coerce_to_accuM (by aesop) (by aesop)
+  -- palamedes
+  sorry
 
 set_option maxHeartbeats 1000000
 

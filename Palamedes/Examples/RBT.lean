@@ -11,18 +11,18 @@ inductive Color where
   | red
   | black
 
--- def RBT α := Tree (color × α)
+abbrev RBT α := Tree (Color × α)
 
-def rr_aux : Tree (Color × Nat) → Bool → Bool := λ t isRedChild =>
+def rr_aux : RBT α → Bool → Bool := λ t isRedChild =>
  match t with
  | .leaf => true
  | .node l (.red, _) r => (not isRedChild) && rr_aux l true && rr_aux r true
  | .node l (.black, _) r => rr_aux l false && rr_aux r false
 
 @[simp]
-def rr : Tree (Color × Nat) → Bool := λ t => rr_aux t false
+def rr : RBT α → Bool := λ t => rr_aux t false
 
-def bh : Tree (Color × Nat) → Nat → Bool := λ t height =>
+def bh : RBT α → Nat → Bool := λ t height =>
  match t with
  | .leaf => height == 1
  | .node l (.red, _) r => bh l height && bh r height

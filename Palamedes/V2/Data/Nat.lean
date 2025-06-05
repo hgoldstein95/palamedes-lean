@@ -1,8 +1,6 @@
 import Palamedes.V2.Gen
 import Palamedes.V2.CorrectGen
 import Palamedes.V2.Total
-import Palamedes.V2.RuleSets
-import Palamedes.V2.Optimizer
 
 namespace Gen
 
@@ -80,15 +78,53 @@ theorem support_choose :
         . right
           rw [ih _] <;> omega
 
+@[simp]
+def support_Nat_rec
+    {gz : (n = 0) → Gen α}
+    {gs : (n' : Nat) → (n = n' + 1) → Gen α} :
+    support (Nat.rec
+            (motive := fun x => (n = x) → Gen α)
+            (fun h => gz h)
+            (fun a _ b => gs a b)
+            n
+            rfl) =
+    (fun a =>
+      (∃ h : n = 0, a ∈ 〚gz h〛) ∨
+      (∃ (n' : Nat) (h : n = n' + 1), a ∈ 〚gs n' h〛)) := by
+  funext
+  simp
+  apply Iff.intro
+  . intro h
+    cases n <;> aesop
+  . intro h
+    cases h <;> aesop
+
 end Gen
 
 namespace CorrectGen
 
-@[reducible, aesop unsafe (rule_sets := [synthesis])]
+@[reducible]
 def carbNat : @CorrectGen Nat (λ _ => True) :=
   Subtype.mk arbNat <| by
     funext v
     simp
+
+@[reducible]
+def caseNat
+    (n : Nat)
+    (gz : (n = 0) → @CorrectGen α P)
+    (gs : (n' : Nat) → (n = n' + 1) → @CorrectGen α P) :
+    @CorrectGen α P :=
+    Subtype.mk
+      (Nat.rec
+        (motive := fun x => (n = x) → Gen α)
+        (fun h => (gz h).val)
+        (fun a _ b => (gs a b).val)
+        n
+        rfl) <| by
+    match n with
+    | 0 => exact (gz _).property
+    | n' + 1 => exact (gs _ _).property
 
 @[reducible]
 def cbetween
@@ -99,11 +135,7 @@ def cbetween
     funext v
     simp
 
-add_aesop_rules unsafe (rule_sets := [synthesis]) [
-  (by apply Gen.CorrectGen.cbetween (by first | aesop | omega))
-]
-
-@[reducible, aesop unsafe (rule_sets := [synthesis])]
+@[reducible]
 def cbetween_partial
     {lo hi : Nat} :
     CorrectGen (λ v => lo ≤ v ∧ v ≤ hi) :=
@@ -112,7 +144,7 @@ def cbetween_partial
     simp
     exact Nat.le_trans
 
-@[reducible, aesop unsafe (rule_sets := [synthesis])]
+@[reducible]
 def cgt
     {lo : Nat} :
     CorrectGen (λ v => lo < v) :=
@@ -129,6 +161,23 @@ def total_arbNat : total arbNat := by
   apply total_indexed
   intro n
   induction n <;> simp [arbNat.go, *]
+
+@[simp]
+def total_Nat_rec
+    {gz : (n = 0) → Gen α}
+    {gs : (n' : Nat) → (n = n' + 1) → Gen α}
+    (hz : ∀ h, total (gz h))
+    (hs : ∀ n' gn', total (gs n' gn')) :
+    total (Nat.rec
+          (motive := fun x => (n = x) → Gen α)
+          (fun h => gz h)
+          (fun a _ b => gs a b)
+          n
+          rfl)
+  := by
+  cases n
+  case zero => exact hz rfl
+  case succ n' => simp_all only
 
 @[simp]
 def total_choose : total (choose lo hi h) := by
