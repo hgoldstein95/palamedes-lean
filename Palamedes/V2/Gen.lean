@@ -8,10 +8,10 @@ Authors: Harrison Goldstein, Hila Peleg, Cassia Torczon,
 import Aesop
 
 /-!
-# Free-style PBT Generators
+# Intermediate Language for Generators
 
-This module introduces _free-style_ generators. They are loosely based on
-[free generators][goldsteinParsingRandomness2022], although not exactly the same. The most important
+This module introduces an intermediate langauge for generators. They are loosely based on [free
+generators][goldsteinParsingRandomness2022], although not exactly the same. The most important
 aspect of the `Gen` type is that it is an inductive structure --- i.e., data --- not a function.
 This means that it can be _interpreted_ in multiple ways, which we demonstrate later.
 -/
@@ -22,7 +22,7 @@ inductive Gen : Type → Type 1 where
   | ret : α → Gen α
   | bind : Gen α → (α → Gen β) → Gen β
   | pick : Gen α → Gen α → Gen α
-  | indexed : (Nat → Gen (Option α)) → Gen α -- useful in generators for infinite sets
+  | indexed : (Nat → Gen (Option α)) → Gen α
   | assume : (b : Bool) → (b → Gen α) → Gen α
 
 end Raw

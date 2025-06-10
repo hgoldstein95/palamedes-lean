@@ -4,6 +4,7 @@ import Palamedes.V2.Total
 
 namespace Gen
 
+@[reducible]
 def arbUnit : Gen Unit := pure ()
 
 namespace CorrectGen
@@ -16,9 +17,9 @@ end CorrectGen
 
 namespace Total
 
-@[simp]
-def total_arbUnit : total (arbUnit : Gen Unit) := by
-  simp [arbUnit]
+-- @[simp]
+-- def total_arbUnit : total (arbUnit : Gen Unit) := by
+--   simp [arbUnit]
 
 end Total
 
