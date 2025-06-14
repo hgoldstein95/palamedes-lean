@@ -63,13 +63,29 @@ def genOneGtOther4: CorrectGen (λ (v : Nat × Nat) => ∃ x y, x > y ∧ v = (x
   --conv => congr; intro v; rw[exists_swap_2nd']
   exists_swap_2nd
   --exists_swap_3rd --rewrite failed, yay
-  sorry
+  gapply (cbind _ _) --full proof of genOneGtOther3
+  · gapply carbNat
+  · intro b
+    apply (cbind _ _)
+    · gapply cgt
+    · intro a
+      gapply cpure (a.val,b.val)
 
 
 def genOneGtOther5: CorrectGen (λ (v : Nat × Nat × Nat) => ∃ x y z, x > y ∧ v = (x,y,z)) := by
   --exists_swap_2nd --works yay
   exists_swap_3rd
-  sorry
+  gapply (cbind _ _) --full proof of genOneGtOther3
+  · gapply carbNat
+  · intro c
+    exists_swap_2nd
+    gapply (cbind _ _)
+    · gapply carbNat
+    · intro b
+      apply (cbind _ _)
+      · gapply cgt
+      · intro a
+        gapply cpure (a.val,b.val,c.val)
 
 -- def genOneGtOther : Gen (Nat × Nat) := by
 --   generator_search (fun (v : Nat × Nat) => ∃ x y, x > 2 ∧ v = (x,y))
