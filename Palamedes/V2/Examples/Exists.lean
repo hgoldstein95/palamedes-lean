@@ -92,3 +92,19 @@ def genOneGtOther5: CorrectGen (λ (v : Nat × Nat × Nat) => ∃ x y z, x > y �
 
 -- def genOneGtOther2 : Gen (Nat × Nat) := by
 --   generator_search (fun (v : Nat × Nat) => ∃ x y, x > y ∧ v = (x,y))
+
+
+
+theorem hoist {α : Type} {P: α → Prop} {Q: Prop}:
+  (∃ t: α, Q ∧ P t) ↔ (Q ∧ ∃ t: α, P t) := by
+  simp_all only [exists_and_left]
+
+def genTwoBetweens: CorrectGen (fun (v: Nat × Nat) => ∃ x, ∃ y, 2 ≤ x ∧ x ≤ 6 ∧ 2 ≤ y ∧ y ≤ 100 ∧ v = (x,y)) := by
+  conv => congr; simp only [hoist]; simp only [← and_assoc] --tactic will need to mess with associativity more generally
+  apply (cbind _ _)
+  · gapply (cbetween_partial)
+  · intro x
+    apply (cbind _ _)
+    · gapply cbetween_partial
+    · intro y
+      gapply cpure _
