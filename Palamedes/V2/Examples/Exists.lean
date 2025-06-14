@@ -9,10 +9,10 @@ def genOneGtOther3: CorrectGen (λ (v : Nat × Nat) => ∃ y x, x > y ∧ v = (x
   gapply (cbind _ _)
   · gapply carbNat
   · intro b
-    gapply (cbind _ _)
+    apply (cbind _ _)
     · gapply cgt
     · intro a
-      gapply cpure (a,b)
+      gapply cpure (a.val,b.val)
 
 
 theorem exists_swap_2nd' {α β : Type}(P : α → β → Prop) : (∃ x: α, ∃ y: β, P x y) = (∃ y: β, ∃ x: α, P x y) := by
