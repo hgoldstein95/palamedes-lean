@@ -15,7 +15,7 @@ private partial def getConjuncts (e : Expr) : MetaM (List Expr) := do
   | And p q => return (← getConjuncts p) ++ (← getConjuncts q)
   | _ => return [e]
 
-/-- Proves a goal of the form `e = e'` by partitioning the conjuncts in the RHS based on whether or
+/-- Proves a goal of the form `?a ∧ ?b = e` by partitioning the conjuncts in `e` based on whether or
   not they contain `v`.
 
   E.g., the goal `?a ∧ ?b = v < 3 ∧ x = 5 ∧ 1 < v` is solved with
