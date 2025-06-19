@@ -100,7 +100,7 @@ def genOneGtOther5: CorrectGen (λ (v : Nat × Nat × Nat) => ∃ x y z, x > y �
 --   simp_all only [exists_and_left]
 
 open Lean Meta Elab Tactic Term in
-private def hoistInner (e : Expr) (var : FVarId) (pushIn : List Expr) : MetaM ((List Expr) × Expr) := do
+private partial def hoistInner (e : Expr) (var : FVarId) (pushIn : List Expr) : MetaM ((List Expr) × Expr) := do
   let res ← match_expr e with
   | Exists α prop =>
     match prop with
@@ -135,8 +135,7 @@ private def hoistInner (e : Expr) (var : FVarId) (pushIn : List Expr) : MetaM ((
       | _ => throwUnsupportedSyntax -- if this is not a sequence of ∃ this is not for us
     | _ => throwUnsupportedSyntax
   | _ => throwUnsupportedSyntax
-  -- termination_by e
-  -- decreasing_by sorry
+
 
 
 
