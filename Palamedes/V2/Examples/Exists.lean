@@ -119,10 +119,13 @@ private def hoistInner (e : Expr) (var : FVarId) (pushIn : List Expr) : MetaM ((
         dbg_trace f!"{rest}, {exists'}"
         return (rest, exists')
       | (.cons exists_clause .nil) => --recurse
+        --assert! e.occurs exists_clause
         let (rest,inner_exists) ← hoistInner exists_clause var varIn
         dbg_trace rest
         let (bvarIn, bvarNotIn) := (varNotIn ++ rest).partition (fun e' => (Expr.bvar 0).occurs e')
         let clauses' := bvarIn ++ [inner_exists] -- want to keep the ∃ last so bind will be happy
+        -- this is specifically foldl not foldr to make sure the ∃ can be pulled out by bind,
+        -- maybe ANDing it seperately would be better
         let existsProp := (clauses'.drop 1).foldl (fun a b => mkAppN (.const ``And []) #[a, b]) (clauses'[0]!)
         let exists' :=  mkApp2 e.getAppFn α (.lam name type existsProp binfo)
         logInfo exists'
@@ -132,12 +135,17 @@ private def hoistInner (e : Expr) (var : FVarId) (pushIn : List Expr) : MetaM ((
       | _ => throwUnsupportedSyntax -- if this is not a sequence of ∃ this is not for us
     | _ => throwUnsupportedSyntax
   | _ => throwUnsupportedSyntax
+  -- termination_by e
+  -- decreasing_by sorry
+
+
 
 open Lean Meta Elab Tactic Term Conv in
 elab "hoist'"  v:ident : conv => withMainContext do
   let g ← getMainGoal
   let body ← instantiateMVars (← Conv.getLhs)
   let var ← elabAsFVar v
+  dbg_trace body
   let (rest,inner_exists) ← hoistInner body var .nil
   let body' := if rest.isEmpty then
     inner_exists
@@ -179,3 +187,16 @@ def genTwoBetweens3: CorrectGen (fun (v: Nat × Nat) => ∃ x, 2 ≤ x ∧ ∃ y
     · gapply cbetween_partial
     · intro y
       gapply cpure _
+
+
+def listSomething': CorrectGen (fun (v: List Nat) => ∃ x: Nat, x > 2 ∧ v[0]! = x ∧ v.length > 2) := by
+  apply (cbind _ _)
+  · gapply (cgt)
+  · intro x
+    --cgenerator_search
+    sorry
+
+
+def listSomething: CorrectGen (fun (v: List Nat) => v.length > 2 ∧ ∃ x, x > 2 ∧ v[0]! = x ) := by
+  hoist
+  cgenerator_search
