@@ -10,7 +10,7 @@ open Lean Meta Elab Tactic Term
 
     NOTE: This needs to be in `MetaM`, although I'm not 100% sure why. I think it may have
     something to do with how `match_expr` works under the hood? -/
-private partial def getConjuncts (e : Expr) : MetaM (List Expr) := do
+partial def getConjuncts (e : Expr) : MetaM (List Expr) := do
   match_expr e with
   | And p q => return (← getConjuncts p) ++ (← getConjuncts q)
   | _ => return [e]
