@@ -11,6 +11,7 @@ import Palamedes.Data.Tree
 import Palamedes.Data.Unit
 import Palamedes.Data.Nat
 import Palamedes.Data.Bool
+import Palamedes.Data.Color
 import Palamedes.Util
 
 open Gen CorrectGen
@@ -167,7 +168,10 @@ macro "list_convert_to_accuM" : tactic =>
       | rw [← List.fold_accu_Option_true] <;> (try library_search); done
       | rw [← List.fold_accu_Option_function]; (try library_search); done
       | rw [← List.fold_accu_Option_function_true] <;> simp_bexp <;> (try library_search); done
-      | rw [← List.fold_accu_Option_basic]; done))
+      | rw [← List.fold_accu_Option_basic]; done
+      | rw [← List.fold_accu_cond_bool]; (try aesop); done
+      | rw [← List.fold_accu_cond_nat]; (try aesop); done
+      ))
 
 macro "tree_convert_to_accuM" : tactic =>
   `(tactic|
@@ -290,6 +294,9 @@ add_aesop_rules unsafe (rule_sets := [synthesis]) [
   (by goal_is_eq_or_and; apply convert (by norm_for_Term_unfold) (Term.s_unfold _)),
   (by apply s_arbUnit),
   (by apply s_arbBool),
+  (by apply s_arbColor),
+  (by apply s_black),
+  (by apply s_red),
   (by apply s_arbNat),
   (by apply s_arbTy),
   (by apply s_arbLabel),
@@ -304,6 +311,8 @@ add_aesop_rules unsafe (rule_sets := [synthesis]) [
 add_aesop_rules 5% (rule_sets := [synthesis]) [
   (by goal_is_or; clear_unused_assumptions; apply s_caseBool (by nth_assumption 0) (by intros; rflm)),
   (by goal_is_or; clear_unused_assumptions; apply s_caseBool (by nth_assumption 1) (by intros; rflm)),
+  (by goal_is_or; clear_unused_assumptions; apply s_caseColor (by nth_assumption 0) (by intros; rflm)),
+  (by goal_is_or; clear_unused_assumptions; apply s_caseColor (by nth_assumption 1) (by intros; rflm)),
   (by goal_is_or; clear_unused_assumptions; apply s_caseTy (by nth_assumption 0) (by intros; rflm)),
   (by goal_is_or; clear_unused_assumptions; apply s_caseTy (by nth_assumption 1) (by intros; rflm)),
   (by goal_is_or; clear_unused_assumptions; apply s_caseNat (by nth_assumption 0) (by intros; rflm)),
