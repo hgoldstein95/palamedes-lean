@@ -285,16 +285,16 @@ theorem List.fold_accu_cond_bool {α : Type} {xs : List α} [BEq α] (flag : α)
       cases b <;> simp_all
       rw [← ih, bind_false]
 
-theorem List.fold_accu_cond_nat {α : Type} [BEq α] {xs : List α} flag i :
+theorem List.fold_accu_cond_nat {α : Type} [BEq α] {xs : List α} flag i base_i :
   some (List.fold
     (fun c acc i => if c == flag then acc i else i > 0 && acc (i - 1))
-    (fun _ => true)
+    (fun i => i == base_i)
     xs
     i) =
   List.accuM (fun x i => if x == flag then i else (i - 1))
             (fun x acc i =>
               if x == flag then (return acc) else return i > 0 && acc)
-            (fun _ => true)
+            (fun i => i == base_i)
             xs
             i := by
     induction xs generalizing i <;> simp

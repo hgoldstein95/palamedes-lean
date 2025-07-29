@@ -1,12 +1,9 @@
 import Palamedes.Synthesizer
+import Palamedes.Data.Color
 
 open Gen CorrectGen
 
 namespace RBT
-
-inductive Color where
-  | red
-  | black
 
 @[simp]
 def rrAux : Tree (Color × α) → Bool → Bool := λ t isRedChild =>

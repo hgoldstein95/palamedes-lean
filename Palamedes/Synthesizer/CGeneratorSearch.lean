@@ -179,7 +179,9 @@ macro "tree_convert_to_accuM" : tactic =>
       | rw [← Tree.fold_accu_Option_true]; (try library_search); done
       | rw [← Tree.fold_accu_Option_function]; (try library_search); done
       | rw [← Tree.fold_accu_Option_function_true]; (try intros; simp_bexp; library_search); done
-      | rw [← Tree.fold_accu_Option_basic]; (try library_search); done))
+      | rw [← Tree.fold_accu_Option_basic]; (try library_search); done
+      | rw [← Tree.fold_accu_cond_bool]; (try aesop); done
+      | rw [← Tree.fold_accu_cond_nat]; (try aesop); done))
 
 macro "stack_convert_to_accuM" : tactic =>
   `(tactic|
