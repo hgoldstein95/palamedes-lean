@@ -3,7 +3,7 @@ import re
 import statistics
 from tqdm import tqdm
 
-NUM_RUNS = 10
+NUM_RUNS = 30
 BASE_CMD = [
     "lake",
     "env",
@@ -122,10 +122,9 @@ for label, numbers in [item for item in data.items()]:
     else:
         partial_lines.append(line)
 
-print("Total:")
-for line in total_lines:
-    print(line)
-
-print("\nPartial:")
-for line in partial_lines:
-    print(line)
+with open("final-data.txt", "w") as f:
+    for line in total_lines:
+        f.write(line + "\n")
+    f.write("\\hline\n")
+    for line in partial_lines:
+        f.write(line + "\n")
