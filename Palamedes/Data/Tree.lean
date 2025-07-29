@@ -301,7 +301,7 @@ theorem bind_false (b : Bool) :
   (some b).bind (fun _ => some false) = some false := by
   aesop
 
-theorem Tree.fold_accu_cond_bool {α β : Type} {t : Tree (α × β)} [BEq α] (flag : α) b :
+/- theorem Tree.fold_accu_cond_bool {α β : Type} {t : Tree (α × β)} [BEq α] (flag : α) b :
   some (Tree.fold
     (fun accL c accR s =>
       if c.fst == flag then !s && accL true && accR true else accL false && accR false)
@@ -327,17 +327,17 @@ theorem Tree.fold_accu_cond_bool {α β : Type} {t : Tree (α × β)} [BEq α] (
       simp_all
       cases !b <;> rw [← ihl, ← ihr] <;> simp
 
-theorem Tree.fold_accu_cond_nat {α β : Type} [BEq α] {t : Tree (α × β)} flag i :
+theorem Tree.fold_accu_cond_nat {α β : Type} [BEq α] {t : Tree (α × β)} flag i base_i :
   some (Tree.fold
     (fun accL c accR i =>
       if c.fst == flag then accL i && accR i else i > 0 && accL (i - 1) && accR (i - 1))
-    (fun _ => true)
+    (fun i => i == base_i)
     t
     i) =
   Tree.accuM (fun x i => if x.fst == flag then (i, i) else (i - 1, i - 1))
             (fun accL x accR i =>
               if x.fst == flag then (return accL && accR) else return i > 0 && accL && accR)
-            (fun _ => true)
+            (fun i => i == base_i)
             t
             i := by
     induction t generalizing i <;> simp
@@ -351,7 +351,42 @@ theorem Tree.fold_accu_cond_nat {α β : Type} [BEq α] {t : Tree (α × β)} fl
       . specialize ihl i
         specialize ihr i
         simp_all
-        cases (decide (0 < i)) <;> rw [← ihl, ← ihr] <;> simp
+        cases (decide (0 < i)) <;> rw [← ihl, ← ihr] <;> simp -/
+
+theorem Tree.fold_accu_cond
+  {α σ : Type}
+  {i : σ}
+  {st_true st_false : α -> σ -> σ}
+  {cond_true cond_false init_cond : σ -> Bool}
+  {t : Tree α}
+  {cond_guard : α -> σ -> Bool} :
+  some (Tree.fold
+    (fun accL x accR s => if cond_guard x s then
+                      cond_true s && accL (st_true x s) && accR (st_true x s) else
+                      cond_false s && accL (st_false x s) && accR (st_false x s))
+    (fun s => init_cond s)
+    t
+    i) =
+  Tree.accuM
+    (fun x s => if cond_guard x s then (st_true x s, st_true x s) else (st_false x s, st_false x s))
+    (fun accL x accR s =>
+      if cond_guard x s then return cond_true s && accL && accR else return cond_false s && accL && accR)
+    (fun s => init_cond s)
+    t
+    i := by
+    induction t generalizing i <;> simp
+    case node l v r ihl ihr =>
+      cases (cond_guard v i) <;> simp
+      . specialize @ihl (st_false v i)
+        specialize @ihr (st_false v i)
+        simp_all
+        rw [←ihl, ←ihr]
+        simp
+      . specialize @ihl (st_true v i)
+        specialize @ihr (st_true v i)
+        simp_all
+        rw [← ihl, ← ihr]
+        simp
 
 end FoldConversions
 

@@ -72,7 +72,7 @@ end Guards
 
 section Simplifiers
 
-macro "simp_predicate" : tactic => `(tactic| try simp [guard, Option.bind_eq_some_iff, *])
+macro "simp_predicate" : tactic => `(tactic| try simp [guard, Option.bind_eq_some_iff, -beq_iff_eq, -Bool.true_and, *])
 
 macro "simp_bexp" : tactic => `(tactic|
   try simp only [bind, Option.bind, pure, Option.some_inj, ← Bool.eq_iff_iff])
@@ -169,9 +169,7 @@ macro "list_convert_to_accuM" : tactic =>
       | rw [← List.fold_accu_Option_function]; (try library_search); done
       | rw [← List.fold_accu_Option_function_true] <;> simp_bexp <;> (try library_search); done
       | rw [← List.fold_accu_Option_basic]; done
-      | rw [← List.fold_accu_cond_bool]; (try aesop); done
-      | rw [← List.fold_accu_cond_nat]; (try aesop); done
-      ))
+      | rw [← List.fold_accu_cond]; rw [Option.some.injEq]; (try aesop); done))
 
 macro "tree_convert_to_accuM" : tactic =>
   `(tactic|
@@ -180,8 +178,7 @@ macro "tree_convert_to_accuM" : tactic =>
       | rw [← Tree.fold_accu_Option_function]; (try library_search); done
       | rw [← Tree.fold_accu_Option_function_true]; (try intros; simp_bexp; library_search); done
       | rw [← Tree.fold_accu_Option_basic]; (try library_search); done
-      | rw [← Tree.fold_accu_cond_bool]; (try aesop); done
-      | rw [← Tree.fold_accu_cond_nat]; (try aesop); done))
+      | rw [← Tree.fold_accu_cond]; rw [Option.some.injEq]; (try aesop); done))
 
 macro "stack_convert_to_accuM" : tactic =>
   `(tactic|
@@ -213,12 +210,16 @@ end ConvertToAccuM
 macro "norm_for_List_unfold" : tactic =>
   `(tactic|
     (preprocess
-     (repeat' rw_list_merge) <;> (list_coerce_fold; list_convert_to_accuM)))
+     (repeat' rw_list_merge) <;> (first
+                                  | list_coerce_fold; list_convert_to_accuM
+                                  | simp; list_coerce_fold; list_convert_to_accuM)))
 
 macro "norm_for_Tree_unfold" : tactic =>
   `(tactic|
     (preprocess
-     (repeat' rw_tree_merge) <;> (tree_coerce_fold; tree_convert_to_accuM)))
+     (repeat' rw_tree_merge) <;> (first
+                                  | tree_coerce_fold; tree_convert_to_accuM
+                                  | simp; tree_coerce_fold; tree_convert_to_accuM)))
 
 macro "norm_for_Stack_unfold" : tactic =>
   `(tactic|
@@ -296,6 +297,8 @@ add_aesop_rules unsafe (rule_sets := [synthesis]) [
   (by goal_is_eq_or_and; apply convert (by norm_for_Term_unfold) (Term.s_unfold _)),
   (by apply s_arbUnit),
   (by apply s_arbBool),
+  (by apply s_true),
+  (by apply s_false),
   (by apply s_arbColor),
   (by apply s_black),
   (by apply s_red),

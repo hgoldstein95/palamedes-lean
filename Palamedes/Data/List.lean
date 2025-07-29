@@ -264,7 +264,7 @@ theorem bind_false (b : Bool) :
   (some b).bind (fun _ => some false) = some false := by
   aesop
 
-theorem List.fold_accu_cond_bool {α : Type} {xs : List α} [BEq α] (flag : α) b :
+/- theorem List.fold_accu_cond_bool {α : Type} {xs : List α} [BEq α] (flag : α) b :
   some (List.fold
     (fun c acc s =>
       if c == flag then !s && acc true else acc false)
@@ -303,62 +303,36 @@ theorem List.fold_accu_cond_nat {α : Type} [BEq α] {xs : List α} flag i base_
       specialize ih (i - 1)
       . cases (decide (0 < i)) <;> simp_all
         rw [← ih, bind_false]
-      . apply ih
+      . apply ih -/
 
-/-
-theorem conv_cond_fold_accu_bool
+theorem List.fold_accu_cond
   {α σ : Type}
   {i : σ}
   {st_true st_false : α -> σ -> σ}
-  {cond_true cond_false : σ -> Bool}
+  {cond_true cond_false init_cond : σ -> Bool}
   {xs : List α}
-  {cond_guard : α -> Bool} :
+  {cond_guard : α -> σ -> Bool} :
   some (List.fold
-    (fun c acc s => if cond_guard c then
-                      cond_true s && acc (st_true c s) else
-                      cond_false s && acc (st_false c s))
-    (fun _ => true)
+    (fun x acc s => if cond_guard x s then
+                      cond_true s && acc (st_true x s) else
+                      cond_false s && acc (st_false x s))
+    (fun s => init_cond s)
     xs
     i) =
   List.accuM
-    (fun x s => if cond_guard x then st_true x s else st_false x s)
-    (fun x (acc : Bool) s =>
-      if cond_guard x then return cond_true s && acc else return cond_false s && acc)
-    (fun _ => true)
+    (fun x s => if cond_guard x s then st_true x s else st_false x s)
+    (fun x acc s =>
+      if cond_guard x s then return cond_true s && acc else return cond_false s && acc)
+    (fun s => init_cond s)
     (xs : List α)
     i := by
   induction xs generalizing i <;> simp
   case cons head tail ih =>
-    cases (cond_guard head) <;> simp_all
+    cases (cond_guard head i) <;> simp_all
     . cases (cond_false i) <;> simp_all
       rw [← ih, bind_false]
     . cases (cond_true i) <;> simp_all
       rw [← ih, bind_false]
-
-theorem conv_cond_fold_accu_iff
-  {α σ : Type}
-  {i : σ}
-  {st_true st_false : α -> σ -> σ}
-  {cond_true cond_false : σ -> Bool}
-  {xs : List α}
-  {cond_guard : α -> Bool} :
-  List.fold
-    (fun c acc s => if cond_guard c then
-                      cond_true s && acc (st_true c s) else
-                      cond_false s && acc (st_false c s))
-    (fun _ => true)
-    xs
-    i = true ↔
-  List.accuM
-    (fun x s => if cond_guard x then st_true x s else st_false x s)
-    (fun x (acc : Bool) s =>
-      if cond_guard x then return cond_true s && acc else return cond_false s && acc)
-    (fun _ => true)
-    (xs : List α)
-    i = some true := by
-  rw [← conv_cond_fold_accu_bool]
-  simp
--/
 
 end FoldConversions
 
