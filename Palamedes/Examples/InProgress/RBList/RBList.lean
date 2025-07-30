@@ -10,7 +10,7 @@ def rrAuxList : List Color → Bool → Bool := λ t isRedChild =>
  match t with
  | .nil => true
  | .cons c tl =>
-   if (fun c => c = .red) c then (fun c => !c) isRedChild && rrAuxList tl ((fun _ _ => true) c isRedChild)
+   if (fun c => c == .red) c then (fun c => !c) isRedChild && rrAuxList tl ((fun _ _ => true) c isRedChild)
                                 else (fun _ => true) isRedChild && rrAuxList tl ((fun _ _ => false) c isRedChild)
 
 @[simp]

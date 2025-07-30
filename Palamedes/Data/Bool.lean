@@ -6,20 +6,11 @@ namespace Gen
 
 def arbBool : Gen Bool := pick (pure true) (pure false)
 
-def tru : Gen Bool := pure true
-def fls : Gen Bool := pure false
-
 namespace CorrectGen
 
 @[reducible]
 def s_arbBool : @CorrectGen Bool (fun _ => True) :=
   Subtype.mk arbBool (by simp [arbBool])
-
-def s_true : @CorrectGen Bool (fun b => b = true) :=
-  Subtype.mk tru (by simp [tru])
-
-def s_false : @CorrectGen Bool (fun b => b = false) :=
-  Subtype.mk fls (by simp [fls])
 
 @[reducible]
 def s_caseBool
@@ -42,14 +33,6 @@ namespace Total
 @[simp, aesop safe (rule_sets := [totality])]
 theorem total_arbBool : total (arbBool : Gen Bool) := by
   simp [arbBool]
-
-@[simp, aesop safe (rule_sets := [totality])]
-theorem total_tru : total (tru : Gen Bool) := by
-  simp [tru]
-
-@[simp, aesop safe (rule_sets := [totality])]
-theorem total_fls : total (fls : Gen Bool) := by
-  simp [fls]
 
 @[simp, aesop safe (rule_sets := [totality])]
 theorem total_Bool_rec (hf : total gf) (ht : total gt) : total (Bool.rec gf gt b) := by

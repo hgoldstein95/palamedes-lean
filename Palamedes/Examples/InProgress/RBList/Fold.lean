@@ -14,9 +14,7 @@ Equivalent to
 def rrFoldList (xs : List Color) : Bool :=
   List.fold
     (fun c acc isRedParent =>
-      if (fun c => c == .red) c = true
-        then (fun c => !c) isRedParent && acc ((fun _ _ => true) c isRedParent)
-        else (fun _ => true) isRedParent && acc ((fun _ _ => false) c isRedParent))
+      if (c == .red) = true then !isRedParent && acc true else true && acc false)
     (fun _ => true)
     xs
     false
@@ -41,6 +39,8 @@ def bhFoldList (xs : List Color) (height : Nat) : Bool :=
     height
 
 open Gen CorrectGen
+
+set_option palamedes.debug true
 
 def genRRFold : Gen (List Color) := by
   generator_search (fun xs => rrFoldList xs = true)

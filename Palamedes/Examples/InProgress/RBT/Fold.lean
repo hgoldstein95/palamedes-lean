@@ -52,12 +52,21 @@ def isBSTFold (lo hi : Nat) (t : Tree (Color × Nat)) : Bool :=
           | (sl, sr) => (decide (sl ≤ x.snd) && decide (x.snd ≤ sr)) && bl (sl, x.snd - 1) && br (x.snd + 1, sr))
         (fun _ => true) t (lo, hi)
 
-def genBSTFold (lo hi : Nat) : Gen (Tree (Color × Nat)) := by
-  generator_search (fun t => isBSTFold lo hi t = true)
-
 set_option palamedes.debug true
 set_option maxHeartbeats 1000000
 set_option maxRecDepth 800
+
+def genBSTFold (lo hi : Nat) : Gen (Tree (Color × Nat)) := by
+  -- generator_search (fun t => isBSTFold lo hi t = true)
+  let cg : CorrectGen (fun t => isBSTFold lo hi t = true) := by
+    cgenerator_search
+  let g : Gen (Tree (Color × ℕ)) := by
+    optimize_gen cg.val
+  let _ : support cg.val = support g := by
+    optimality
+  let _ : Gen.total g := by
+    totality
+  exact g
 
 def genRRFold : Gen (Tree (Color × Nat)) := by
   generator_search (fun t => rrFold t = true)
