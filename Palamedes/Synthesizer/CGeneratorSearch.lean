@@ -127,6 +127,15 @@ macro "rw_and_iff_list" : tactic =>
         try conv => (arg 3; fail_if_success {guard_target = _ && _}; rw [←Bool.and_true (acc _), Bool.and_comm])
         try conv => (arg 2; fail_if_success {guard_target = _ && _}; rw [←Bool.and_true (acc _), Bool.and_comm]))
 
+macro "rw_and_iff_tree" : tactic =>
+  `(tactic| conv =>
+        pattern fun _ => _
+        intro accL _ accR _
+        /- TODO: this is overly specific, we don't want to limit this to cases where the goal looks like (accL _ && accR _)
+           How do we reference the current goal and pass that, whatever it is, to ←Bool.and_true? -/
+        try conv => (arg 3; fail_if_success {guard_target = _ && _ && _}; rw [←Bool.and_true (accL _ && accR _), Bool.and_comm]; try rw [←Bool.and_assoc])
+        try conv => (arg 2; fail_if_success {guard_target = _ && _ && __}; rw [←Bool.and_true (accL _ && accR _), Bool.and_comm]; try rw [←Bool.and_assoc]))
+
 end Merges
 
 section Coercions
@@ -187,7 +196,7 @@ macro "tree_convert_to_accuM" : tactic =>
       | rw [← Tree.fold_accu_Option_function]; (try library_search); done
       | rw [← Tree.fold_accu_Option_function_true]; (try intros; simp_bexp; library_search); done
       | rw [← Tree.fold_accu_Option_basic]; (try library_search); done
-      | rw [← Tree.fold_accu_cond, Option.some.injEq]; (try aesop); done))
+      | rw_and_iff_tree; rw [← Tree.fold_accu_cond, Option.some.injEq]; (try aesop); done))
 
 macro "stack_convert_to_accuM" : tactic =>
   `(tactic|
