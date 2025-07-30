@@ -9,6 +9,9 @@ inductive Color where
   | black
 deriving DecidableEq
 
+instance customName : LawfulBEq Color where
+  eq_of_beq := by aesop
+
 end TypeDef
 
 namespace Gen

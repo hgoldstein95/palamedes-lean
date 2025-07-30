@@ -118,6 +118,15 @@ macro "rw_term_merge" : tactic =>
      rw [← Term.merge_accuM]
      apply and_congr))
 
+macro "rw_and_iff_list" : tactic =>
+  `(tactic| conv =>
+        pattern fun _ => _
+        intro _ acc _
+        /- TODO: this is overly specific, we don't want to limit this to cases where the goal looks like (acc _)
+           How do we reference the current goal and pass that, whatever it is, to ←Bool.and_true? -/
+        try conv => (arg 3; fail_if_success {guard_target = _ && _}; rw [←Bool.and_true (acc _), Bool.and_comm])
+        try conv => (arg 2; fail_if_success {guard_target = _ && _}; rw [←Bool.and_true (acc _), Bool.and_comm]))
+
 end Merges
 
 section Coercions
@@ -169,7 +178,7 @@ macro "list_convert_to_accuM" : tactic =>
       | rw [← List.fold_accu_Option_function]; (try library_search); done
       | rw [← List.fold_accu_Option_function_true] <;> simp_bexp <;> (try library_search); done
       | rw [← List.fold_accu_Option_basic]; done
-      | rw [← List.fold_accu_cond]; rw [Option.some.injEq]; (try aesop); done))
+      | rw_and_iff_list; rw [← List.fold_accu_cond, Option.some.injEq]; (try aesop); done))
 
 macro "tree_convert_to_accuM" : tactic =>
   `(tactic|
@@ -178,7 +187,7 @@ macro "tree_convert_to_accuM" : tactic =>
       | rw [← Tree.fold_accu_Option_function]; (try library_search); done
       | rw [← Tree.fold_accu_Option_function_true]; (try intros; simp_bexp; library_search); done
       | rw [← Tree.fold_accu_Option_basic]; (try library_search); done
-      | rw [← Tree.fold_accu_cond]; rw [Option.some.injEq]; (try aesop); done))
+      | rw [← Tree.fold_accu_cond, Option.some.injEq]; (try aesop); done))
 
 macro "stack_convert_to_accuM" : tactic =>
   `(tactic|

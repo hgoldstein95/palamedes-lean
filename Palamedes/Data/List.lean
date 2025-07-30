@@ -313,7 +313,7 @@ theorem List.fold_accu_cond
   {xs : List α}
   {cond_guard : α -> σ -> Bool} :
   some (List.fold
-    (fun x acc s => if cond_guard x s then
+    (fun x acc s => if cond_guard x s = true then
                       cond_true s && acc (st_true x s) else
                       cond_false s && acc (st_false x s))
     (fun s => init_cond s)
