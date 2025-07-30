@@ -31,9 +31,9 @@ Equivalent to
 def bhFoldList (xs : List Color) (height : Nat) : Bool :=
   List.fold
     (fun c acc h =>
-      if (fun c => c == .red) c = true
-        then (fun _ => true) h && acc ((fun _ h => h) c h)
-        else (fun h => h > 0) h && acc ((fun _ h => h - 1) c h))
+      if (c == .red) = true
+        then true && acc h
+        else h > 0 && acc (h - 1))
     (fun h => h == 1)
     xs
     height
