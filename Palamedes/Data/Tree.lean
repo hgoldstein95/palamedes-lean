@@ -301,58 +301,6 @@ theorem bind_false (b : Bool) :
   (some b).bind (fun _ => some false) = some false := by
   aesop
 
-/- theorem Tree.fold_accu_cond_bool {α β : Type} {t : Tree (α × β)} [BEq α] (flag : α) b :
-  some (Tree.fold
-    (fun accL c accR s =>
-      if c.fst == flag then !s && accL true && accR true else accL false && accR false)
-    (fun _ => true)
-    t
-    b) =
-  Tree.accuM (fun (x, _) _ => (x == flag, x == flag))
-              (fun accL (x, _) accR s =>
-                if x == flag then (return !s && accL && accR) else return accL && accR)
-              (fun _ => true)
-              t
-              b := by
-  induction t generalizing b <;> simp
-  case node l v r ihl ihr =>
-    cases (v.fst == flag) <;> simp
-    . specialize ihl false
-      specialize ihr false
-      simp_all
-      rw [←ihl, ←ihr]
-      simp
-    . specialize ihl true
-      specialize ihr true
-      simp_all
-      cases !b <;> rw [← ihl, ← ihr] <;> simp
-
-theorem Tree.fold_accu_cond_nat {α β : Type} [BEq α] {t : Tree (α × β)} flag i base_i :
-  some (Tree.fold
-    (fun accL c accR i =>
-      if c.fst == flag then accL i && accR i else i > 0 && accL (i - 1) && accR (i - 1))
-    (fun i => i == base_i)
-    t
-    i) =
-  Tree.accuM (fun x i => if x.fst == flag then (i, i) else (i - 1, i - 1))
-            (fun accL x accR i =>
-              if x.fst == flag then (return accL && accR) else return i > 0 && accL && accR)
-            (fun i => i == base_i)
-            t
-            i := by
-    induction t generalizing i <;> simp
-    case node l v r ihl ihr =>
-      cases (v.fst == flag) <;> simp
-      . specialize ihl (i - 1)
-        specialize ihr (i - 1)
-        simp_all
-        rw [←ihl, ←ihr]
-        simp
-      . specialize ihl i
-        specialize ihr i
-        simp_all
-        cases (decide (0 < i)) <;> rw [← ihl, ← ihr] <;> simp -/
-
 theorem Tree.fold_accu_cond
   {α σ : Type}
   {i : σ}

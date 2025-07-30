@@ -9,7 +9,8 @@ namespace RBT
 def rrAux : Tree (Color × α) → Bool → Bool := λ t isRedChild =>
  match t with
  | .leaf => true
- | .node l c r => if c.fst == .red then !isRedChild && rrAux l true && rrAux r true else rrAux l false && rrAux r false
+ | .node l (.red, _) r => !isRedChild && rrAux l true && rrAux r true
+ | .node l (.black, _) r => rrAux l false && rrAux r false
 
 @[simp]
 def rr : Tree (Color × α) → Bool := λ t => rrAux t false
@@ -18,23 +19,22 @@ def rr : Tree (Color × α) → Bool := λ t => rrAux t false
 def bh : Tree (Color × α) → Nat → Bool := λ t height =>
  match t with
  | .leaf => height == 1
- | .node l c r => if c.fst == .red then bh l height && bh r height else height > 0 && bh l (height - 1) && bh r (height - 1)
+ | .node l (.red, _) r => bh l height && bh r height
+ | .node l (.black, _) r =>
+    height > 0 &&
+    bh l (height - 1) &&
+    bh r (height - 1)
 
 @[simp]
 def isBST : Tree (α × Nat) → (Nat × Nat) → Bool := λ t ⟨lo, hi⟩ =>
   match t with
   | .leaf => true
-  | .node l (_, x) r => (lo <= x && x <= hi) && isBST l ⟨lo, x - 1⟩ && isBST r ⟨x + 1, hi⟩
+  | .node l (_, x) r =>
+    (lo <= x && x <= hi) &&
+    isBST l ⟨lo, x - 1⟩ &&
+    isBST r ⟨x + 1, hi⟩
 
 set_option palamedes.debug true
-set_option maxHeartbeats 1000000
-set_option maxRecDepth 1000
-
-def genRR : Gen (Tree (Color × Nat)) := by
-  generator_search (fun t => rr t = true)
-
-def genBH (height : Nat) : Gen (Tree (Color × Nat)) := by
-  generator_search (fun t => bh t height = true)
 
 def genRBT (height lo hi : Nat) : Gen (Tree (Color × Nat)) := by
   -- generator_search (fun t => rr t = true ∧ bh t height = true ∧ isBST t (lo, hi) = true)

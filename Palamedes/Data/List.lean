@@ -264,47 +264,6 @@ theorem bind_false (b : Bool) :
   (some b).bind (fun _ => some false) = some false := by
   aesop
 
-/- theorem List.fold_accu_cond_bool {α : Type} {xs : List α} [BEq α] (flag : α) b :
-  some (List.fold
-    (fun c acc s =>
-      if c == flag then !s && acc true else acc false)
-    (fun _ => true)
-    xs
-    b) =
-  List.accuM (fun x _ => x == flag)
-              (fun x acc s =>
-                if x == flag then (return !s && acc) else return acc)
-              (fun _ => true)
-              xs
-              b := by
-  induction xs generalizing b <;> simp
-  case cons head tail ih =>
-    cases (head == flag) <;> simp
-    . apply ih
-    . specialize ih true
-      cases b <;> simp_all
-      rw [← ih, bind_false]
-
-theorem List.fold_accu_cond_nat {α : Type} [BEq α] {xs : List α} flag i base_i :
-  some (List.fold
-    (fun c acc i => if c == flag then acc i else i > 0 && acc (i - 1))
-    (fun i => i == base_i)
-    xs
-    i) =
-  List.accuM (fun x i => if x == flag then i else (i - 1))
-            (fun x acc i =>
-              if x == flag then (return acc) else return i > 0 && acc)
-            (fun i => i == base_i)
-            xs
-            i := by
-    induction xs generalizing i <;> simp
-    case cons head tail ih =>
-      cases (head == flag) <;> simp
-      specialize ih (i - 1)
-      . cases (decide (0 < i)) <;> simp_all
-        rw [← ih, bind_false]
-      . apply ih -/
-
 theorem List.fold_accu_cond
   {α σ : Type}
   {i : σ}

@@ -151,8 +151,8 @@ macro "list_coerce_fold" : tactic =>
 macro "tree_coerce_fold" : tactic =>
   `(tactic|
     (first
-      | goal_is_not_fold_tree; conv => rhs; lhs; apply (Tree.coerce_to_fold (by aesop) (by intros; simp_all; rflm))
-      | goal_is_not_fold_tree; conv => rhs; lhs; apply congrFun; apply (Tree.coerce_to_fold (by aesop) (by intros; simp_all; rflm))
+      | goal_is_not_fold_tree; conv => rhs; lhs; apply (Tree.coerce_to_fold (by rflm) (by intros; simp_all [-beq_iff_eq]; rflm))
+      | goal_is_not_fold_tree; conv => rhs; lhs; apply congrFun; apply (Tree.coerce_to_fold (by rflm) (by intros; simp_all [-beq_iff_eq]; rflm))
       | skip))
 
 macro "stack_coerce_fold" : tactic =>
