@@ -20,30 +20,21 @@ def bhFold (t : Tree (Color × α)) (height : Nat) : Bool :=
     t
     height
 
+set_option palamedes.debug true
+set_option maxHeartbeats 2000000
+set_option maxRecDepth 800
+set_option diagnostics true
+
 @[simp]
-def isBSTFold (lo hi : Nat) (t : Tree (Color × Nat)) : Bool :=
+def isBSTFold (lo hi : Nat) (t : Tree (α × Nat)) : Bool :=
   Tree.fold
         (fun bl x br s =>
           match s with
           | (sl, sr) => (decide (sl ≤ x.snd) && decide (x.snd ≤ sr)) && bl (sl, x.snd - 1) && br (x.snd + 1, sr))
         (fun _ => true) t (lo, hi)
 
-set_option palamedes.debug true
-set_option maxHeartbeats 1000000
-set_option maxRecDepth 800
-
 def genBSTFold (lo hi : Nat) : Gen (Tree (Color × Nat)) := by
-  -- generator_search (fun t => isBSTFold lo hi t = true)
-  let cg : CorrectGen (fun t => isBSTFold lo hi t = true) := by
-    cgenerator_search
-  let g : Gen (Tree (Color × ℕ)) := by
-    optimize_gen cg.val
-  let _ : support cg.val = support g := by
-    optimality
-    simp
-  let _ : Gen.total g := by
-    totality
-  exact g
+  generator_search (fun t => isBSTFold lo hi t = true) allow_partial
 
 def genRRFold : Gen (Tree (Color × Nat)) := by
   generator_search (fun t => rrFold t = true)
@@ -53,9 +44,9 @@ def genBHFold (height : Nat) : Gen (Tree (Color × Nat)) := by
 
 @[simp]
 def isRBTFold (lo hi height : Nat) (t : Tree (Color × Nat)) : Bool :=
-  rrFold t && bhFold t height && isBSTFold lo hi t
+  isBSTFold lo hi t && rrFold t && bhFold t height
 
-def genRBTFold (height : Nat) : Gen (Tree (Color × Nat)) := by
-  generator_search (fun t => isRBTFold lo hi height t = true)
+def genRBTFold (lo hi height : Nat) : Gen (Tree (Color × Nat)) := by
+  generator_search (fun t => isRBTFold lo hi height t = true) allow_partial
 
 end RBTFold

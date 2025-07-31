@@ -53,3 +53,7 @@ theorem support_if_congr
     (hy : ∀ {h}, support (y h) = support (y' h)) :
     support (if h : P then x h else y h) = support (if h : P then x' h else y' h) := by
   aesop
+
+theorem support_assume_congr :
+    (assume b f).support = (f h).support := by
+  aesop

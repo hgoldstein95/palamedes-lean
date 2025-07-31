@@ -37,6 +37,9 @@ def genRR : Gen (Tree (Color × Nat)) := by
 def genBH (height : Nat) : Gen (Tree (Color × Nat)) := by
   generator_search (fun t => bh t height = true)
 
+def genIsBST (lo hi : Nat) : Gen (Tree (Color × Nat)) := by
+  generator_search (fun t => isBST t (lo, hi) = true) allow_partial
+
 def genRBT (height lo hi : Nat) : Gen (Tree (Color × Nat)) := by
   -- generator_search (fun t => rr t = true ∧ bh t height = true ∧ isBST t (lo, hi) = true)
   -- let cg : CorrectGen (fun t => r  br t = true ∧ bh t height = true ∧ isBST t (lo, hi) = true) := by

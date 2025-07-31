@@ -9,14 +9,17 @@ inductive Color where
   | black
 deriving DecidableEq
 
-instance customName : LawfulBEq Color where
-  eq_of_beq := by aesop
+@[simp]
+theorem Color.exists_color {P : Color → Prop} : (∃ c, P c) ↔ P .red ∨ P .black := by
+  apply Iff.intro <;> intro h
+  . let ⟨c, h⟩ := h
+    cases c <;> aesop
+  . cases h <;> aesop
 
 end TypeDef
 
 namespace Gen
 
-@[irreducible]
 def arbColor : Gen Color := pick (pure .red) (pure .black)
 
 @[simp]
@@ -79,6 +82,10 @@ theorem total_red : total (red : Gen Color) := by
 @[simp, aesop safe (rule_sets := [totality])]
 theorem total_black : total (black : Gen Color) := by
   simp [black]
+
+@[simp, aesop safe (rule_sets := [totality])]
+theorem total_color_rec (hf : total gr) (ht : total gb) : total (Color.rec gr gb c) := by
+  cases c <;> simp_all
 
 end Total
 
