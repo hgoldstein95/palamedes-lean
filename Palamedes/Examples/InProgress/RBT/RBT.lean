@@ -30,6 +30,7 @@ set_option palamedes.debug true
 set_option maxHeartbeats 1000000
 set_option maxRecDepth 1000
 
+
 def genRR : Gen (Tree (Color × Nat)) := by
   generator_search (fun t => rr t = true)
 

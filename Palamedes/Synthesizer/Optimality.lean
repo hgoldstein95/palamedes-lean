@@ -23,7 +23,9 @@ macro "optimality" : tactic =>
         | apply Stack.support_unfold_congr
         | apply Ty.support_unfold_congr
         | apply Gen.support_caseTy_congr
+        | apply Tuple.support_unfold_congr
         | apply support_arbLabel
+        | apply support_arbColor
         | apply support_bind_congr
         | apply support_pick_congr
         | apply support_if_congr

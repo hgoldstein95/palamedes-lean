@@ -40,6 +40,7 @@ def genBSTFold (lo hi : Nat) : Gen (Tree (Color × Nat)) := by
     optimize_gen cg.val
   let _ : support cg.val = support g := by
     optimality
+    simp
   let _ : Gen.total g := by
     totality
   exact g

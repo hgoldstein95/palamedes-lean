@@ -121,20 +121,20 @@ macro "rw_term_merge" : tactic =>
 macro "rw_and_iff_list" : tactic =>
   `(tactic| conv =>
         pattern fun _ => _
-        intro _ acc _
-        /- TODO: this is overly specific, we don't want to limit this to cases where the goal looks like (acc _)
-           How do we reference the current goal and pass that, whatever it is, to ←Bool.and_true? -/
-        try conv => (arg 3; fail_if_success {guard_target = _ && _}; rw [←Bool.and_true (acc _), Bool.and_comm])
-        try conv => (arg 2; fail_if_success {guard_target = _ && _}; rw [←Bool.and_true (acc _), Bool.and_comm]))
+        repeat intro
+        try conv =>
+          arg 2; fail_if_success {guard_target = _ && _}; refine (Bool.and_true ..).symm.trans (Bool.and_comm ..)
+        try conv =>
+          arg 3; fail_if_success {guard_target = _ && _}; refine (Bool.and_true ..).symm.trans (Bool.and_comm ..))
 
 macro "rw_and_iff_tree" : tactic =>
   `(tactic| conv =>
         pattern fun _ => _
         intro accL _ accR _
-        /- TODO: this is overly specific, we don't want to limit this to cases where the goal looks like (accL _ && accR _)
-           How do we reference the current goal and pass that, whatever it is, to ←Bool.and_true? -/
-        try conv => (arg 3; fail_if_success {guard_target = _ && _ && _}; rw [←Bool.and_true (accL _ && accR _), Bool.and_comm]; try rw [←Bool.and_assoc])
-        try conv => (arg 2; fail_if_success {guard_target = _ && _ && __}; rw [←Bool.and_true (accL _ && accR _), Bool.and_comm]; try rw [←Bool.and_assoc]))
+        try conv =>
+          arg 2; fail_if_success {guard_target = _ && _ && _}; apply (Bool.and_true ..).symm.trans ((Bool.and_comm ..).symm.trans (Bool.and_assoc ..).symm)
+        try conv =>
+          arg 3; fail_if_success {guard_target = _ && _ && _}; apply (Bool.and_true ..).symm.trans ((Bool.and_comm ..).symm.trans (Bool.and_assoc ..).symm))
 
 end Merges
 
