@@ -16,6 +16,13 @@ theorem Color.exists_color {P : Color → Prop} : (∃ c, P c) ↔ P .red ∨ P 
     cases c <;> aesop
   . cases h <;> aesop
 
+def Color.toString : Color → String
+  | .red => "red"
+  | .black => "black"
+
+instance : ToString Color where
+  toString := Color.toString
+
 end TypeDef
 
 namespace Gen

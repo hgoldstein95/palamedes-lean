@@ -32,7 +32,16 @@ set_option maxRecDepth 1000
 
 
 def genRR : Gen (Tree (Color × Nat)) := by
-  generator_search (fun t => rr t = true)
+  -- generator_search (fun t => rr t = true)
+  let cg : CorrectGen (fun t : Tree (Color × Nat) => rr t = true) := by
+    cgenerator_search?
+  let g : Gen (Tree (Color × ℕ)) := by
+    optimize_gen cg.val
+  let _ : support cg.val = support g := by
+    optimality
+  let _ : Gen.total g := by
+    totality
+  exact g?
 
 def genBH (height : Nat) : Gen (Tree (Color × Nat)) := by
   generator_search (fun t => bh t height = true)

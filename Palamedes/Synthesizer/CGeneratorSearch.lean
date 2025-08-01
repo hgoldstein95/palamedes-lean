@@ -315,6 +315,7 @@ add_aesop_rules unsafe (rule_sets := [synthesis]) [
   (by goal_is_eq_or_and; apply convert (by norm_for_Term_unfold) (Term.s_unfold _)),
   (by apply s_arbUnit),
   (by apply s_arbBool),
+  (by apply s_arbTuple),
   (by apply s_arbColor),
   (by apply s_black),
   (by apply s_red),
@@ -348,12 +349,12 @@ macro "cgenerator_search" : tactic =>
   `(tactic|
     aesop
       (rule_sets := [-default, -builtin, synthesis])
-      (config := {enableSimp := false, maxRuleApplications := 1000}))
+      (config := {enableSimp := false, maxRuleApplications := 2000}))
 
 macro "cgenerator_search?" : tactic =>
   `(tactic|
     aesop?
       (rule_sets := [-default, -builtin, synthesis])
-      (config := {enableSimp := false, maxRuleApplications := 1000}))
+      (config := {enableSimp := false, maxRuleApplications := 2000}))
 
 end API
