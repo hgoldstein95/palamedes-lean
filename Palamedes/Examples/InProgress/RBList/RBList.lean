@@ -17,7 +17,7 @@ def rrList : List Color → Bool := λ xs => rrAuxList xs false
 @[simp]
 def bhList : List Color → Nat → Bool := λ xs height =>
  match xs with
- | .nil => height == 1
+ | .nil => height == 0
  | .cons h tl => if h == .red then bhList tl height else height > 0 && bhList tl (height - 1)
 
 open Gen CorrectGen

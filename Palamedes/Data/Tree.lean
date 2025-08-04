@@ -308,33 +308,23 @@ theorem Tree.fold_accu_cond
   {cond_true cond_false init_cond : σ -> Bool}
   {t : Tree α}
   {cond_guard : α -> σ -> Bool} :
-  some (Tree.fold
+  Tree.fold
     (fun accL x accR s => if cond_guard x s then
                       cond_true s && accL (st_true x s) && accR (st_true x s) else
                       cond_false s && accL (st_false x s) && accR (st_false x s))
     (fun s => init_cond s)
     t
-    i) =
+    i = true ↔
   Tree.accuM
     (fun x s => if cond_guard x s then (st_true x s, st_true x s) else (st_false x s, st_false x s))
     (fun accL x accR s =>
-      if cond_guard x s then return cond_true s && accL && accR else return cond_false s && accL && accR)
-    (fun s => init_cond s)
+      if cond_guard x s then guard $ cond_true s else guard $ cond_false s)
+    (fun s => guard $ init_cond s)
     t
-    i := by
-    induction t generalizing i <;> simp
+    i = some () := by
+    induction t generalizing i <;> simp_all [Tree.fold, Tree.accuM, Option.bind_eq_some_iff, guard]
     case node l v r ihl ihr =>
-      cases (cond_guard v i) <;> simp
-      . specialize @ihl (st_false v i)
-        specialize @ihr (st_false v i)
-        simp_all
-        rw [←ihl, ←ihr]
-        simp
-      . specialize @ihl (st_true v i)
-        specialize @ihr (st_true v i)
-        simp_all
-        rw [← ihl, ← ihr]
-        simp
+      cases (cond_guard v i) <;> aesop
 
 end FoldConversions
 

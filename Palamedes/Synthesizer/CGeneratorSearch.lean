@@ -187,7 +187,7 @@ macro "list_convert_to_accuM" : tactic =>
       | rw [← List.fold_accu_Option_function]; (try library_search); done
       | rw [← List.fold_accu_Option_function_true] <;> simp_bexp <;> (try library_search); done
       | rw [← List.fold_accu_Option_basic]; done
-      | rw_and_iff_list; rw [← List.fold_accu_cond, Option.some.injEq]; (try aesop); done))
+      | rw_and_iff_list; rw [← List.fold_accu_cond]; (try aesop); done))
 
 macro "tree_convert_to_accuM" : tactic =>
   `(tactic|
@@ -196,7 +196,7 @@ macro "tree_convert_to_accuM" : tactic =>
       | rw [← Tree.fold_accu_Option_function]; (try library_search); done
       | rw [← Tree.fold_accu_Option_function_true]; (try intros; simp_bexp; library_search); done
       | rw [← Tree.fold_accu_Option_basic]; (try library_search); done
-      | rw_and_iff_tree; rw [← Tree.fold_accu_cond, Option.some.injEq]; (try aesop); done))
+      | rw_and_iff_tree; rw [← Tree.fold_accu_cond]; (try aesop); done))
 
 macro "stack_convert_to_accuM" : tactic =>
   `(tactic|

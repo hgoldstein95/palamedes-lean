@@ -14,7 +14,7 @@ def rrFoldList (xs : List Color) : Bool :=
 def bhFoldList (xs : List Color) (height : Nat) : Bool :=
   List.fold
     (fun c acc h => if c == .red then acc h else h > 0 && acc (h - 1))
-    (fun h => h == 1)
+    (fun h => h == 0)
     xs
     height
 
