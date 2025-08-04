@@ -70,14 +70,31 @@ def optimizeBind? (x f : Expr) : MetaM (Option Expr) :=
 
 def optimizePick? (x y : Expr) : MetaM (Option Expr) :=
   match_expr x with
-  -- assume_pick : pick (assume b f) y ~~> if h : b then pick (f h) y else y
-  | assume _ b f => do
-    let c ← mkEq b (.const ``true [])
-    let fPos ← withLocalDecl `h .default c fun h => do
-      mkLambdaFVars #[h] (← mkAppM ``pick #[.app f h, y])
-    let fNeg ← withLocalDecl `h .default (.app (.const ``Not []) c) fun h =>
-      mkLambdaFVars #[h] y
-    return (some (← mkAppM ``dite #[c, fPos, fNeg]))
+  | assume _ b f =>
+    match_expr y with
+      -- assume_pick : pick (assume b f) (assume b g) ~~> assume b (pick f g)
+    | assume _ b' g =>
+      if b == b' then do
+        let c ← mkEq b (.const ``true [])
+        let f' ← withLocalDecl `h .default c fun h => do
+          mkLambdaFVars #[h] (← mkAppM ``pick #[.app f h, .app g h])
+        return (some (← mkAppM ``assume #[b, f']))
+      -- assume_pick : pick (assume b f) y ~~> if h : b then pick (f h) y else y
+      else do
+        let c ← mkEq b (.const ``true [])
+        let fPos ← withLocalDecl `h .default c fun h => do
+          mkLambdaFVars #[h] (← mkAppM ``pick #[.app f h, y])
+        let fNeg ← withLocalDecl `h .default (.app (.const ``Not []) c) fun h =>
+          mkLambdaFVars #[h] y
+        return (some (← mkAppM ``dite #[c, fPos, fNeg]))
+    -- assume_pick : pick (assume b f) y ~~> if h : b then pick (f h) y else y
+    | _ => do
+      let c ← mkEq b (.const ``true [])
+      let fPos ← withLocalDecl `h .default c fun h => do
+        mkLambdaFVars #[h] (← mkAppM ``pick #[.app f h, y])
+      let fNeg ← withLocalDecl `h .default (.app (.const ``Not []) c) fun h =>
+        mkLambdaFVars #[h] y
+      return (some (← mkAppM ``dite #[c, fPos, fNeg]))
   | _ =>
     match_expr y with
     -- pick_assume : pick x (assume b f) ~~> if h : b then pick x (f h) else x

@@ -34,42 +34,7 @@ set_option maxHeartbeats 2000000
 set_option maxRecDepth 2000
 
 def genBSTFold (lo hi : Nat) : Gen (Tree (Color × Nat)) := by
-  -- generator_search (fun t => isBSTFold t (lo, hi) = true)
-  let cg : CorrectGen (fun t : Tree (Color × Nat) => isBSTFold t (lo, hi) = true) := by
-    (goal_is_eq_or_and; apply convert (by norm_for_Tree_unfold) (Tree.s_unfold _))
-    ((repeat apply duncurry); intro)
-    ((repeat apply duncurry); intro)
-    ((repeat apply duncurry); intro)
-    (apply convert (by norm_for_pick) (s_pick _ _))
-    · (apply convert (by norm_for_pure) (s_pure _))
-    · (apply convert (by norm_for_pick) (s_pick _ _))
-      · (apply convert (by norm_for_bind) (s_bind _ _))
-        · (apply s_between_partial)
-        · ((repeat apply duncurry); intro)
-          (apply convert (by norm_for_bind) (s_bind _ _))
-          · (apply s_arbUnit)
-          · ((repeat apply duncurry); intro)
-            (apply convert (by norm_for_bind) (s_bind _ _))
-            · (apply s_arbUnit)
-            · ((repeat apply duncurry); intro)
-              (apply convert (by norm_for_pure) (s_pure _))
-      · (apply convert (by norm_for_bind) (s_bind _ _))
-        · (apply s_between_partial)
-        · ((repeat apply duncurry); intro)
-          (apply convert (by norm_for_bind) (s_bind _ _))
-          · (apply s_arbUnit)
-          · ((repeat apply duncurry); intro)
-            (apply convert (by norm_for_bind) (s_bind _ _))
-            · (apply s_arbUnit)
-            · ((repeat apply duncurry); intro)
-              (apply convert (by norm_for_pure) (s_pure _))
-  let g : Gen (Tree (Color × ℕ)) := by
-    optimize_gen cg.val
-  let _ : support cg.val = support g := by
-    optimality
-  let _ : Gen.total g := by
-    totality
-  exact g
+  generator_search (fun t => isBSTFold t (lo, hi) = true)
 
 def genRRFold : Gen (Tree (Color × Nat)) := by
   generator_search (fun t => rrFold t = true)
@@ -84,24 +49,23 @@ def isRRBHFold (height : Nat) (t : Tree (Color × Nat)) : Bool :=
 def genRRBHFold (height : Nat) : Gen (Tree (Color × Nat)) := by
   generator_search (fun t => isRRBHFold height t = true)
 
-/-
 @[simp]
 def isRBTFold (lo hi height : Nat) (t : Tree (Color × Nat)) : Bool :=
   isBSTFold t (lo, hi) = true ∧ bhFold t height = true ∧ rrFold t = true
 
 def genRBTFold (lo hi height : Nat) : Gen (Tree (Color × Nat)) := by
   -- generator_search (fun t => isRBTFold lo hi height t = true) allow_partial
-  let cg : CorrectGen (fun t => isRBTFold lo hi height t = true) := by
+  let cg : CorrectGen (fun t : Tree (Color × Nat) => isRBTFold lo hi height t = true) := by
     goal_is_eq_or_and; apply convert (by norm_for_Tree_unfold) (Tree.s_unfold _)
-    repeat ((repeat apply duncurry); intro)
-    (goal_is_or; clear_unused_assumptions; apply s_caseNat (by nth_assumption 0) (by intros; rflm))
-    .
+    repeat (repeat apply duncurry); intro
+    /- cgenerator_search -/
   let g : Gen (Tree (Color × ℕ)) := by
     optimize_gen cg.val
   let _ : support cg.val = support g := by
     optimality
   let _ : Gen.total g := by
     totality
-  exact g -/
+  exact g
 
 end RBTFold
+-/
