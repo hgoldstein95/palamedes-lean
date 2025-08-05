@@ -140,3 +140,48 @@ def expandGeneratorSearch? : Tactic := fun stx =>
   | `(tactic| generator_search? $t) =>
     generatorSearchElab stx t true true
   | _ => throwError "invalid syntax"
+
+
+
+section step
+
+def applyTacticOpt (m : MVarId) (tactic : TSyntax `tactic) : TacticM (Option (List MVarId)) := do
+  try
+    let unsolved ← evalTacticAt tactic m
+    pure (some unsolved)
+  catch _ => pure none
+
+def step
+    (stx : Syntax)
+    (tactics : List (TSyntax `tactic))
+    :
+    TacticM Unit := do
+  let g ← getMainGoal
+
+  let rs ← List.filterMapM (fun t => do
+    let unsolved ← applyTacticOpt g t
+    match unsolved with
+    | some gs => pure (some (t, gs))
+    | none => pure none) tactics
+  if (rs.length == 0)
+    then
+      throwError m!"All tactics failed."
+    else
+      match rs.find? (fun (_, unsolved) => List.length unsolved == 0) with
+      | some (t, _) =>
+        TryThis.addSuggestion stx s!"{t}"
+      | none =>
+        TryThis.addSuggestion stx (header := "Try one of: ") s!"{List.map Prod.fst rs}"
+
+syntax (name := step_proof) "step" : tactic
+
+@[tactic step_proof]
+def expandStep : Tactic := fun stx => do
+  step stx [← `(tactic|simp), ← `(tactic|aesop)]
+
+example : forall x, x + 0 = x := by step
+
+-- example : exists x, x > 0 := by
+--   step
+
+end step
