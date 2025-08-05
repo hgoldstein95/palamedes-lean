@@ -30,8 +30,8 @@ def isBSTFold (t : Tree (α × Nat)) : Nat × Nat -> Bool := fun (lo, hi) =>
         (fun _ => true) t (lo, hi)
 
 set_option palamedes.debug true
-set_option maxHeartbeats 1000000
-set_option maxRecDepth 1000
+set_option maxHeartbeats 2000000
+set_option maxRecDepth 2000
 
 /- def genBSTFold (lo hi : Nat) : Gen (Tree (Color × Nat)) := by
   generator_search (fun t => isBSTFold t (lo, hi) = true)
