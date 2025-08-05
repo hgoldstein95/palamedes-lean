@@ -32,4 +32,5 @@ macro "optimality" : tactic =>
         | rw [← support_pick_bind]
         | rw [← support_if_bind]
         | split
-        | simp_all)
+        | simp_all
+        | aesop)

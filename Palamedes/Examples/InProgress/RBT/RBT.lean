@@ -18,7 +18,7 @@ def rr : Tree (Color × α) → Bool := λ t => rrAux t false
 def bh : Tree (Color × α) → Nat → Bool := λ t height =>
  match t with
  | .leaf => height == 1
- | .node l c r => if c.fst == .red then bh l height && bh r height else height > 0 && bh l (height - 1) && bh r (height - 1)
+ | .node l c r => if c.fst == .red then bh l height && bh r height else height >= 0 && bh l (height - 1) && bh r (height - 1)
 
 @[simp]
 def isBST : Tree (α × Nat) → (Nat × Nat) → Bool := λ t ⟨lo, hi⟩ =>
@@ -27,26 +27,12 @@ def isBST : Tree (α × Nat) → (Nat × Nat) → Bool := λ t ⟨lo, hi⟩ =>
   | .node l (_, x) r => (lo <= x && x <= hi) && isBST l ⟨lo, x - 1⟩ && isBST r ⟨x + 1, hi⟩
 
 set_option palamedes.debug true
-set_option maxHeartbeats 1000000
-set_option maxRecDepth 1000
+set_option maxHeartbeats 2000000
+set_option maxRecDepth 2000
 
 
 def genRR : Gen (Tree (Color × Nat)) := by
-  -- generator_search (fun t => rr t = true)
-  let cg : CorrectGen (fun t : Tree (Color × Nat) => rr t = true) := by
-   (goal_is_eq_or_and; apply convert (by
-    funext
-    simp_predicate
-    tree_coerce_fold
-   ) (Tree.s_unfold _))
-    cgenerator_search?
-  let g : Gen (Tree (Color × ℕ)) := by
-    optimize_gen cg.val
-  let _ : support cg.val = support g := by
-    optimality
-  let _ : Gen.total g := by
-    totality
-  exact g?
+  generator_search (fun t => rr t = true)
 
 def genBH (height : Nat) : Gen (Tree (Color × Nat)) := by
   generator_search (fun t => bh t height = true)

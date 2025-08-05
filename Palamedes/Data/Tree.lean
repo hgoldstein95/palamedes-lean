@@ -317,7 +317,7 @@ theorem Tree.fold_accu_cond
     i = true ↔
   Tree.accuM
     (fun x s => if cond_guard x s then (st_true x s, st_true x s) else (st_false x s, st_false x s))
-    (fun accL x accR s =>
+    (fun _ x _ s =>
       if cond_guard x s then guard $ cond_true s else guard $ cond_false s)
     (fun s => guard $ init_cond s)
     t

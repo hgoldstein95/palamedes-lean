@@ -30,10 +30,10 @@ def isBSTFold (t : Tree (α × Nat)) : Nat × Nat -> Bool := fun (lo, hi) =>
         (fun _ => true) t (lo, hi)
 
 set_option palamedes.debug true
-set_option maxHeartbeats 2000000
-set_option maxRecDepth 2000
+set_option maxHeartbeats 1000000
+set_option maxRecDepth 1000
 
-def genBSTFold (lo hi : Nat) : Gen (Tree (Color × Nat)) := by
+/- def genBSTFold (lo hi : Nat) : Gen (Tree (Color × Nat)) := by
   generator_search (fun t => isBSTFold t (lo, hi) = true)
 
 def genRRFold : Gen (Tree (Color × Nat)) := by
@@ -47,9 +47,43 @@ def isRRBHFold (height : Nat) (t : Tree (Color × Nat)) : Bool :=
   bhFold t height = true ∧ rrFold t = true
 
 def genRRBHFold (height : Nat) : Gen (Tree (Color × Nat)) := by
-  generator_search (fun t => isRRBHFold height t = true)
+  generator_search (fun t => isRRBHFold height t = true) -/
 
 @[simp]
+def isRRBSTFold (lo hi : Nat) (t : Tree (Color × Nat)) : Bool :=
+  isBSTFold t (lo, hi) = true ∧ rrFold t = true
+
+def genRRBSTFold (lo hi : Nat) : Gen (Tree (Color × Nat)) := by
+  -- generator_search (fun t => isRRBSTFold lo hi t = true) allow_partial
+  let cg : CorrectGen (fun t : Tree (Color × Nat) => isRRBSTFold lo hi t = true) := by
+    aesop?
+      (rule_sets := [-default, -builtin, synthesis])
+      (config := {enableSimp := false, maxRuleApplications := 2000})
+  let g : Gen (Tree (Color × ℕ)) := by
+    optimize_gen cg.val
+  let _ : support cg.val = support g := by
+    optimality
+  /- let _ : Gen.total g := by
+    totality -/
+  exact g
+
+/- @[simp]
+def isBHBSTFold (lo hi height : Nat) (t : Tree (Color × Nat)) : Bool :=
+  isBSTFold t (lo, hi) = true ∧ bhFold t height = true
+
+def genBHBSTFold (lo hi height : Nat) : Gen (Tree (Color × Nat)) := by
+  -- generator_search (fun t => isBHBSTFold lo hi height t = true)
+  let cg : CorrectGen (fun t => isBHBSTFold lo hi height t = true) := by
+    cgenerator_search?
+  let g : Gen (Tree (Color × ℕ)) := by
+    optimize_gen cg.val
+  let _ : support cg.val = support g := by
+    optimality
+  let _ : Gen.total g := by
+    totality
+  exact g -/
+
+/- @[simp]
 def isRBTFold (lo hi height : Nat) (t : Tree (Color × Nat)) : Bool :=
   isBSTFold t (lo, hi) = true ∧ bhFold t height = true ∧ rrFold t = true
 
