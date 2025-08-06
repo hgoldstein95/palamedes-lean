@@ -30,15 +30,15 @@ def isBSTFold (t : Tree (α × Nat)) : Nat × Nat -> Bool := fun (lo, hi) =>
         (fun _ => true) t (lo, hi)
 
 set_option palamedes.debug true
-set_option maxHeartbeats 2500000
-set_option maxRecDepth 2000
+set_option maxHeartbeats 3000000
+set_option maxRecDepth 3000
 set_option diagnostics true
 set_option trace.debug true
 set_option trace.profiler true
 set_option trace.aesop.forward.debug true
 set_option trace.aesop.stats true
 
-def genBSTFold (lo hi : Nat) : Gen (Tree (Color × Nat)) := by
+/- def genBSTFold (lo hi : Nat) : Gen (Tree (Color × Nat)) := by
   generator_search (fun t => isBSTFold t (lo, hi) = true)
 
 def genRRFold : Gen (Tree (Color × Nat)) := by
@@ -66,15 +66,20 @@ def isBHBSTFold (lo hi height : Nat) (t : Tree (Color × Nat)) : Bool :=
   isBSTFold t (lo, hi) = true ∧ bhFold t height = true
 
 def genBHBSTFold (lo hi height : Nat) : Gen (Tree (Color × Nat)) := by
-  generator_search (fun t => isBHBSTFold lo hi height t = true) allow_partial
+  generator_search (fun t => isBHBSTFold lo hi height t = true) allow_partial -/
 
 @[simp]
-def isRBTFold (lo hi height : Nat) (t : Tree (Color × Nat)) : Bool :=
+def isRBTFold (height lo hi : Nat) (t : Tree (Color × Nat)) : Bool :=
   isBSTFold t (lo, hi) = true ∧ bhFold t height = true ∧ rrFold t = true
 
-def genRBTFold (lo hi height : Nat) : Gen (Tree (Color × Nat)) := by
+def genRBTFold (height lo hi : Nat) : Gen (Tree (Color × Nat)) := by
   -- generator_search (fun t => isRBTFold lo hi height t = true) allow_partial
-  let cg : CorrectGen (fun t : Tree (Color × Nat) => isRBTFold lo hi height t = true) := by
+  let cg : CorrectGen (fun t : Tree (Color × Nat) => isRBTFold height lo hi t = true) := by
+    /- normalize_and_unfold
+    repeat ((repeat apply duncurry); intro)
+    goal_is_or; clear_unused_assumptions; apply s_caseBool (by nth_assumption 0) (by intros; rflm)
+    . cgenerator_search?
+    . cgenerator_search? -/
     cgenerator_search?
   let g : Gen (Tree (Color × ℕ)) := by
     optimize_gen cg.val
