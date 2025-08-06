@@ -59,14 +59,18 @@ macro "goal_is_not_fold_term" : tactic =>
         | change _ ↔ Term.fold _ _ _ _ _ = _
         | change _ ↔ @Term.fold (_ → _ : Type) _ _ _ _ _ _ = _)))
 
+macro "goal_is_or" : tactic =>
+  `(tactic| guard_target = CorrectGen (fun _ => _ ∨ _))
+
+macro "goal_is_eq" : tactic =>
+  `(tactic| guard_target = CorrectGen (fun _ => _ = _))
+
 macro "goal_is_eq_or_and" : tactic =>
   `(tactic|
     first
-      | guard_target = CorrectGen (fun _ => _ = _)
+      | goal_is_eq
       | guard_target = CorrectGen (fun _ => _ ∧ _))
 
-macro "goal_is_or" : tactic =>
-  `(tactic| guard_target = CorrectGen (fun _ => _ ∨ _))
 
 end Guards
 
@@ -347,7 +351,7 @@ add_aesop_rules unsafe (rule_sets := [synthesis]) [
   (by apply s_lt_partial),
   (by apply s_between_partial),
   (by apply (s_between (by first | aesop | omega))),
-  (by apply convert (by norm_for_elements) (s_elements_partial _)),
+  (by goal_is_eq; apply convert (by norm_for_elements) (s_elements_partial _)),
 ]
 
 add_aesop_rules 5% (rule_sets := [synthesis]) [

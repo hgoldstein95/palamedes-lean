@@ -72,7 +72,7 @@ def genBHBSTFold (lo hi height : Nat) : Gen (Tree (Color × Nat)) := by
 def isRBTFold (lo hi height : Nat) (t : Tree (Color × Nat)) : Bool :=
   isBSTFold t (lo, hi) = true ∧ bhFold t height = true ∧ rrFold t = true
 
-/- def genRBTFold (lo hi height : Nat) : Gen (Tree (Color × Nat)) := by
+def genRBTFold (lo hi height : Nat) : Gen (Tree (Color × Nat)) := by
   -- generator_search (fun t => isRBTFold lo hi height t = true) allow_partial
   let cg : CorrectGen (fun t : Tree (Color × Nat) => isRBTFold lo hi height t = true) := by
     cgenerator_search?
@@ -82,6 +82,6 @@ def isRBTFold (lo hi height : Nat) (t : Tree (Color × Nat)) : Bool :=
     optimality
   /- let _ : Gen.total g := by
     totality -/
-  exact g -/
+  exact g
 
 end RBTFold
