@@ -72,8 +72,6 @@ end Guards
 
 section Simplifiers
 
-macro "simp_predicate" : tactic => `(tactic| try simp [guard, Option.bind_eq_some_iff, -beq_iff_eq, -Bool.true_and, *])
-
 macro "simp_bexp" : tactic => `(tactic|
   try simp only [bind, Option.bind, pure, Option.some_inj, ← Bool.eq_iff_iff])
 
@@ -84,7 +82,7 @@ section Normalizers
 macro "preprocess" : tactic =>
   `(tactic|
     (funext
-     simp_predicate))
+     try simp only [eq_iff_iff]))
 
 section Merges
 
@@ -256,9 +254,7 @@ macro "norm_for_Term_unfold" : tactic =>
 
 macro "norm_for_pure" : tactic =>
   `(tactic| (
-    funext
-    unfold_matches
-    simp_predicate
+    preprocess
     first
       | rfl
       | exact Eq.comm))
@@ -266,22 +262,19 @@ macro "norm_for_pure" : tactic =>
 macro "norm_for_pick" : tactic =>
   `(tactic| (
     funext
-    simp_predicate
-    try simp [← Decidable.or_iff_not_imp_left]
+    try simp only [eq_iff_iff, ← Decidable.or_iff_not_imp_left]
     rfl))
 
 macro "norm_for_bind" : tactic =>
   `(tactic| (
-    funext
-    simp_predicate
+    preprocess
     first
       | rfl
       | apply exists_congr; intro; rw [true_and]))
 
 macro "norm_for_bind'" : tactic =>
   `(tactic| (
-    funext
-    simp_predicate
+    preprocess
     rw [exists_comm]
     first
       | rfl
@@ -289,11 +282,44 @@ macro "norm_for_bind'" : tactic =>
 
 macro "norm_for_elements" : tactic =>
   `(tactic|
-    (funext
-     simp_predicate
+    (preprocess
+     simp [guard, Option.bind_eq_some_iff, -beq_iff_eq, -Bool.true_and, *]
      first
        | rfl
        | rw [getElem?_eq_some_iff_indexesOf_getElem?_eq_some]))
+
+macro "normalize_and_convert" : tactic =>
+   `(tactic| (
+      apply convert ?pf ?arg
+      /- simplify the predicate before attempting to normalize it.
+         this way we don't repeat simplification for each different normalization strategy -/
+      case' pf => unfold_matches; try simp [guard, Option.bind_eq_some_iff, -beq_iff_eq, -Bool.true_and, *]
+      first
+      | case' arg => apply s_pure _
+        case pf => norm_for_pure
+      | case' arg => apply s_bind _ _
+        first
+        | case pf => norm_for_bind' -- TODO Fix this
+        | case pf => norm_for_bind
+      | case' arg => apply s_pick _ _
+        case pf => norm_for_pick
+    ))
+
+macro "normalize_and_unfold" : tactic =>
+   `(tactic| (
+      goal_is_eq_or_and
+      apply convert ?pf ?arg
+      case' pf => try simp [guard, Option.bind_eq_some_iff, -beq_iff_eq, -Bool.true_and, *]
+      first
+      | case' arg => apply List.s_unfold _
+        case pf => norm_for_List_unfold
+      | case' arg => apply Tree.s_unfold _
+        case pf => norm_for_Tree_unfold
+      | case' arg => apply Stack.s_unfold _
+        case pf => norm_for_Stack_unfold
+      | case' arg => apply Term.s_unfold _
+        case pf => norm_for_Term_unfold
+    ))
 
 end Normalizers
 
@@ -301,18 +327,12 @@ section AesopRules
 
 add_aesop_rules safe (rule_sets := [synthesis]) [
   (by (repeat apply duncurry); intro),
-  (by apply convert (by norm_for_pure) (s_pure _)),
 ]
 
 add_aesop_rules unsafe (rule_sets := [synthesis]) [
   (by assumption),
-  (by apply convert (by norm_for_pick) (s_pick _ _)),
-  (by apply convert (by norm_for_bind) (s_bind _ _)),
-  (by apply convert (by norm_for_bind') (s_bind _ _)), -- TODO Fix this
-  (by goal_is_eq_or_and; apply convert (by norm_for_List_unfold) (List.s_unfold _)),
-  (by goal_is_eq_or_and; apply convert (by norm_for_Tree_unfold) (Tree.s_unfold _)),
-  (by goal_is_eq_or_and; apply convert (by norm_for_Stack_unfold) (Stack.s_unfold _)),
-  (by goal_is_eq_or_and; apply convert (by norm_for_Term_unfold) (Term.s_unfold _)),
+  (by normalize_and_convert),
+  (by normalize_and_unfold),
   (by apply s_arbUnit),
   (by apply s_arbBool),
   (by apply s_arbTuple),
