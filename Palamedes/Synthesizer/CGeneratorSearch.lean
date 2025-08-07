@@ -373,12 +373,12 @@ macro "cgenerator_search" : tactic =>
   `(tactic|
     aesop
       (rule_sets := [-default, -builtin, synthesis])
-      (config := {enableSimp := false, maxRuleApplications := 2000}))
+      (config := {enableSimp := false, maxRuleApplications := 1000}))
 
 macro "cgenerator_search?" : tactic =>
   `(tactic|
     aesop?
       (rule_sets := [-default, -builtin, synthesis])
-      (config := {enableSimp := false, maxRuleApplications := 2000}))
+      (config := {enableSimp := false, maxRuleApplications := 1000}))
 
 end API
