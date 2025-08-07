@@ -337,6 +337,17 @@ end Normalizers
 
 section AesopRules
 
+/-
+
+For performance, we want to abide by two heuristics:
+1) `simp` as infrequently as possible, and
+2) prune the search tree as often as possible.
+
+We accomplish goal 1 by factoring out the `simp` steps in the normalization
+tactics above, and we accomplish goal 2 here by trying every `arb` lemma
+that can close a goal before trying any lemmas that generate new subgoals.
+
+-/
 add_aesop_rules safe (rule_sets := [synthesis]) [
   (by (repeat apply duncurry); intro),
   (by apply s_arbUnit),
