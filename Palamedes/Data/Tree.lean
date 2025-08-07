@@ -297,10 +297,6 @@ theorem Tree.fold_accu_Option_function_true
       apply Iff.intro <;> intro hg <;> simp_all
       replace ⟨⟨ vl, hl ⟩, ⟨ vr, hr ⟩ , hg⟩ := hg <;> simp_all
 
-theorem bind_false (b : Bool) :
-  (some b).bind (fun _ => some false) = some false := by
-  aesop
-
 theorem Tree.fold_accu_cond
   {α σ : Type}
   {i : σ}

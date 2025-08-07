@@ -72,14 +72,17 @@ def optimizePick? (x y : Expr) : MetaM (Option Expr) :=
   match_expr x with
   | assume _ b f =>
     match_expr y with
-      -- assume_pick : pick (assume b f) (assume b g) ~~> assume b (pick f g)
     | assume _ b' g =>
+      -- if both x and y are `assume`s, then we have one of two cases:
+      -- if they assume the same boolean:
+        -- assume_pick : pick (assume b f) (assume b g) ~~> assume b (pick f g)
       if b == b' then do
         let c ← mkEq b (.const ``true [])
         let f' ← withLocalDecl `h .default c fun h => do
           mkLambdaFVars #[h] (← mkAppM ``pick #[.app f h, .app g h])
         return (some (← mkAppM ``assume #[b, f']))
-      -- assume_pick : pick (assume b f) y ~~> if h : b then pick (f h) y else y
+      -- otherwise they assume different booleans:
+        -- assume_pick : pick (assume b f) y ~~> if h : b then pick (f h) y else y
       else do
         let c ← mkEq b (.const ``true [])
         let fPos ← withLocalDecl `h .default c fun h => do
@@ -87,7 +90,8 @@ def optimizePick? (x y : Expr) : MetaM (Option Expr) :=
         let fNeg ← withLocalDecl `h .default (.app (.const ``Not []) c) fun h =>
           mkLambdaFVars #[h] y
         return (some (← mkAppM ``dite #[c, fPos, fNeg]))
-    -- assume_pick : pick (assume b f) y ~~> if h : b then pick (f h) y else y
+    -- if only x is an `assume`:
+      -- assume_pick : pick (assume b f) y ~~> if h : b then pick (f h) y else y
     | _ => do
       let c ← mkEq b (.const ``true [])
       let fPos ← withLocalDecl `h .default c fun h => do
@@ -97,7 +101,8 @@ def optimizePick? (x y : Expr) : MetaM (Option Expr) :=
       return (some (← mkAppM ``dite #[c, fPos, fNeg]))
   | _ =>
     match_expr y with
-    -- pick_assume : pick x (assume b f) ~~> if h : b then pick x (f h) else x
+    -- if only y is an `assume`:
+      -- pick_assume : pick x (assume b f) ~~> if h : b then pick x (f h) else x
     | assume _ b f => do
       let c ← mkEq b (.const ``true [])
       let fPos ← withLocalDecl `h .default c fun h => do
