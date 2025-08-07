@@ -300,27 +300,27 @@ theorem Tree.fold_accu_Option_function_true
 theorem Tree.fold_accu_cond
   {α σ : Type}
   {i : σ}
-  {st_true st_false : α -> σ -> σ}
-  {cond_true cond_false init_cond : σ -> Bool}
+  {stTrue stFalse : α -> σ -> σ}
+  {condTrue condFalse initCond : σ -> Bool}
   {t : Tree α}
-  {cond_guard : α -> σ -> Bool} :
+  {condGuard : α -> σ -> Bool} :
   Tree.fold
-    (fun accL x accR s => if cond_guard x s then
-                      cond_true s && accL (st_true x s) && accR (st_true x s) else
-                      cond_false s && accL (st_false x s) && accR (st_false x s))
-    (fun s => init_cond s)
+    (fun accL x accR s => if condGuard x s then
+                      condTrue s && accL (stTrue x s) && accR (stTrue x s) else
+                      condFalse s && accL (stFalse x s) && accR (stFalse x s))
+    (fun s => initCond s)
     t
     i = true ↔
   Tree.accuM
-    (fun x s => if cond_guard x s then (st_true x s, st_true x s) else (st_false x s, st_false x s))
+    (fun x s => if condGuard x s then (stTrue x s, stTrue x s) else (stFalse x s, stFalse x s))
     (fun _ x _ s =>
-      if cond_guard x s then guard $ cond_true s else guard $ cond_false s)
-    (fun s => guard $ init_cond s)
+      if condGuard x s then guard $ condTrue s else guard $ condFalse s)
+    (fun s => guard $ initCond s)
     t
     i = some () := by
     induction t generalizing i <;> simp_all [Tree.fold, Tree.accuM, Option.bind_eq_some_iff, guard]
     case node l v r ihl ihr =>
-      cases (cond_guard v i) <;> aesop
+      cases (condGuard v i) <;> aesop
 
 end FoldConversions
 

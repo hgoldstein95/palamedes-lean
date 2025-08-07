@@ -262,27 +262,27 @@ theorem List.fold_accu_Option_function_true
 theorem List.fold_accu_cond
   {α σ : Type}
   {i : σ}
-  {st_true st_false : α -> σ -> σ}
-  {cond_true cond_false init_cond : σ -> Bool}
+  {stTrue stFalse : α -> σ -> σ}
+  {condTrue condFalse initCond : σ -> Bool}
   {xs : List α}
-  {cond_guard : α -> σ -> Bool} :
+  {condGuard : α -> σ -> Bool} :
   List.fold
-    (fun x acc s => if cond_guard x s = true then
-                      cond_true s && acc (st_true x s) else
-                      cond_false s && acc (st_false x s))
-    (fun s => init_cond s)
+    (fun x acc s => if condGuard x s = true then
+                      condTrue s && acc (stTrue x s) else
+                      condFalse s && acc (stFalse x s))
+    (fun s => initCond s)
     xs
     i = true ↔
   List.accuM
-    (fun x s => if cond_guard x s then st_true x s else st_false x s)
+    (fun x s => if condGuard x s then stTrue x s else stFalse x s)
     (fun x _ s =>
-      if cond_guard x s then guard $ cond_true s else guard $ cond_false s)
-    (fun s => guard $ init_cond s)
+      if condGuard x s then guard $ condTrue s else guard $ condFalse s)
+    (fun s => guard $ initCond s)
     (xs : List α)
     i = some () := by
   induction xs generalizing i <;> simp_all [List.fold, List.accuM, Option.bind_eq_some_iff, guard]
   case cons head tail ih =>
-    cases (cond_guard head i) <;> aesop
+    cases (condGuard head i) <;> aesop
 
 end FoldConversions
 

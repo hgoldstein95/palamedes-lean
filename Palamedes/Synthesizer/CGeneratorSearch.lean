@@ -128,7 +128,7 @@ macro "rw_term_merge" : tactic =>
   massage it into the normal form to apply the lemma however by converting
   the `acc` into `true && acc`, which is what these rewrite macros do.
 -/
-macro "rw_and_list_normal_form" : tactic =>
+macro "rw_true_and_list" : tactic =>
   `(tactic| conv =>
         pattern fun _ => _
         repeat intro
@@ -137,7 +137,7 @@ macro "rw_and_list_normal_form" : tactic =>
         try conv =>
           arg 3; fail_if_success {guard_target = _ && _}; refine (Bool.and_true ..).symm.trans (Bool.and_comm ..))
 
-macro "rw_and_tree_normal_form" : tactic =>
+macro "rw_true_and_tree" : tactic =>
   `(tactic| conv =>
         pattern fun _ => _
         intro accL _ accR _
@@ -197,7 +197,7 @@ macro "list_convert_to_accuM" : tactic =>
       | rw [← List.fold_accu_Option_function]; (try library_search); done
       | rw [← List.fold_accu_Option_function_true] <;> simp_bexp <;> (try library_search); done
       | rw [← List.fold_accu_Option_basic]; done
-      | rw_and_list_normal_form; rw [← List.fold_accu_cond]; (try aesop); done))
+      | rw_true_and_list; rw [← List.fold_accu_cond]; (try aesop); done))
 
 macro "tree_convert_to_accuM" : tactic =>
   `(tactic|
@@ -206,7 +206,7 @@ macro "tree_convert_to_accuM" : tactic =>
       | rw [← Tree.fold_accu_Option_function]; (try library_search); done
       | rw [← Tree.fold_accu_Option_function_true]; (try intros; simp_bexp; library_search); done
       | rw [← Tree.fold_accu_Option_basic]; (try library_search); done
-      | rw_and_tree_normal_form; rw [← Tree.fold_accu_cond]; (try aesop); done))
+      | rw_true_and_tree; rw [← Tree.fold_accu_cond]; (try aesop); done))
 
 macro "stack_convert_to_accuM" : tactic =>
   `(tactic|
@@ -300,7 +300,7 @@ macro "norm_for_elements" : tactic =>
        | rfl
        | rw [getElem?_eq_some_iff_indexesOf_getElem?_eq_some]))
 
-macro "normalize_and_convert" : tactic =>
+macro "normalize_and_apply" : tactic =>
    `(tactic| (
       apply convert ?pf ?arg
       /- simplify the predicate before attempting to normalize it.
@@ -317,7 +317,7 @@ macro "normalize_and_convert" : tactic =>
         case pf => norm_for_pick
     ))
 
-macro "normalize_and_unfold" : tactic =>
+macro "normalize_and_apply_unfold" : tactic =>
    `(tactic| (
       goal_is_eq_or_and
       apply convert ?pf ?arg
@@ -361,8 +361,8 @@ add_aesop_rules safe (rule_sets := [synthesis]) [
 
 add_aesop_rules 99% (rule_sets := [synthesis]) [
   (by assumption),
-  (by normalize_and_convert),
-  (by normalize_and_unfold),
+  (by normalize_and_apply),
+  (by normalize_and_apply_unfold),
   (by apply s_arbAtom _),
   (by apply s_gt),
   (by apply s_lt_partial),

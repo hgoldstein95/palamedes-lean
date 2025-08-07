@@ -6,7 +6,7 @@ open Gen CorrectGen
 namespace RBTFold
 
 @[simp]
-def rrFold (t : Tree (Color × α)) : Bool :=
+def isRRFold (t : Tree (Color × α)) : Bool :=
   Tree.fold
     (fun bl c br isRedChild => if c.fst == .red then !isRedChild && bl true && br true else bl false && br false)
     (fun _ => true)
@@ -14,7 +14,7 @@ def rrFold (t : Tree (Color × α)) : Bool :=
     false
 
 @[simp]
-def bhFold (t : Tree (Color × α)) (height : Nat) : Bool :=
+def isBHFold (t : Tree (Color × α)) (height : Nat) : Bool :=
   Tree.fold
     (fun bl c br h => if c.fst == .red then bl h && br h else h >= 0 && bl (h - 1) && br (h - 1))
     (fun h => h == 0)
@@ -34,7 +34,7 @@ set_option maxRecDepth 2000
 
 @[simp]
 def isRBTFold (height lo hi : Nat) (t : Tree (Color × Nat)) : Bool :=
-  bhFold t height = true ∧ rrFold t = true ∧ isBSTFold t (lo, hi) = true
+  isBHFold t height = true ∧ isRRFold t = true ∧ isBSTFold t (lo, hi) = true
 
 def genRBTFold (height lo hi : Nat) : Gen (Tree (Color × Nat)) := by
   generator_search (fun t => isRBTFold lo hi height t = true) allow_partial

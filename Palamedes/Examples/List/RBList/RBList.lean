@@ -6,24 +6,24 @@ open Gen CorrectGen
 namespace RBList
 
 @[simp]
-def rrAuxList : List Color → Bool → Bool := λ t isRedChild =>
+def isRRListAux : List Color → Bool → Bool := λ t isRedChild =>
  match t with
  | .nil => true
- | .cons c tl => if c == .red then !isRedChild && rrAuxList tl true else rrAuxList tl false
+ | .cons c tl => if c == .red then !isRedChild && isRRListAux tl true else isRRListAux tl false
 
 @[simp]
-def rrList : List Color → Bool := λ xs => rrAuxList xs false
+def isRRList : List Color → Bool := λ xs => isRRListAux xs false
 
 @[simp]
-def bhList : List Color → Nat → Bool := λ xs height =>
+def isBHList : List Color → Nat → Bool := λ xs height =>
  match xs with
  | .nil => height == 0
- | .cons h tl => if h == .red then bhList tl height else height > 0 && bhList tl (height - 1)
+ | .cons h tl => if h == .red then isBHList tl height else height > 0 && isBHList tl (height - 1)
 
 open Gen CorrectGen
 
 def genRRFold : Gen (List Color) := by
-  generator_search (fun xs => rrList xs = true)
+  generator_search (fun xs => isRRList xs = true)
 
 def genBHFold (height : Nat) : Gen (List Color) := by
-  generator_search (fun xs => bhList xs height = true)
+  generator_search (fun xs => isBHList xs height = true)
