@@ -331,12 +331,6 @@ section AesopRules
 
 add_aesop_rules safe (rule_sets := [synthesis]) [
   (by (repeat apply duncurry); intro),
-]
-
-add_aesop_rules unsafe (rule_sets := [synthesis]) [
-  (by assumption),
-  (by normalize_and_convert),
-  (by normalize_and_unfold),
   (by apply s_arbUnit),
   (by apply s_arbBool),
   (by apply s_arbTuple),
@@ -346,6 +340,12 @@ add_aesop_rules unsafe (rule_sets := [synthesis]) [
   (by apply s_arbNat),
   (by apply s_arbTy),
   (by apply s_arbLabel),
+]
+
+add_aesop_rules 99% (rule_sets := [synthesis]) [
+  (by assumption),
+  (by normalize_and_convert),
+  (by normalize_and_unfold),
   (by apply s_arbAtom _),
   (by apply s_gt),
   (by apply s_lt_partial),
