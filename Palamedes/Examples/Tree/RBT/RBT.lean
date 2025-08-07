@@ -26,8 +26,8 @@ def isBST : Tree (α × Nat) → (Nat × Nat) → Bool := λ t ⟨lo, hi⟩ =>
   | .leaf => true
   | .node l (_, x) r => (lo <= x && x <= hi) && isBST l ⟨lo, x - 1⟩ && isBST r ⟨x + 1, hi⟩
 
-set_option maxHeartbeats 1000000
-set_option maxRecDepth 1000
+set_option maxHeartbeats 2000000
+set_option maxRecDepth 2000
 
 def genRR : Gen (Tree (Color × Nat)) := by
   generator_search (fun t => rr t = true)

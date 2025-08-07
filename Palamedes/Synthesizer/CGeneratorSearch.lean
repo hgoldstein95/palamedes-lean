@@ -120,7 +120,15 @@ macro "rw_term_merge" : tactic =>
      rw [← Term.merge_accuM]
      apply and_congr))
 
-macro "rw_and_iff_list" : tactic =>
+/-
+  The fold_accu_cond lemmas expect the bodies of the folds they operate on to be
+  in a particular normal form, i.e. `condition && acc` for lists and `condition && accL && accR`
+  for trees, in both arms of the conditional. Sometimes, however, the arm of the conditional
+  will just look like `acc`, and not be obviously in this normal form. We can
+  massage it into the normal form to apply the lemma however by converting
+  the `acc` into `true && acc`, which is what these rewrite macros do.
+-/
+macro "rw_and_list_normal_form" : tactic =>
   `(tactic| conv =>
         pattern fun _ => _
         repeat intro
@@ -129,7 +137,7 @@ macro "rw_and_iff_list" : tactic =>
         try conv =>
           arg 3; fail_if_success {guard_target = _ && _}; refine (Bool.and_true ..).symm.trans (Bool.and_comm ..))
 
-macro "rw_and_iff_tree" : tactic =>
+macro "rw_and_tree_normal_form" : tactic =>
   `(tactic| conv =>
         pattern fun _ => _
         intro accL _ accR _
@@ -189,7 +197,7 @@ macro "list_convert_to_accuM" : tactic =>
       | rw [← List.fold_accu_Option_function]; (try library_search); done
       | rw [← List.fold_accu_Option_function_true] <;> simp_bexp <;> (try library_search); done
       | rw [← List.fold_accu_Option_basic]; done
-      | rw_and_iff_list; rw [← List.fold_accu_cond]; (try aesop); done))
+      | rw_and_list_normal_form; rw [← List.fold_accu_cond]; (try aesop); done))
 
 macro "tree_convert_to_accuM" : tactic =>
   `(tactic|
@@ -198,7 +206,7 @@ macro "tree_convert_to_accuM" : tactic =>
       | rw [← Tree.fold_accu_Option_function]; (try library_search); done
       | rw [← Tree.fold_accu_Option_function_true]; (try intros; simp_bexp; library_search); done
       | rw [← Tree.fold_accu_Option_basic]; (try library_search); done
-      | rw_and_iff_tree; rw [← Tree.fold_accu_cond]; (try aesop); done))
+      | rw_and_tree_normal_form; rw [← Tree.fold_accu_cond]; (try aesop); done))
 
 macro "stack_convert_to_accuM" : tactic =>
   `(tactic|
@@ -363,6 +371,8 @@ add_aesop_rules 5% (rule_sets := [synthesis]) [
   (by goal_is_or; clear_unused_assumptions; apply s_caseTy (by nth_assumption 1) (by intros; rflm)),
   (by goal_is_or; clear_unused_assumptions; apply s_caseNat (by nth_assumption 0) (by intros; rflm)),
   (by goal_is_or; clear_unused_assumptions; apply s_caseNat (by nth_assumption 1) (by intros; rflm)),
+  (by goal_is_or; clear_unused_assumptions; apply s_caseNat (by nth_assumption 2) (by intros; rflm)),
+  (by goal_is_or; clear_unused_assumptions; apply s_caseNat (by nth_assumption 3) (by intros; rflm)),
 ]
 
 end AesopRules

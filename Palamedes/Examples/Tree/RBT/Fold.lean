@@ -29,12 +29,12 @@ def isBSTFold (t : Tree (α × Nat)) : Nat × Nat -> Bool := fun (lo, hi) =>
           | (sl, sr) => (decide (sl ≤ x.snd) && decide (x.snd ≤ sr)) && bl (sl, x.snd - 1) && br (x.snd + 1, sr))
         (fun _ => true) t (lo, hi)
 
-set_option maxHeartbeats 1000000
-set_option maxRecDepth 1000
+set_option maxHeartbeats 2000000
+set_option maxRecDepth 2000
 
 @[simp]
 def isRBTFold (height lo hi : Nat) (t : Tree (Color × Nat)) : Bool :=
-  rrFold t = true ∧ isBSTFold t (lo, hi) = true ∧ bhFold t height = true
+  bhFold t height = true ∧ rrFold t = true ∧ isBSTFold t (lo, hi) = true
 
 def genRBTFold (height lo hi : Nat) : Gen (Tree (Color × Nat)) := by
   generator_search (fun t => isRBTFold lo hi height t = true) allow_partial
