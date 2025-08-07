@@ -32,8 +32,6 @@ macro "totality" : tactic =>
         | apply total_arbBool
         | apply total_Bool_rec
         | apply total_arbColor
-        | apply total_black
-        | apply total_red
         | apply total_arbNat
         | apply total_choose
         | apply total_gt

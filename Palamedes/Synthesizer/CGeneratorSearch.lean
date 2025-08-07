@@ -343,8 +343,6 @@ add_aesop_rules safe (rule_sets := [synthesis]) [
   (by apply s_arbBool),
   (by apply s_arbTuple),
   (by apply s_arbColor),
-  (by apply s_black),
-  (by apply s_red),
   (by apply s_arbNat),
   (by apply s_arbTy),
   (by apply s_arbLabel),
