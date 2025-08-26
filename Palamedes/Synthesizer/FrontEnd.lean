@@ -145,16 +145,20 @@ section step
 
 syntax (name := step) "step" "["tactic,*"]": tactic
 
-open PrettyPrinter Lean.Parser.Tactic in
-def fmtTactic (t : TSyntax `tactic) := do
-    let prettyT ← ppCategory ``tacticSeq t
-    return prettyT.pretty
 
-def fmtTacticWithContinuation
+open PrettyPrinter Lean.Parser.Tactic in
+def fmtTactic
   (t : TSyntax `tactic)
+  (subgoals : List MVarId)
   (continuation : String) := do
-    let prettyT ← fmtTactic t
-    return prettyT ++ continuation
+    let prettyTFormat ← ppCategory ``tacticSeq t
+    let prettyT := prettyTFormat.pretty
+    match subgoals with
+    | [] => return prettyT
+    | [_] => return prettyT ++ "\n  " ++ continuation
+    | _ =>
+      let continuations := subgoals.map (fun _ => "\n  ." ++ continuation)
+      return prettyT ++ (continuations.foldr (· ++ ·) "")
 
 def suggestTacticOptions
   (stx : Syntax)
@@ -165,19 +169,18 @@ def suggestTacticOptions
   | [] => throwError "Empty tactic list; nothing to suggest."
   | [(t, [])] =>
     TryThis.addSuggestion stx
-      s!"{← fmtTactic t}"
-  | [(t, _)] =>
+      s!"{← fmtTactic t [] continuation}"
+  | [(t, gs)] =>
     TryThis.addSuggestion stx
-      s!"{← fmtTacticWithContinuation t continuation}"
+      s!"{← fmtTactic t gs continuation}"
   | _ =>
     match rs.find? (fun (_, unsolved) => List.length unsolved == 0) with
-    | some (t, _) =>
-      TryThis.addSuggestion stx s!"{← fmtTactic t}"
-    | none =>
-      logInfoAt stx "Try one of: "
+    | some (t, gs) =>
+      TryThis.addSuggestion stx s!"{← fmtTactic t gs continuation}"
+    | none => do
       let prettyRs ← rs.mapM
-        (fun (t, _) => fmtTacticWithContinuation t continuation)
-      TryThis.addSuggestions stx prettyRs.toArray (header := "")
+        (fun (t, gs) => fmtTactic t gs continuation)
+      TryThis.addSuggestions stx prettyRs.toArray (header := "Try one of:")
 
 def peekTactic (tactic : TSyntax `tactic) (g : MVarId) : TacticM (Option (List MVarId)) := do
   let s ← saveState
@@ -217,22 +220,21 @@ def elabStep : Tactic := fun stx => do
           throwTacticEx `step g m!"No tactic options provided."
         else throwTacticEx `step g m!"All tactics failed."
       else
-        let prettyTs ← ts.mapM (fun t => fmtTactic t)
-        suggestTacticOptions stx rs s!"; step {prettyTs}"
+        let prettyTs ← ts.mapM (fun t => fmtTactic t [] "")
+        suggestTacticOptions stx rs s!"step {prettyTs}"
   | _ => throwUnsupportedSyntax
 
 set_option linter.unusedTactic false
 example : forall x, x + 0 = x := by
-  step [intro, rfl]
+  step [intro, intro, rfl]
   sorry
 
 example : exists x, x > 0 := by
   step [intro, rfl, aesop, exists 1]
   sorry
 
--- when replacing "step" with the tactic, auto-fill bullets with "step" after
--- or actually have a different tactic that will do that
--- look at how to turn aesop output tree into something pretty
--- [harry] quickchick as oracle
+example : 5 = 5 ∧ 1 = 1 := by
+  step [apply And.intro, rfl]
+  sorry
 
 end step
