@@ -141,47 +141,98 @@ def expandGeneratorSearch? : Tactic := fun stx =>
     generatorSearchElab stx t true true
   | _ => throwError "invalid syntax"
 
-
-
 section step
 
-def applyTacticOpt (m : MVarId) (tactic : TSyntax `tactic) : TacticM (Option (List MVarId)) := do
+syntax (name := step) "step" "["tactic,*"]": tactic
+
+open PrettyPrinter Lean.Parser.Tactic in
+def fmtTactic (t : TSyntax `tactic) := do
+    let prettyT ← ppCategory ``tacticSeq t
+    return prettyT.pretty
+
+def fmtTacticWithContinuation
+  (t : TSyntax `tactic)
+  (continuation : String) := do
+    let prettyT ← fmtTactic t
+    return prettyT ++ continuation
+
+def suggestTacticOptions
+  (stx : Syntax)
+  (rs : List (TSyntax `tactic × List MVarId))
+  (continuation: String)
+  : MetaM Unit := do
+  match rs with
+  | [] => throwError "Empty tactic list; nothing to suggest."
+  | [(t, [])] =>
+    TryThis.addSuggestion stx
+      s!"{← fmtTactic t}"
+  | [(t, _)] =>
+    TryThis.addSuggestion stx
+      s!"{← fmtTacticWithContinuation t continuation}"
+  | _ =>
+    match rs.find? (fun (_, unsolved) => List.length unsolved == 0) with
+    | some (t, _) =>
+      TryThis.addSuggestion stx s!"{← fmtTactic t}"
+    | none =>
+      logInfoAt stx "Try one of: "
+      let prettyRs ← rs.mapM
+        (fun (t, _) => fmtTacticWithContinuation t continuation)
+      TryThis.addSuggestions stx prettyRs.toArray (header := "")
+
+def peekTactic (tactic : TSyntax `tactic) (g : MVarId) : TacticM (Option (List MVarId)) := do
+  let s ← saveState
   try
-    let unsolved ← evalTacticAt tactic m
-    pure (some unsolved)
-  catch _ => pure none
-
-def step
-    (stx : Syntax)
-    (tactics : List (TSyntax `tactic))
-    :
-    TacticM Unit := do
-  let g ← getMainGoal
-
-  let rs ← List.filterMapM (fun t => do
-    let unsolved ← applyTacticOpt g t
+    let unsolved ← evalTacticAt tactic g
     match unsolved with
-    | some gs => pure (some (t, gs))
-    | none => pure none) tactics
-  if (rs.length == 0)
-    then
-      throwError m!"All tactics failed."
-    else
-      match rs.find? (fun (_, unsolved) => List.length unsolved == 0) with
-      | some (t, _) =>
-        TryThis.addSuggestion stx s!"{t}"
-      | none =>
-        TryThis.addSuggestion stx (header := "Try one of: ") s!"{List.map Prod.fst rs}"
+    | [g'] => do
+      let τ ← g.getType
+      let τ' ← g'.getType
+      let unchanged ← withoutModifyingState $ Lean.Meta.isDefEq τ τ'
+      if unchanged then
+        pure none
+      else
+        pure $ some unsolved
+    | _ => pure $ some unsolved
+  catch _ =>
+    pure none
+  finally
+    restoreState s
 
-syntax (name := step_proof) "step" : tactic
+@[tactic step]
+def elabStep : Tactic := fun stx => do
+  match stx with
+  | `(tactic|step [$tactics:tactic,*]) =>
+    let ts := tactics.getElems.toList
+    let g ← getMainGoal
+    let rs ← List.filterMapM (fun t => do
+      let unsolved ← peekTactic t g
+      match unsolved with
+      | some gs =>
+        let res := some (t, gs)
+        pure res
+      | none => pure none) ts
+    if (rs.length == 0)
+      then
+        if ts.length == 0 then
+          throwTacticEx `step g m!"No tactic options provided."
+        else throwTacticEx `step g m!"All tactics failed."
+      else
+        let prettyTs ← ts.mapM (fun t => fmtTactic t)
+        suggestTacticOptions stx rs s!"; step {prettyTs}"
+  | _ => throwUnsupportedSyntax
 
-@[tactic step_proof]
-def expandStep : Tactic := fun stx => do
-  step stx [← `(tactic|simp), ← `(tactic|aesop)]
+set_option linter.unusedTactic false
+example : forall x, x + 0 = x := by
+  step [intro, rfl]
+  sorry
 
-example : forall x, x + 0 = x := by step
+example : exists x, x > 0 := by
+  step [intro, rfl, aesop, exists 1]
+  sorry
 
--- example : exists x, x > 0 := by
---   step
+-- when replacing "step" with the tactic, auto-fill bullets with "step" after
+-- or actually have a different tactic that will do that
+-- look at how to turn aesop output tree into something pretty
+-- [harry] quickchick as oracle
 
 end step
