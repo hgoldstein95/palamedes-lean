@@ -145,20 +145,23 @@ section step
 
 syntax (name := step) "step" "["tactic,*"]": tactic
 
-
+set_option pp.sanitizeNames true in
 open PrettyPrinter Lean.Parser.Tactic in
 def fmtTactic
   (t : TSyntax `tactic)
   (subgoals : List MVarId)
-  (continuation : String) := do
-    let prettyTFormat ← ppCategory ``tacticSeq t
-    let prettyT := prettyTFormat.pretty
+  (continuation : String) : String :=
+    let prettyT :=
+      match t.raw.reprint with
+      | some x => x
+      | none => t.raw.prettyPrint.pretty -- TODO
     match subgoals with
-    | [] => return prettyT
-    | [_] => return prettyT ++ "\n  " ++ continuation
+    | [] => prettyT
+    | [_] => prettyT ++ "\n  " ++ continuation
     | _ =>
       let continuations := subgoals.map (fun _ => "\n  ." ++ continuation)
-      return prettyT ++ (continuations.foldr (· ++ ·) "")
+      let continuationsCat := continuations.foldr (· ++ ·) ""
+      prettyT ++ continuationsCat
 
 def suggestTacticOptions
   (stx : Syntax)
@@ -169,20 +172,21 @@ def suggestTacticOptions
   | [] => throwError "Empty tactic list; nothing to suggest."
   | [(t, [])] =>
     TryThis.addSuggestion stx
-      s!"{← fmtTactic t [] continuation}"
+      s!"{fmtTactic t [] continuation}"
   | [(t, gs)] =>
     TryThis.addSuggestion stx
-      s!"{← fmtTactic t gs continuation}"
+      s!"{fmtTactic t gs continuation}"
   | _ =>
     match rs.find? (fun (_, unsolved) => List.length unsolved == 0) with
     | some (t, gs) =>
-      TryThis.addSuggestion stx s!"{← fmtTactic t gs continuation}"
+      TryThis.addSuggestion stx s!"{fmtTactic t gs continuation}"
     | none => do
       let prettyRs ← rs.mapM
-        (fun (t, gs) => fmtTactic t gs continuation)
+        (fun (t, gs) => return fmtTactic t gs continuation)
       TryThis.addSuggestions stx prettyRs.toArray (header := "Try one of:")
 
 def peekTactic (tactic : TSyntax `tactic) (g : MVarId) : TacticM (Option (List MVarId)) := do
+  let prettyT := fmtTactic tactic [] ""-- TODO
   let s ← saveState
   try
     let unsolved ← evalTacticAt tactic g
@@ -192,11 +196,16 @@ def peekTactic (tactic : TSyntax `tactic) (g : MVarId) : TacticM (Option (List M
       let τ' ← g'.getType
       let unchanged ← withoutModifyingState $ Lean.Meta.isDefEq τ τ'
       if unchanged then
+        IO.println s!"1: did NOT catch exception for {prettyT}"
         pure none
       else
+        IO.println s!"2: did NOT catch exception for {prettyT}"
         pure $ some unsolved
-    | _ => pure $ some unsolved
+    | _ =>
+      IO.println s!"3: did NOT catch exception for {prettyT}; num subgoals: {unsolved.length}"
+      pure $ some unsolved
   catch _ =>
+    IO.println s!"4: caught exception for {prettyT}"
     pure none
   finally
     restoreState s
@@ -220,7 +229,7 @@ def elabStep : Tactic := fun stx => do
           throwTacticEx `step g m!"No tactic options provided."
         else throwTacticEx `step g m!"All tactics failed."
       else
-        let prettyTs ← ts.mapM (fun t => fmtTactic t [] "")
+        let prettyTs ← ts.mapM (fun t => return fmtTactic t [] "")
         suggestTacticOptions stx rs s!"step {prettyTs}"
   | _ => throwUnsupportedSyntax
 
@@ -237,4 +246,42 @@ example : 5 = 5 ∧ 1 = 1 := by
   step [apply And.intro, rfl]
   sorry
 
+example : ∃ x, x + 1 = 3 := by
+  refine Exists.intro ?x ?p <;> try (exact rfl)
+
 end step
+
+section gstep
+
+macro "gstep" : tactic =>
+
+  `(tactic| step [
+    ((repeat apply duncurry); intro), --4
+    (apply convert (by norm_for_pure) (s_pure _)), --3
+    (assumption), --4
+    (apply convert (by norm_for_pick) (s_pick _ _)), --3
+    (apply convert (by norm_for_bind) (s_bind _ _)), --3
+    (apply convert (by norm_for_bind') (s_bind _ _)), --3 -- TODO Fix this
+    (goal_is_eq_or_and; apply convert (by norm_for_List_unfold) (List.s_unfold _)), --4
+    (goal_is_eq_or_and; apply convert (by norm_for_Tree_unfold) (Tree.s_unfold _)), --4
+    (goal_is_eq_or_and; apply convert (by norm_for_Stack_unfold) (Stack.s_unfold _)), --4
+    (goal_is_eq_or_and; apply convert (by norm_for_Term_unfold) (Term.s_unfold _)), --4
+    (apply s_arbUnit), --3
+    (apply s_arbBool), --3
+    (apply s_arbNat), --3
+    (apply s_arbTy), --3
+    (apply s_arbLabel), --3
+    (apply s_arbAtom _), --3
+    (apply s_gt), --3
+    (apply s_lt_partial), --3
+    (apply s_between_partial), --3
+    (apply (s_between (by first | aesop | omega))), --3
+    (apply convert (by norm_for_elements) (s_elements_partial _)),--3
+    (goal_is_or; clear_unused_assumptions; apply s_caseBool (by nth_assumption 0) (by intros; rflm)),--3
+    (goal_is_or; clear_unused_assumptions; apply s_caseBool (by nth_assumption 1) (by intros; rflm)),--3
+    (goal_is_or; clear_unused_assumptions; apply s_caseTy (by nth_assumption 0) (by intros; rflm)),--3
+    (goal_is_or; clear_unused_assumptions; apply s_caseTy (by nth_assumption 1) (by intros; rflm)),--3
+    (goal_is_or; clear_unused_assumptions; apply s_caseNat (by nth_assumption 0) (by intros; rflm)),--3
+    (goal_is_or; clear_unused_assumptions; apply s_caseNat (by nth_assumption 1) (by intros; rflm))])--3
+
+end gstep
