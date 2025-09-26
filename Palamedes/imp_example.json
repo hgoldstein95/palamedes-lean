@@ -1,0 +1,253 @@
+{
+    "graph": {
+        "nodes": {
+            "G0": {
+                "metadata": {
+                    "kind": "OR"
+                },
+                "data": "P R Q : Prop ⊢ (P → R) ∧ (Q → R) → P ∨ Q → R ∧ True"
+            },
+            "R0A": {
+                "metadata": {
+                    "kind": "AND"
+                },
+                "data": "intro a",
+                "success": "true"
+            },
+            "G1": {
+                "metadata": {
+                    "kind": "OR"
+                },
+                "data": "P R Q : Prop\n a: (P → R) ∧ (Q → R) ⊢ P ∨ Q → R ∧ True"
+            },
+            "R1A": {
+                "metadata": {
+                    "kind": "AND"
+                },
+                "data": "intro a_1",
+                "success": "true"
+            },
+            "G2": {
+                "metadata": {
+                    "kind": "OR"
+                },
+                "data": "P R Q : Prop\n a: (P → R) ∧ (Q → R)\n a_1: P ∨ Q ⊢ R ∧ True"
+            },
+            "R2A": {
+                "metadata": {
+                    "kind": "AND"
+                },
+                "data": "intro a_2",
+                "success": "false"
+            },
+            "R2B": {
+                "metadata": {
+                    "kind": "AND"
+                },
+                "data": "simp",
+                "success": "true"
+            },
+            "G3": {
+                "metadata": {
+                    "kind": "OR"
+                },
+                "data": "P R Q : Prop\n a: (P → R) ∧ (Q → R)\n a_1: P ∨ Q ⊢ R"
+            },
+            "R3A": {
+                "metadata": {
+                    "kind": "AND"
+                },
+                "data": "intro a_2",
+                "success": "false"
+            },
+            "R3B": {
+                "metadata": {
+                    "kind": "AND"
+                },
+                "data": "simp",
+                "success": "false"
+            },
+            "R3C": {
+                "metadata": {
+                    "kind": "AND"
+                },
+                "data": "obtain ⟨left, right⟩ := a",
+                "success": "true"
+            },
+            "G4": {
+                "metadata": {
+                    "kind": "OR"
+                },
+                "data": "P R Q : Prop\n a_1: P ∨ Q\n left: P → R\n right: Q → R ⊢ R"
+            },
+            "R4A": {
+                "metadata": {
+                    "kind": "AND"
+                },
+                "data": "intro a_2",
+                "success": "false"
+            },
+            "R4B": {
+                "metadata": {
+                    "kind": "AND"
+                },
+                "data": "simp",
+                "success": "false"
+            },
+            "R4C": {
+                "metadata": {
+                    "kind": "AND"
+                },
+                "data": "assumption",
+                "success": "false"
+            },
+            "R4D": {
+                "metadata": {
+                    "kind": "AND"
+                },
+                "data": "rfl",
+                "success": "false"
+            },
+            "R4E": {
+                "metadata": {
+                    "kind": "AND"
+                },
+                "data": "cases a_1",
+                "success": "true"
+            },
+            "G5": {
+                "metadata": {
+                    "kind": "OR"
+                },
+                "data": "P R Q : Prop\n left: P → R\n right: Q → R\n h: P ⊢ R"
+            },
+            "R5A": {
+                "metadata": {
+                    "kind": "AND"
+                },
+                "data": "intro a_2",
+                "success": "false"
+            },
+            "R5B": {
+                "metadata": {
+                    "kind": "AND"
+                },
+                "data": "simp_all",
+                "success": "true"
+            },
+            "G6": {
+                "metadata": {
+                    "kind": "OR"
+                },
+                "data": "P R Q : Prop\n left: P → R\n right: Q → R\n h_1: Q ⊢ R"
+            },
+            "R6A": {
+                "metadata": {
+                    "kind": "AND"
+                },
+                "data": "intro a_2",
+                "success": "false"
+            },
+            "R6B": {
+                "metadata": {
+                    "kind": "AND"
+                },
+                "data": "simp_all",
+                "success": "true"
+            }
+        },
+        "edges": [
+            {
+                "target": "G0",
+                "source": "R0A"
+            },
+            {
+                "target": "R0A",
+                "source": "G1"
+            },
+            {
+                "target": "G1",
+                "source": "R1A"
+            },
+            {
+                "target": "R1A",
+                "source": "G2"
+            },
+            {
+                "target": "G2",
+                "source": "R2A"
+            },
+            {
+                "target": "G2",
+                "source": "R2B"
+            },
+            {
+                "target": "R2B",
+                "source": "G3"
+            },
+            {
+                "target": "G3",
+                "source": "R3A"
+            },
+            {
+                "target": "G3",
+                "source": "R3B"
+            },
+            {
+                "target": "G3",
+                "source": "R3C"
+            },
+            {
+                "target": "R3C",
+                "source": "G4"
+            },
+            {
+                "target": "G4",
+                "source": "R4A"
+            },
+            {
+                "target": "G4",
+                "source": "R4B"
+            },
+            {
+                "target": "G4",
+                "source": "R4C"
+            },
+            {
+                "target": "G4",
+                "source": "R4D"
+            },
+            {
+                "target": "G4",
+                "source": "R4E"
+            },
+            {
+                "target": "R4E",
+                "source": "G5"
+            },
+            {
+                "target": "R4E",
+                "source": "G6"
+            },
+            {
+                "target": "G5",
+                "source": "R5A"
+            },
+            {
+                "target": "G5",
+                "source": "R5B"
+            },
+            {
+                "target": "G6",
+                "source": "R6A"
+            },
+            {
+                "target": "G6",
+                "source": "R6B"
+            }
+        ],
+        "metadata": {
+            "goal": "G0"
+        }
+    }
+}
