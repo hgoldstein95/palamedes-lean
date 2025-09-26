@@ -348,7 +348,13 @@ tactics above, and we accomplish goal 2 here by trying every `arb` lemma
 that can close a goal before trying any lemmas that generate new subgoals.
 
 -/
+
+-- macro "duncurry_intro" : tactic =>
+--   `(tactic|
+--     repeat apply duncurry; intro)
+
 add_aesop_rules safe (rule_sets := [synthesis]) [
+  -- (by duncurry_intro),
   (by (repeat apply duncurry); intro),
   (by apply s_arbUnit),
   (by apply s_arbBool),
