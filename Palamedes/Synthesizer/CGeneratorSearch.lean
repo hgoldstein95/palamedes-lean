@@ -274,7 +274,7 @@ macro "norm_for_pure" : tactic =>
 macro "norm_for_pick" : tactic =>
   `(tactic| (
     funext
-    try simp only [eq_iff_iff, ← Decidable.or_iff_not_imp_left]
+    try simp only [eq_iff_iff, ← Decidable.weighted_or_iff_not_imp_left]
     rfl))
 
 macro "norm_for_bind" : tactic =>

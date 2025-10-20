@@ -20,13 +20,13 @@ def optimizeBind? (x f : Expr) : MetaM (Option Expr) :=
 
   -- NOTE: These three rules are not strictly necessary, and could cause problems. If something goes
   -- wrong in optimization, try commenting these out.
-  | pick _ x y w => do
+  | pick _ x y l r => do
     if x.getUsedConstants.contains ``pick || y.getUsedConstants.contains ``pick then
       -- If `x` or `y` has a pick inside it, don't do this; we don't want exponential blowup
       -- TODO: This is kind of a hack. I'd love to come up with a more robust heuristic here at some
       -- point.
       return none
-    mkAppM ``pick #[← mkAppM ``bind #[x, f], ← mkAppM ``bind #[y, f], w]
+    mkAppM ``pick #[← mkAppM ``bind #[x, f], ← mkAppM ``bind #[y, f], l, r]
   | dite _ P _ trueCase falseCase => do
     if trueCase.getUsedConstants.contains ``dite ||
        falseCase.getUsedConstants.contains ``dite ||
@@ -68,7 +68,7 @@ def optimizeBind? (x f : Expr) : MetaM (Option Expr) :=
         mkLambdaFVars #[h] (← mkAppM ``bind #[x, ← mkLambdaFVars #[a] (.app g h)])
       return some (← mkAppM ``assume #[b, f'])
 
-def optimizePick? (x y w : Expr) : MetaM (Option Expr) :=
+def optimizePick? (x y l r : Expr) : MetaM (Option Expr) :=
   match_expr x with
   | assume _ b f =>
     match_expr y with
@@ -79,14 +79,14 @@ def optimizePick? (x y w : Expr) : MetaM (Option Expr) :=
       if b == b' then do
         let c ← mkEq b (.const ``true [])
         let f' ← withLocalDecl `h .default c fun h => do
-          mkLambdaFVars #[h] (← mkAppM ``pick #[.app f h, .app g h, w])
+          mkLambdaFVars #[h] (← mkAppM ``pick #[.app f h, .app g h, l, r])
         return (some (← mkAppM ``assume #[b, f']))
       -- otherwise they assume different booleans:
         -- assume_pick : pick (assume b f) y ~~> if h : b then pick (f h) y else y
       else do
         let c ← mkEq b (.const ``true [])
         let fPos ← withLocalDecl `h .default c fun h => do
-          mkLambdaFVars #[h] (← mkAppM ``pick #[.app f h, y, w])
+          mkLambdaFVars #[h] (← mkAppM ``pick #[.app f h, y, l, r])
         let fNeg ← withLocalDecl `h .default (.app (.const ``Not []) c) fun h =>
           mkLambdaFVars #[h] y
         return (some (← mkAppM ``dite #[c, fPos, fNeg]))
@@ -95,7 +95,7 @@ def optimizePick? (x y w : Expr) : MetaM (Option Expr) :=
     | _ => do
       let c ← mkEq b (.const ``true [])
       let fPos ← withLocalDecl `h .default c fun h => do
-        mkLambdaFVars #[h] (← mkAppM ``pick #[.app f h, y, w])
+        mkLambdaFVars #[h] (← mkAppM ``pick #[.app f h, y, l, r])
       let fNeg ← withLocalDecl `h .default (.app (.const ``Not []) c) fun h =>
         mkLambdaFVars #[h] y
       return (some (← mkAppM ``dite #[c, fPos, fNeg]))
@@ -106,7 +106,7 @@ def optimizePick? (x y w : Expr) : MetaM (Option Expr) :=
     | assume _ b f => do
       let c ← mkEq b (.const ``true [])
       let fPos ← withLocalDecl `h .default c fun h => do
-        mkLambdaFVars #[h] (← mkAppM ``pick #[x, .app f h, w])
+        mkLambdaFVars #[h] (← mkAppM ``pick #[x, .app f h, l, r])
       let fNeg ← withLocalDecl `h .default (.app (.const ``Not []) c) fun h =>
         mkLambdaFVars #[h] x
       return (some (← mkAppM ``dite #[c, fPos, fNeg]))
@@ -117,7 +117,7 @@ def optimizeGen (e : Expr) : MetaM Expr := do
     match_expr ← withReducible (reduce e) with
     | bind _ _ _ _ x f =>
       if let some e' ← optimizeBind? x f then return .visit e' else return .continue
-    | pick _ x y w =>
-      if let some e' ← optimizePick? x y w then return .visit e' else return .continue
+    | pick _ x y l r =>
+      if let some e' ← optimizePick? x y l r then return .visit e' else return .continue
     | _ => return .continue
   transform (post := post) e

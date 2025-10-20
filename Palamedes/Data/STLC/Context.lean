@@ -26,6 +26,7 @@ theorem support_elements
     | _ :: _ =>
       simp [elements] at ih |-
       simp_all [support]
+      aesop
 
 namespace CorrectGen
 

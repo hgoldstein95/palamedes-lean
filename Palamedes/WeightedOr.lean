@@ -10,6 +10,11 @@ theorem WeightedOr.elim {c : Prop} (h : WeightedOr l a r b) (left : a → c) (ri
   match h with
   | WeightedOr.inl h => left h
   | WeightedOr.inr h => right h
+theorem WeightedOr.resolve_left  (h: WeightedOr l a r b) (na : Not a) : b := h.elim (absurd · na) id
+theorem WeightedOr.resolve_right (h: WeightedOr l a r b) (nb : Not b) : a := h.elim id (absurd · nb)
+theorem WeightedOr.neg_resolve_left  (h : WeightedOr l (Not a) r b) (ha : a) : b := h.elim (absurd ha) id
+theorem WeightedOr.neg_resolve_right (h : WeightedOr l a r (Not b)) (nb : b) : a := h.elim id (absurd nb)
+
 @[symm] theorem WeightedOr.symm : WeightedOr l a r b → WeightedOr r b l a := .rec .inr .inl
 theorem WeightedOr.comm : WeightedOr l a r b ↔ WeightedOr r b l a := Iff.intro WeightedOr.symm WeightedOr.symm
 @[simp] theorem weighted_or_comm : WeightedOr l a r b ↔ WeightedOr r b l a := WeightedOr.comm
@@ -36,3 +41,16 @@ theorem WeightedOr.imp_right (f : b → c) : a ∨ b → a ∨ c := .imp id f
 @[simp] theorem true_weighted_or (p : Prop) : (WeightedOr l True r p) = True := eq_true (.inl trivial)
 @[simp] theorem weighted_or_false (p : Prop) : (WeightedOr l p r False) = p := propext ⟨fun (.inl h) => h, .inl⟩
 @[simp] theorem false_weighted_or (p : Prop) : (WeightedOr l False r p) = p := propext ⟨fun (.inr h) => h, .inr⟩
+
+@[simp] theorem eq_true_weighted_or_eq_false_self : ∀(b : Bool), (WeightedOr l (b = true) r (b = false)) ↔ True := by
+  intro b
+  cases b <;> aesop
+@[simp] theorem eq_false_weighted_or_eq_true_self : ∀(b : Bool), (WeightedOr l (b = false) r (b = true)) ↔ True := by
+  intro b
+  cases b <;> aesop
+
+theorem Decidable.weighted_or_iff_not_imp_left [Decidable a] : WeightedOr l a r b ↔ (¬a → b) :=
+  ⟨WeightedOr.resolve_left, fun h => dite _ .inl (.inr ∘ h)⟩
+
+theorem Decidable.weighted_or_iff_not_imp_right [Decidable b] : WeightedOr l a r b ↔ (¬b → a) :=
+  weighted_or_comm.trans weighted_or_iff_not_imp_left
