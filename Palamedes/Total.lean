@@ -5,7 +5,7 @@ namespace Gen
 
 def total : Gen α → Prop
   | .ret _ => True
-  | .pick x y => total x ∧ total y
+  | .pick x y _ => total x ∧ total y
   | .indexed f => ∀ n, total (f n)
   | .bind x f => total x ∧ ∀ v, v ∈ 〚x〛  → total (f v)
   | .assume b f => ∃ (h : b), total (f h)

@@ -21,7 +21,7 @@ namespace Raw
 inductive Gen : Type → Type 1 where
   | ret : α → Gen α
   | bind : Gen α → (α → Gen β) → Gen β
-  | pick : Gen α → Gen α → Gen α
+  | pick : Gen α → Gen α → (weight : Nat := 1) -> Gen α
   | indexed : (Nat → Gen (Option α)) → Gen α
   | assume : (b : Bool) → (b → Gen α) → Gen α
 
@@ -39,7 +39,7 @@ instance : Bind Gen where
 
 instance : Monad Gen where
 
-def pick (x y : Gen α) : Gen α := Raw.Gen.pick x y
+def pick (x y : Gen α) (w : Nat := 1) : Gen α := Raw.Gen.pick x y w
 
 def assume (b : Bool) (f : b → Gen α) : Gen α := Raw.Gen.assume b f
 
@@ -47,7 +47,7 @@ def indexed (f : Nat → Gen (Option α)) : Gen α := Raw.Gen.indexed f
 
 def support : Gen α → α → Prop
   | .ret a => (. = a)
-  | .pick x y => fun a => support x a ∨ support y a
+  | .pick x y  _ => fun a => support x a ∨ support y a
   | .indexed f => fun a =>
     (∀ v n m, support (f n) (some v) → support (f (n + m)) (some v))
       ∧  ∃ n, support (f n) (some a)
@@ -68,7 +68,7 @@ theorem support_bind :
 
 @[simp]
 theorem support_pick :
-    support (pick x y) = fun a => support x a ∨ support y a := by
+    support (pick x y w) = fun a => support x a ∨ support y a := by
   simp [support, pick]
 
 @[simp]
