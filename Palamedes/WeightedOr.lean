@@ -1,6 +1,7 @@
 
 import Aesop
 
+@[aesop unsafe [constructors 100%, cases 50%]]
 inductive WeightedOr (l : Nat) (a : Prop) (r : Nat) (b : Prop) : Prop where
   | inl (h : a) : WeightedOr l a r b
   | inr (h : b) : WeightedOr l a r b
@@ -17,9 +18,9 @@ theorem WeightedOr.imp (f : a → c) (g : b → d) (h : WeightedOr l a r b) :
 theorem WeightedOr.imp_left (f : a → b) : a ∨ c → b ∨ c := .imp f id
 theorem WeightedOr.imp_right (f : b → c) : a ∨ b → a ∨ c := .imp id f
 
-theorem weighted_or_iff_right_of_imp (ha : a → b) : (WeightedOr l a r b) ↔ b :=
+@[simp] theorem weighted_or_iff_right_of_imp (ha : a → b) : (WeightedOr l a r b) ↔ b :=
   Iff.intro (WeightedOr.rec ha id) .inr
-theorem weighted_or_iff_left_of_imp  (hb : b → a) : (WeightedOr l a r b) ↔ a  :=
+@[simp] theorem weighted_or_iff_left_of_imp  (hb : b → a) : (WeightedOr l a r b) ↔ a  :=
   Iff.intro (WeightedOr.rec id hb) .inl
 
 @[simp] theorem weighted_or_iff_left_iff_imp  : (WeightedOr l a r b ↔ a) ↔ (b → a) :=

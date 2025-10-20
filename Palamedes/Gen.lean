@@ -40,7 +40,7 @@ instance : Bind Gen where
 
 instance : Monad Gen where
 
-def pick (l : Nat := 1) (x : Gen α) (r : Nat := 1) (y : Gen α) : Gen α := Raw.Gen.pick l x r y
+def pick (x y : Gen α) (l r : Nat := 1) : Gen α := Raw.Gen.pick l x r y
 
 def assume (b : Bool) (f : b → Gen α) : Gen α := Raw.Gen.assume b f
 
@@ -48,7 +48,7 @@ def indexed (f : Nat → Gen (Option α)) : Gen α := Raw.Gen.indexed f
 
 def support : Gen α → α → Prop
   | .ret a => (. = a)
-  | .pick l x r y => fun a => WeightedOr l (support x a) r (support y a)
+  | .pick x y l r => fun a => WeightedOr l (support x a) r (support y a)
   | .indexed f => fun a =>
     (∀ v n m, support (f n) (some v) → support (f (n + m)) (some v))
       ∧  ∃ n, support (f n) (some a)
@@ -69,7 +69,7 @@ theorem support_bind :
 
 @[simp]
 theorem support_pick :
-    support (pick l x r y) = fun a => WeightedOr l (support x a) r (support y a) := by
+    support (pick x y l r) = fun a => WeightedOr l (support x a) r (support y a) := by
   simp [support, pick]
 
 @[simp]

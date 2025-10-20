@@ -35,7 +35,7 @@ def s_pick
     (x : CorrectGen P)
     (y : CorrectGen Q) :
     CorrectGen (fun a => WeightedOr l (P a) r (Q a)) :=
-  Subtype.mk (pick l x.val r y.val) <| by
+  Subtype.mk (pick x.val y.val l r) <| by
     simp [x.property, y.property]
 
 @[reducible]
