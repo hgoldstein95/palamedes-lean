@@ -31,10 +31,11 @@ def s_bind
 @[reducible]
 def s_pick
     {P Q : α → Prop}
+    (l r : Nat)
     (x : CorrectGen P)
     (y : CorrectGen Q) :
-    CorrectGen (fun a => P a ∨ Q a) :=
-  Subtype.mk (pick x.val y.val) <| by
+    CorrectGen (fun a => WeightedOr l (P a) r (Q a)) :=
+  Subtype.mk (pick l x.val r y.val) <| by
     simp [x.property, y.property]
 
 @[reducible]

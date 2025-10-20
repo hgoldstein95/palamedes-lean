@@ -3,11 +3,11 @@ import Palamedes.Gen
 open Gen
 
 theorem support_assume_pick :
-    support (if h : b then pick (x h) y else y) = support (pick (assume b x) y) := by
+    support (if h : b then pick l (x h) r y else y) = support (pick l (assume b x) r y) := by
   aesop
 
 theorem support_pick_assume :
-    support (if h : b then pick x (y h) else x) = support (pick x (assume b y)) := by
+    support (if h : b then pick l x r (y h) else x) = support (pick l x r (assume b y)) := by
   aesop
 
 theorem support_assume_bind :
@@ -15,7 +15,9 @@ theorem support_assume_bind :
   aesop
 
 theorem support_pick_bind :
-    support (pick (x >>= f) (y >>= f)) = support (pick x y >>= f) := by
+    support (pick l (x >>= f) r (y >>= f)) = support (pick l x r y >>= f) := by
+  simp
+
   aesop
 
 theorem support_if_bind
@@ -41,7 +43,7 @@ theorem support_bind_congr
 theorem support_pick_congr
     (hx : support x = support x')
     (hy : support y = support y') :
-    support (pick x y) = support (pick x' y') := by
+    support (pick x y w) = support (pick x' y' w) := by
   aesop
 
 theorem support_if_congr
