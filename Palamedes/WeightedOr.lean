@@ -17,9 +17,6 @@ theorem WeightedOr.imp (f : a → c) (g : b → d) (h : WeightedOr l a r b) :
 theorem WeightedOr.imp_left (f : a → b) : a ∨ c → b ∨ c := .imp f id
 theorem WeightedOr.imp_right (f : b → c) : a ∨ b → a ∨ c := .imp id f
 
-@[simp] theorem weighted_or_self_left  : a ∨ (a ∨ b) ↔ a ∨ b := by rw [←propext or_assoc, or_self]
-@[simp] theorem weighted_or_self_right : (a ∨ b) ∨ b ↔ a ∨ b := by rw [ propext or_assoc, or_self]
-
 theorem weighted_or_iff_right_of_imp (ha : a → b) : (WeightedOr l a r b) ↔ b :=
   Iff.intro (WeightedOr.rec ha id) .inr
 theorem weighted_or_iff_left_of_imp  (hb : b → a) : (WeightedOr l a r b) ↔ a  :=
@@ -31,3 +28,10 @@ theorem weighted_or_iff_left_of_imp  (hb : b → a) : (WeightedOr l a r b) ↔ a
   by rw [weighted_or_comm, weighted_or_iff_left_iff_imp]
 @[simp] theorem iff_weighted_or_self {a b : Prop} : (b ↔ WeightedOr l a r b) ↔ (a → b) :=
   propext (@Iff.comm _ b) ▸ @weighted_or_iff_right_iff_imp l a r b
+@[simp] theorem iff_self_weighted_or {a b : Prop} : (a ↔ WeightedOr l a r b) ↔ (b → a) :=
+  propext (@Iff.comm _ a) ▸ @weighted_or_iff_left_iff_imp l a r b
+
+@[simp] theorem weighted_or_true (p : Prop) : (WeightedOr l p r True) = True := eq_true (.inr trivial)
+@[simp] theorem true_weighted_or (p : Prop) : (WeightedOr l True r p) = True := eq_true (.inl trivial)
+@[simp] theorem weighted_or_false (p : Prop) : (WeightedOr l p r False) = p := propext ⟨fun (.inl h) => h, .inl⟩
+@[simp] theorem false_weighted_or (p : Prop) : (WeightedOr l False r p) = p := propext ⟨fun (.inr h) => h, .inr⟩

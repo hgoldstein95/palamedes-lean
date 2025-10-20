@@ -16,8 +16,6 @@ theorem support_assume_bind :
 
 theorem support_pick_bind :
     support (pick l (x >>= f) r (y >>= f)) = support (pick l x r y >>= f) := by
-  simp
-
   aesop
 
 theorem support_if_bind
