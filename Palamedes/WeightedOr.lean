@@ -20,8 +20,6 @@ theorem WeightedOr.comm : WeightedOr l a r b ↔ WeightedOr r b l a := Iff.intro
 @[simp] theorem weighted_or_comm : WeightedOr l a r b ↔ WeightedOr r b l a := WeightedOr.comm
 theorem WeightedOr.imp (f : a → c) (g : b → d) (h : WeightedOr l a r b) :
   WeightedOr l c r d := h.elim (inl ∘ f) (inr ∘ g)
-theorem WeightedOr.imp_left (f : a → b) : a ∨ c → b ∨ c := .imp f id
-theorem WeightedOr.imp_right (f : b → c) : a ∨ b → a ∨ c := .imp id f
 
 @[simp] theorem weighted_or_iff_right_of_imp (ha : a → b) : (WeightedOr l a r b) ↔ b :=
   Iff.intro (WeightedOr.rec ha id) .inr

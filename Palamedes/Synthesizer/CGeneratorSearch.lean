@@ -62,6 +62,10 @@ macro "goal_is_not_fold_term" : tactic =>
 macro "goal_is_or" : tactic =>
   `(tactic| guard_target = CorrectGen (fun _ => _ ∨ _))
 
+macro "goal_is_weighted_or" : tactic =>
+  `(tactic| guard_target = CorrectGen (fun _ => WeightedOr _ _ _ _))
+
+
 macro "goal_is_eq" : tactic =>
   `(tactic| guard_target = CorrectGen (fun _ => _ = _))
 
@@ -313,7 +317,7 @@ macro "normalize_and_apply" : tactic =>
         first
         | case pf => norm_for_bind' -- TODO Fix this
         | case pf => norm_for_bind
-      | case' arg => apply s_pick _ _
+      | case' arg => apply s_pick _ _ _ _
         case pf => norm_for_pick
     ))
 
