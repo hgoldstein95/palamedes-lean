@@ -1,5 +1,5 @@
 import Palamedes.Gen
-import Plausible.Random
+import Plausible.Gen
 
 /-
 Infrastructure for sampling from a generator.
@@ -19,25 +19,25 @@ structure SampleConfig where
   sizeRetryLimit : Nat
 
 instance : Inhabited SampleConfig where
-  default := {backtrackLimit := 100, sizeLimit := 10, sizeRetryLimit := 100}
+  default := {backtrackLimit := 100, sizeLimit := 20, sizeRetryLimit := 100}
 
-abbrev SampleM α := ExceptT Unit (Plausible.RandT IO) α
+abbrev SampleM α := Plausible.Gen α
 
 namespace SampleM
 
 def failWith (s : String) : SampleM α := do
-  ExceptT.lift (StateT.lift (throw (IO.userError s)))
+  throw (.genError s)
 
-def next : SampleM Nat := ExceptT.lift Plausible.Rand.next
+def next : SampleM Nat := Plausible.Gen.chooseNat
 
-def randBound (lo hi : Nat) (pf : lo ≤ hi) : SampleM {v : Nat // lo ≤ v ∧ v ≤ hi} := do
-  ExceptT.lift (Plausible.Random.randBound Nat lo hi pf)
+def randBound (lo hi : Nat) (pf : lo ≤ hi) : SampleM {v : Nat // lo ≤ v ∧ v ≤ hi} :=
+  Plausible.Gen.choose (α := Nat) lo hi pf
 
-def weightedChoice (g₁ g₂ : IO (SampleM α)) : SampleM α := do
+def weightedChoice (g₁ g₂ : SampleM α) : SampleM α := do
   let ⟨b, _⟩ ← SampleM.randBound 0 1 (by simp)
-  if b == 0 then (← g₁) else (← g₂)
+  if b == 0 then g₁ else g₂
 
-def run : SampleM α → IO α := (. >>= IO.ofExcept) ∘ Plausible.runRand ∘ ExceptT.run
+def run : SampleM α → IO α := (Plausible.Gen.run · 100)
 
 mutual
 partial def sizedLoop
@@ -61,18 +61,16 @@ partial def backtrackLoop
   match remaining with
   | 0 => failWith "backtracked too many times"
   | remaining' + 1 =>
-    let x' := IO.lazyPure (fun () => sampleRand cfg x)
-    let y' := IO.lazyPure (fun () => sampleRand cfg y)
-    ExceptT.tryCatch
-      (weightedChoice x' y')
-      (fun () => backtrackLoop cfg x y remaining')
+    tryCatch
+      (weightedChoice (sampleRand cfg x) (sampleRand cfg y))
+      (fun _ => backtrackLoop cfg x y remaining')
 
 partial def sampleRand (cfg : SampleConfig) : Gen α → SampleM α
   | .ret v' => pure v'
   | .pick x y => backtrackLoop cfg x y cfg.backtrackLimit
   | .indexed f => sizedLoop cfg cfg.sizeLimit f cfg.sizeRetryLimit
   | .bind x f => sampleRand cfg x >>= sampleRand cfg ∘ f
-  | .assume b f => if h : b then sampleRand cfg (f h) else throw ()
+  | .assume b f => if h : b then sampleRand cfg (f h) else throw (.genError "assume check failed")
 end
 
 end SampleM

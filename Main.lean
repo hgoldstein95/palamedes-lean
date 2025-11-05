@@ -1,3 +1,8 @@
 import Palamedes.Basic
+import Palamedes.Sample
 
-def main : IO Unit := IO.println "Welcome to Palamedes!"
+-- #eval replicateM 100 <| sample (WellTyped.genWellTyped [])
+
+-- #eval replicateM 100 <| sample (BST.genBST 0 20)
+
+def main : IO Unit := IO.println "Hello, world!"
