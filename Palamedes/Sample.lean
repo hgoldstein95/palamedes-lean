@@ -61,9 +61,10 @@ partial def backtrackLoop
   match remaining with
   | 0 => failWith "backtracked too many times"
   | remaining' + 1 =>
-    tryCatch
-      (weightedChoice (sampleRand cfg x) (sampleRand cfg y))
-      (fun _ => backtrackLoop cfg x y remaining')
+    try
+      weightedChoice (sampleRand cfg x) (sampleRand cfg y)
+    catch
+      | _ => backtrackLoop cfg x y remaining'
 
 partial def sampleRand (cfg : SampleConfig) : Gen α → SampleM α
   | .ret v' => pure v'
