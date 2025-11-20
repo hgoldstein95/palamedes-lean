@@ -2,7 +2,7 @@
 The big idea with this exploration is that I want to work towards a _tagless final_ version of the
 generator that I had in the previous version. Rather than implement `Gen` as a data structure, I'll
 implement it as a type class. And the end goal is going to be to instantiate a given concrete,
-partially-fixpointed `∀ [Gen gen], gen α` at types `α → Prop` (which I can use for proofs) and also
+partially-fixpointed `∀ [Gen gen], gen α` at types `α → Prop` which I can use for proofs and also
 at type `IO α` which I can run.
 -/
 
@@ -50,12 +50,10 @@ open Pick Lean.Order
 def PropM (α : Type) := α → Prop
 
 instance : Pure PropM where
-  pure a := fun a' => a' = a
+  pure a  a' := a = a'
 
 instance : Bind PropM where
   bind m f b := ∃ a, m a ∧ f a b
-
-instance : Monad PropM := {}
 
 instance : Pick PropM where
   pick p q := fun a => p a ∨ q a
@@ -66,15 +64,7 @@ noncomputable instance : CCPO (PropM α) := inferInstanceAs (CCPO (FlatOrder (fu
 
 /-- I hope this is possible? I tried to prove it but got stuck. Might just be that my `PartialOrder`
 is the wrong one. -/
-instance : MonoBind PropM := sorry
-
-instance : PartialOrder Prop := inferInstanceAs (PartialOrder (FlatOrder False))
-
-/-- I thought this would be enough to make the following work, but it seems no. -/
-@[partial_fixpoint_monotone]
-theorem monotone_pick [PartialOrder α] {x y : PropM α} :
-    @monotone _ _ _ ReverseImplicationOrder.instOrder (fun (a : α) => pick x y a) := by
-  sorry
+noncomputable instance : MonoBind PropM := sorry
 
 /--
 error: Could not prove 'Tree.isBSTCoinductiveMonad' to be monotone in its recursive calls:
@@ -102,7 +92,7 @@ def Tree.isBSTCoinductiveMonad (lo hi : Nat) : PropM (Tree Nat) := do
       let x ← choose lo hi
       let l ← Tree.isBSTCoinductiveMonad lo (x - 1)
       let r ← Tree.isBSTCoinductiveMonad (x + 1) hi
-      return .node l x r
+      return node l x r
 coinductive_fixpoint
 
 end PropM
@@ -134,5 +124,8 @@ def Tree.genBST (lo hi : Nat) : IO (Tree Nat) := do
       let r ← Tree.genBST (x + 1) hi
       return node l x r
 partial_fixpoint
+
+#eval for _ in [0:20] do
+  IO.println s!"{repr (← Tree.genBST 0 10)}"
 
 end IO
