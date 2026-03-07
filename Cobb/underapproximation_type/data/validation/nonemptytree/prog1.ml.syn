@@ -1,0 +1,54 @@
+let rec nonemptytree_gen = fun (s : int) ->
+  (let ((xccc8 : bool)) =
+     ((sizecheck : int -> bool) ((s : int) : int) : bool) in
+   (match ((xccc8 : bool) : bool) with
+    | true ->
+        (let ((idx37 : bool)) =
+           ((bool_gen : unit -> bool) (() : unit) : bool) in
+         ((match ((idx37 : bool) : bool) with
+           | true ->
+               (let ((idx0ccc5 : int tree)) = (Leaf : int tree) in
+                (let ((idx0ccc4 : int tree)) = (Leaf : int tree) in
+                 (let ((idx1ccc1 : int)) =
+                    ((int_gen : unit -> int) (() : unit) : int) in
+                  (Node
+                     (((idx1ccc1 : int) : int),
+                       ((idx0ccc4 : int tree) : int tree),
+                       ((idx0ccc5 : int tree) : int tree)) : int tree) : 
+                   int tree) : int tree) : int tree)
+           | false -> (Leaf : int tree)) : int tree) : int tree)
+    | false ->
+        (let ((xccc9 : bool)) =
+           ((bool_gen : unit -> bool) (() : unit) : bool) in
+         ((match ((xccc9 : bool) : bool) with
+           | true ->
+               (let ((idx3 : bool)) =
+                  ((bool_gen : unit -> bool) (() : unit) : bool) in
+                ((match ((idx3 : bool) : bool) with
+                  | true ->
+                      (let ((xccc10 : int tree)) = (Leaf : int tree) in
+                       (let ((xccc11 : int tree)) = (Leaf : int tree) in
+                        (let ((xccc12 : int)) =
+                           ((int_gen : unit -> int) (() : unit) : int) in
+                         (Node
+                            (((xccc12 : int) : int),
+                              ((xccc11 : int tree) : int tree),
+                              ((xccc10 : int tree) : int tree)) : int tree) : 
+                          int tree) : int tree) : int tree)
+                  | false -> (Leaf : int tree)) : int tree) : int tree)
+           | false ->
+               (let ((ss : int)) =
+                  ((subs : int -> int) ((s : int) : int) : int) in
+                (let ((lt : int tree)) =
+                   ((nonemptytree_gen : int -> int tree) ((ss : int) : int) : 
+                   int tree) in
+                 (let ((rt : int tree)) =
+                    ((nonemptytree_gen : int -> int tree) ((ss : int) : int) : 
+                    int tree) in
+                  (let ((n : int)) =
+                     ((int_gen : unit -> int) (() : unit) : int) in
+                   (Node
+                      (((n : int) : int), ((lt : int tree) : int tree),
+                        ((rt : int tree) : int tree)) : int tree) : int tree) : 
+                   int tree) : int tree) : int tree)) : int tree) : int tree) : 
+     int tree) : int tree)

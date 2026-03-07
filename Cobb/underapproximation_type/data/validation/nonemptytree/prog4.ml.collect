@@ -1,0 +1,43 @@
+Path Specific Collection:
+In Path:
+pathcond_1:[v:unit | ∃x_3, ((((x_3) => (s == 0)) && ((s == 0) => (x_3))) && ((not (x_3) => (s > 0)) && ((s > 0) => not (x_3))) && not (x_3))]
+Cost: 1
+Type: Ty_int
+idx2_0:[v:int | v == s]
+pathcond_1:[v:unit | ∃x_3, ((((x_3) => (s == 0)) && ((s == 0) => (x_3))) && ((not (x_3) => (s > 0)) && ((s > 0) => not (x_3))) && not (x_3))] 
+ ⊢ idx2_0 as s : int :
+[v:int | v == s]
+
+idx1_0:[v:int | true]
+pathcond_1:[v:unit | ∃x_3, ((((x_3) => (s == 0)) && ((s == 0) => (x_3))) && ((not (x_3) => (s > 0)) && ((s > 0) => not (x_3))) && not (x_3))] 
+ ⊢ idx1_0 as int_gen () : int :
+[v:int | true]
+
+Cost: 10
+Type: (Ty_constructor(tree(Ty_int)))
+idx0_0:[v:int tree | leaf v]
+pathcond_1:[v:unit | ∃x_3, ((((x_3) => (s == 0)) && ((s == 0) => (x_3))) && ((not (x_3) => (s > 0)) && ((s > 0) => not (x_3))) && not (x_3))] 
+ ⊢ idx0_0 as Leaf : int tree :
+[v:int tree | leaf v]
+
+In Path:
+pathcond_0:[v:unit | ∃x_3, ((((x_3) => (s == 0)) && ((s == 0) => (x_3))) && ((not (x_3) => (s > 0)) && ((s > 0) => not (x_3))) && (x_3))]
+Cost: 1
+Type: Ty_int
+idx2_1:[v:int | v == s]
+pathcond_0:[v:unit | ∃x_3, ((((x_3) => (s == 0)) && ((s == 0) => (x_3))) && ((not (x_3) => (s > 0)) && ((s > 0) => not (x_3))) && (x_3))] 
+ ⊢ idx2_1 as s : int :
+[v:int | v == s]
+
+idx1_1:[v:int | true]
+pathcond_0:[v:unit | ∃x_3, ((((x_3) => (s == 0)) && ((s == 0) => (x_3))) && ((not (x_3) => (s > 0)) && ((s > 0) => not (x_3))) && (x_3))] 
+ ⊢ idx1_1 as int_gen () : int :
+[v:int | true]
+
+Cost: 10
+Type: (Ty_constructor(tree(Ty_int)))
+idx0_1:[v:int tree | leaf v]
+pathcond_0:[v:unit | ∃x_3, ((((x_3) => (s == 0)) && ((s == 0) => (x_3))) && ((not (x_3) => (s > 0)) && ((s > 0) => not (x_3))) && (x_3))] 
+ ⊢ idx0_1 as Leaf : int tree :
+[v:int tree | leaf v]
+

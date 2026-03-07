@@ -1,0 +1,33 @@
+let rec twos_list_gen = fun (s : int) ->
+  (let ((xccc2 : bool)) =
+     ((sizecheck : int -> bool) ((s : int) : int) : bool) in
+   (match ((xccc2 : bool) : bool) with
+    | true ->
+        (let ((idx0ccc5 : int list)) = (Nil : int list) in
+         (let ((idx1ccc1 : int)) = ((two : unit -> int) (() : unit) : int) in
+          (((idx1ccc1 : int) : int) ::
+            ((idx0ccc5 : int list) : int list) : int list) : int list) : 
+        int list)
+    | false ->
+        (let ((idx31 : bool)) =
+           ((bool_gen : unit -> bool) (() : unit) : bool) in
+         ((match ((idx31 : bool) : bool) with
+           | true ->
+               (let ((idx2ccc0 : int)) = ((s : int) : int) in
+                (let ((idx5ccc0 : int)) =
+                   ((subs : int -> int) ((idx2ccc0 : int) : int) : int) in
+                 (let ((idx22ccc2 : int list)) =
+                    ((twos_list_gen : int -> int list)
+                       ((idx5ccc0 : int) : int) : int list) in
+                  (let ((idx1ccc0 : int)) =
+                     ((two : unit -> int) (() : unit) : int) in
+                   (((idx1ccc0 : int) : int) ::
+                     ((idx22ccc2 : int list) : int list) : int list) : 
+                    int list) : int list) : int list) : int list)
+           | false ->
+               (let ((idx0ccc3 : int list)) = (Nil : int list) in
+                (let ((idx1ccc0 : int)) =
+                   ((two : unit -> int) (() : unit) : int) in
+                 (((idx1ccc0 : int) : int) ::
+                   ((idx0ccc3 : int list) : int list) : int list) : int list) : 
+               int list)) : int list) : int list) : int list) : int list)

@@ -1,0 +1,1 @@
+[v:int list | ((not (len v 1) && not (s == 0)) || ((len v 1) && not (s == 0))) && (∃n, ((len v n) && ((n <= (s + 1)) && ((n > 0) && (all_evens v)))))]

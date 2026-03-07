@@ -1,0 +1,106 @@
+Path Specific Collection:
+In Path:
+pathcond_0:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && (x_6))]
+Cost: 1
+Type: Ty_int
+idx4_0:[v:int | v == hi]
+pathcond_0:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && (x_6))] 
+ ⊢ idx4_0 as hi : int :
+[v:int | v == hi]
+
+idx3_0:[v:int | v == lo]
+pathcond_0:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && (x_6))] 
+ ⊢ idx3_0 as lo : int :
+[v:int | v == lo]
+
+idx2_0:[v:int | v == d]
+pathcond_0:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && (x_6))] 
+ ⊢ idx2_0 as d : int :
+[v:int | v == d]
+
+idx1_0:[v:int | true]
+pathcond_0:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && (x_6))] 
+ ⊢ idx1_0 as int_gen () : int :
+[v:int | true]
+
+Cost: 10
+Type: (Ty_constructor(tree(Ty_int)))
+idx0_0:[v:int tree | (leaf v) && (depth v 0)]
+pathcond_0:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && (x_6))] 
+ ⊢ idx0_0 as Leaf : int tree :
+[v:int tree | (leaf v) && (depth v 0)]
+
+In Path:
+pathcond_2:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && not (x_6) && not ((lo + 1) < hi))]
+Cost: 1
+Type: Ty_int
+idx4_1:[v:int | v == hi]
+pathcond_2:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && not (x_6) && not ((lo + 1) < hi))] 
+ ⊢ idx4_1 as hi : int :
+[v:int | v == hi]
+
+idx3_1:[v:int | v == lo]
+pathcond_2:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && not (x_6) && not ((lo + 1) < hi))] 
+ ⊢ idx3_1 as lo : int :
+[v:int | v == lo]
+
+idx2_1:[v:int | v == d]
+pathcond_2:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && not (x_6) && not ((lo + 1) < hi))] 
+ ⊢ idx2_1 as d : int :
+[v:int | v == d]
+
+idx1_1:[v:int | true]
+pathcond_2:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && not (x_6) && not ((lo + 1) < hi))] 
+ ⊢ idx1_1 as int_gen () : int :
+[v:int | true]
+
+Cost: 10
+Type: (Ty_constructor(tree(Ty_int)))
+idx0_1:[v:int tree | (leaf v) && (depth v 0)]
+pathcond_2:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && not (x_6) && not ((lo + 1) < hi))] 
+ ⊢ idx0_1 as Leaf : int tree :
+[v:int tree | (leaf v) && (depth v 0)]
+
+In Path:
+x:[v:int | true]
+pathcond_1:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && not (x_6) && ((lo + 1) < hi) && (∃b_15, (((1 + lo) < b_15) && (b_15 == hi) && ((lo < x) && (x < b_15)))))]
+Cost: 1
+Type: Ty_int
+x:[v:int | true]
+pathcond_1:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && not (x_6) && ((lo + 1) < hi) && (∃b_15, (((1 + lo) < b_15) && (b_15 == hi) && ((lo < x) && (x < b_15)))))]
+idx9:[v:int | v == x] 
+ ⊢ idx9 as x : int :
+[v:int | v == x]
+
+idx4_2:[v:int | v == hi]
+x:[v:int | true]
+pathcond_1:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && not (x_6) && ((lo + 1) < hi) && (∃b_15, (((1 + lo) < b_15) && (b_15 == hi) && ((lo < x) && (x < b_15)))))] 
+ ⊢ idx4_2 as hi : int :
+[v:int | v == hi]
+
+idx3_2:[v:int | v == lo]
+x:[v:int | true]
+pathcond_1:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && not (x_6) && ((lo + 1) < hi) && (∃b_15, (((1 + lo) < b_15) && (b_15 == hi) && ((lo < x) && (x < b_15)))))] 
+ ⊢ idx3_2 as lo : int :
+[v:int | v == lo]
+
+idx2_2:[v:int | v == d]
+x:[v:int | true]
+pathcond_1:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && not (x_6) && ((lo + 1) < hi) && (∃b_15, (((1 + lo) < b_15) && (b_15 == hi) && ((lo < x) && (x < b_15)))))] 
+ ⊢ idx2_2 as d : int :
+[v:int | v == d]
+
+idx1_2:[v:int | true]
+x:[v:int | true]
+pathcond_1:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && not (x_6) && ((lo + 1) < hi) && (∃b_15, (((1 + lo) < b_15) && (b_15 == hi) && ((lo < x) && (x < b_15)))))] 
+ ⊢ idx1_2 as int_gen () : int :
+[v:int | true]
+
+Cost: 10
+Type: (Ty_constructor(tree(Ty_int)))
+idx0_2:[v:int tree | (leaf v) && (depth v 0)]
+x:[v:int | true]
+pathcond_1:[v:unit | ∃x_6, ((((x_6) => (d == 0)) && ((d == 0) => (x_6))) && ((not (x_6) => (d > 0)) && ((d > 0) => not (x_6))) && not (x_6) && ((lo + 1) < hi) && (∃b_15, (((1 + lo) < b_15) && (b_15 == hi) && ((lo < x) && (x < b_15)))))] 
+ ⊢ idx0_2 as Leaf : int tree :
+[v:int tree | (leaf v) && (depth v 0)]
+

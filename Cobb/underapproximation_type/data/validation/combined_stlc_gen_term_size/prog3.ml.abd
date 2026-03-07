@@ -1,0 +1,1 @@
+[v:stlc_term | ((is_abs v) && not (is_app v) && not (num == 0) && not (num_arr_tau == 0)) && (typing gamma v tau) && (num_app v num)]

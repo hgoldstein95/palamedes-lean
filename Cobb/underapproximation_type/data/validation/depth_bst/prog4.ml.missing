@@ -1,0 +1,10 @@
+let[@assert] missing_ty =
+  let d = (0 <= v : [%v: int]) [@over] in
+  let lo = (true : [%v: int]) [@over] in
+  let hi = (lo < v : [%v: int]) [@over] in
+  (d > 0 && not (leaf v) && ((not (leaf v))#==>(lower_bound v lo))
+    && ((not (leaf v))#==>(upper_bound v hi))
+    && bst v
+    && fun ((n [@exists]) : int) -> depth v n && n <= d
+    : [%v: int tree])
+    [@under]

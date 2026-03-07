@@ -1,0 +1,1 @@
+[v:int list | ((not (len v 1) && not (s == 0) && (s == 2)) || (not (len v 1) && not (s == 0) && not (s == 2)) || ((len v 1) && not (s == 0) && not (s == 2)) || (not (len v 1) && (s == 0) && not (s == 2))) && (∃n, ((len v n) && ((n == s) && (all_twos v))))]

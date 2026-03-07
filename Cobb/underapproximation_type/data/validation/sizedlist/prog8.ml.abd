@@ -1,0 +1,1 @@
+[v:int list | ((not (emp v) && not (s == 0)) || ((emp v) && not (s == 0))) && (∃n, ((len v n) && (n <= s)))]

@@ -1,0 +1,17 @@
+let rec duplicate_list_gen = fun (s : int) ->
+  (fun (x : int) ->
+     (let ((xccc7 : bool)) =
+        ((sizecheck : int -> bool) ((s : int) : int) : bool) in
+      (match ((xccc7 : bool) : bool) with
+       | true -> ([] : int list)
+       | false ->
+           (let ((xccc8 : int)) =
+              ((subs : int -> int) ((s : int) : int) : int) in
+            (let ((xccc9 : int -> int list)) =
+               ((duplicate_list_gen : int -> int -> int list)
+                  ((xccc8 : int) : int) : int -> int list) in
+             (let ((xccc10 : int list)) =
+                ((xccc9 : int -> int list) ((x : int) : int) : int list) in
+              (((x : int) : int) ::
+                ((xccc10 : int list) : int list) : int list) : int list) : 
+              int list) : int list) : int list) : int list) : int -> int list)

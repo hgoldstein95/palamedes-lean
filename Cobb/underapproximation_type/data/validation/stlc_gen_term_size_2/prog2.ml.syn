@@ -1,0 +1,234 @@
+let rec gen_term_size = fun (num_arr_tau : int) ->
+  (fun (num : int) ->
+     (fun (gamma : stlc_tyctx) ->
+        (fun (tau : stlc_ty) ->
+           (let ((xccc8 : bool)) =
+              ((sizecheck : int -> bool) ((num : int) : int) : bool) in
+            (match ((xccc8 : bool) : bool) with
+             | true ->
+                 (let ((xccc9 : stlc_ty -> stlc_term)) =
+                    ((gen_term_no_app : stlc_tyctx -> stlc_ty -> stlc_term)
+                       ((gamma : stlc_tyctx) : stlc_tyctx) : stlc_ty ->
+                                                               stlc_term) in
+                  ((xccc9 : stlc_ty -> stlc_term) ((tau : stlc_ty) : stlc_ty) : 
+                    stlc_term) : stlc_term)
+             | false ->
+                 (let ((xccc10 : bool)) =
+                    ((bool_gen : unit -> bool) (() : unit) : bool) in
+                  ((match ((xccc10 : bool) : bool) with
+                    | true ->
+                        (let ((arg_tau : stlc_ty)) =
+                           ((gen_type : unit -> stlc_ty) (() : unit) : 
+                           stlc_ty) in
+                         (let ((num_app_func : int)) =
+                            ((int_range_inex_zero : int -> int)
+                               ((num : int) : int) : int) in
+                          ((match (true : bool) with
+                            | true ->
+                                (let ((idx9 : stlc_ty)) =
+                                   ((arg_tau : stlc_ty) : stlc_ty) in
+                                 (let ((idx83ccc0 : int)) =
+                                    ((get_num_arr : stlc_ty -> int)
+                                       ((idx9 : stlc_ty) : stlc_ty) : 
+                                    int) in
+                                  (let ((idx108 :
+                                          int ->
+                                            stlc_tyctx ->
+                                              stlc_ty -> stlc_term))
+                                     =
+                                     ((gen_term_size : int ->
+                                                         int ->
+                                                           stlc_tyctx ->
+                                                             stlc_ty ->
+                                                               stlc_term)
+                                        ((idx83ccc0 : int) : int) : int ->
+                                                                    stlc_tyctx
+                                                                    ->
+                                                                    stlc_ty
+                                                                    ->
+                                                                    stlc_term) in
+                                   (let ((idx10 : int)) =
+                                      ((num_app_func : int) : int) in
+                                    (let ((idx109 :
+                                            stlc_tyctx ->
+                                              stlc_ty -> stlc_term))
+                                       =
+                                       ((idx108 : int ->
+                                                    stlc_tyctx ->
+                                                      stlc_ty -> stlc_term)
+                                          ((idx10 : int) : int) : stlc_tyctx
+                                                                    ->
+                                                                    stlc_ty
+                                                                    ->
+                                                                    stlc_term) in
+                                     (let ((idx2ccc20 : stlc_tyctx)) =
+                                        ((gamma : stlc_tyctx) : stlc_tyctx) in
+                                      (let ((idx110 : stlc_ty -> stlc_term))
+                                         =
+                                         ((idx109 : stlc_tyctx ->
+                                                      stlc_ty -> stlc_term)
+                                            ((idx2ccc20 : stlc_tyctx) : 
+                                            stlc_tyctx) : stlc_ty ->
+                                                            stlc_term) in
+                                       (let ((idx111ccc61 : stlc_term)) =
+                                          ((idx110 : stlc_ty -> stlc_term)
+                                             ((idx9 : stlc_ty) : stlc_ty) : 
+                                          stlc_term) in
+                                        (let ((idx3ccc10 : stlc_ty)) =
+                                           ((tau : stlc_ty) : stlc_ty) in
+                                         (let ((idx104ccc0 : stlc_ty)) =
+                                            (Stlc_ty_arr
+                                               (((idx9 : stlc_ty) : stlc_ty),
+                                                 ((idx3ccc10 : stlc_ty) : 
+                                                 stlc_ty)) : stlc_ty) in
+                                          (let ((idx362ccc0 : int)) =
+                                             ((get_num_arr : stlc_ty -> int)
+                                                ((idx104ccc0 : stlc_ty) : 
+                                                stlc_ty) : int) in
+                                           (let ((idx2239 :
+                                                   int ->
+                                                     stlc_tyctx ->
+                                                       stlc_ty -> stlc_term))
+                                              =
+                                              ((gen_term_size : int ->
+                                                                  int ->
+                                                                    stlc_tyctx
+                                                                    ->
+                                                                    stlc_ty
+                                                                    ->
+                                                                    stlc_term)
+                                                 ((idx362ccc0 : int) : 
+                                                 int) : int ->
+                                                          stlc_tyctx ->
+                                                            stlc_ty ->
+                                                              stlc_term) in
+                                            (let ((idx1ccc0 : int)) =
+                                               ((num : int) : int) in
+                                             (let ((idx91 : int -> int)) =
+                                                ((difference_inex : int ->
+                                                                    int ->
+                                                                    int)
+                                                   ((idx1ccc0 : int) : 
+                                                   int) : int -> int) in
+                                              (let ((idx92ccc63 : int)) =
+                                                 ((idx91 : int -> int)
+                                                    ((idx10 : int) : 
+                                                    int) : int) in
+                                               (let ((idx2240 :
+                                                       stlc_tyctx ->
+                                                         stlc_ty -> stlc_term))
+                                                  =
+                                                  ((idx2239 : int ->
+                                                                stlc_tyctx ->
+                                                                  stlc_ty ->
+                                                                    stlc_term)
+                                                     ((idx92ccc63 : int) : 
+                                                     int) : stlc_tyctx ->
+                                                              stlc_ty ->
+                                                                stlc_term) in
+                                                (let ((idx2ccc577 :
+                                                        stlc_tyctx))
+                                                   =
+                                                   ((gamma : stlc_tyctx) : 
+                                                   stlc_tyctx) in
+                                                 (let ((idx2241 :
+                                                         stlc_ty -> stlc_term))
+                                                    =
+                                                    ((idx2240 : stlc_tyctx ->
+                                                                  stlc_ty ->
+                                                                    stlc_term)
+                                                       ((idx2ccc577 : 
+                                                       stlc_tyctx) : 
+                                                       stlc_tyctx) : 
+                                                    stlc_ty -> stlc_term) in
+                                                  (let ((idx104ccc142 :
+                                                          stlc_ty))
+                                                     =
+                                                     (Stlc_ty_arr
+                                                        (((idx9 : stlc_ty) : 
+                                                          stlc_ty),
+                                                          ((idx3ccc10 : 
+                                                          stlc_ty) : 
+                                                          stlc_ty)) : 
+                                                     stlc_ty) in
+                                                   (let ((idx2242ccc0 :
+                                                           stlc_term))
+                                                      =
+                                                      ((idx2241 : stlc_ty ->
+                                                                    stlc_term)
+                                                         ((idx104ccc142 : 
+                                                         stlc_ty) : stlc_ty) : 
+                                                      stlc_term) in
+                                                    (Stlc_app
+                                                       (((idx2242ccc0 : 
+                                                         stlc_term) : 
+                                                         stlc_term),
+                                                         ((idx111ccc61 : 
+                                                         stlc_term) : 
+                                                         stlc_term)) : 
+                                                      stlc_term) : stlc_term) : 
+                                                    stlc_term) : stlc_term) : 
+                                                  stlc_term) : stlc_term) : 
+                                                stlc_term) : stlc_term) : 
+                                              stlc_term) : stlc_term) : 
+                                            stlc_term) : stlc_term) : 
+                                          stlc_term) : stlc_term) : stlc_term) : 
+                                       stlc_term) : stlc_term) : stlc_term) : 
+                                    stlc_term) : stlc_term) : stlc_term)
+                            | false -> (Err : stlc_term)) : stlc_term) : 
+                           stlc_term) : stlc_term)
+                    | false ->
+                        ((match ((tau : stlc_ty) : stlc_ty) with
+                          | Stlc_ty_nat -> (Err : stlc_term)
+                          | Stlc_ty_arr (tau1, tau2) ->
+                              (let ((num_arr_tau2 : int)) =
+                                 ((get_num_arr : stlc_ty -> int)
+                                    ((tau2 : stlc_ty) : stlc_ty) : int) in
+                               (let ((xccc11 :
+                                       int ->
+                                         stlc_tyctx -> stlc_ty -> stlc_term))
+                                  =
+                                  ((gen_term_size : int ->
+                                                      int ->
+                                                        stlc_tyctx ->
+                                                          stlc_ty ->
+                                                            stlc_term)
+                                     ((num_arr_tau2 : int) : int) : int ->
+                                                                    stlc_tyctx
+                                                                    ->
+                                                                    stlc_ty
+                                                                    ->
+                                                                    stlc_term) in
+                                (let ((xccc12 :
+                                        stlc_tyctx -> stlc_ty -> stlc_term))
+                                   =
+                                   ((xccc11 : int ->
+                                                stlc_tyctx ->
+                                                  stlc_ty -> stlc_term)
+                                      ((num : int) : int) : stlc_tyctx ->
+                                                              stlc_ty ->
+                                                                stlc_term) in
+                                 (let ((xccc13 : stlc_tyctx)) =
+                                    (Stlc_tyctx_cons
+                                       (((tau1 : stlc_ty) : stlc_ty),
+                                         ((gamma : stlc_tyctx) : stlc_tyctx)) : 
+                                    stlc_tyctx) in
+                                  (let ((xccc14 : stlc_ty -> stlc_term)) =
+                                     ((xccc12 : stlc_tyctx ->
+                                                  stlc_ty -> stlc_term)
+                                        ((xccc13 : stlc_tyctx) : stlc_tyctx) : 
+                                     stlc_ty -> stlc_term) in
+                                   (let ((body : stlc_term)) =
+                                      ((xccc14 : stlc_ty -> stlc_term)
+                                         ((tau2 : stlc_ty) : stlc_ty) : 
+                                      stlc_term) in
+                                    (Stlc_abs
+                                       (((tau1 : stlc_ty) : stlc_ty),
+                                         ((body : stlc_term) : stlc_term)) : 
+                                      stlc_term) : stlc_term) : stlc_term) : 
+                                   stlc_term) : stlc_term) : stlc_term) : 
+                              stlc_term)) : stlc_term)) : stlc_term) : 
+                 stlc_term) : stlc_term) : stlc_term) : stlc_ty -> stlc_term) : 
+     stlc_tyctx -> stlc_ty -> stlc_term) : int ->
+                                             stlc_tyctx ->
+                                               stlc_ty -> stlc_term)

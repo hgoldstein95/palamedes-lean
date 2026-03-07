@@ -1,0 +1,51 @@
+Path Specific Collection:
+In Path:
+arg_tau:[v:stlc_ty | true]
+num_app_func:[v:int | true]
+pathcond_0:[v:unit | ∃x_8, ((((x_8) => (num == 0)) && ((num == 0) => (x_8))) && ((not (x_8) => (num > 0)) && ((num > 0) => not (x_8))) && not (x_8) && (∃x_10, ((x_10) && (∃b_6, ((b_6 > 0) && (b_6 == num) && ((0 <= num_app_func) && (num_app_func < b_6)))))))]
+Cost: 1
+Type: Ty_int
+arg_tau:[v:stlc_ty | true]
+num_app_func:[v:int | true]
+pathcond_0:[v:unit | ∃x_8, ((((x_8) => (num == 0)) && ((num == 0) => (x_8))) && ((not (x_8) => (num > 0)) && ((num > 0) => not (x_8))) && not (x_8) && (∃x_10, ((x_10) && (∃b_6, ((b_6 > 0) && (b_6 == num) && ((0 <= num_app_func) && (num_app_func < b_6)))))))]
+idx10:[v:int | v == num_app_func] 
+ ⊢ idx10 as num_app_func : int :
+[v:int | v == num_app_func]
+
+idx1_0:[v:int | v == num]
+arg_tau:[v:stlc_ty | true]
+num_app_func:[v:int | true]
+pathcond_0:[v:unit | ∃x_8, ((((x_8) => (num == 0)) && ((num == 0) => (x_8))) && ((not (x_8) => (num > 0)) && ((num > 0) => not (x_8))) && not (x_8) && (∃x_10, ((x_10) && (∃b_6, ((b_6 > 0) && (b_6 == num) && ((0 <= num_app_func) && (num_app_func < b_6)))))))] 
+ ⊢ idx1_0 as num : int :
+[v:int | v == num]
+
+idx0_0:[v:int | v == num_arr_tau]
+arg_tau:[v:stlc_ty | true]
+num_app_func:[v:int | true]
+pathcond_0:[v:unit | ∃x_8, ((((x_8) => (num == 0)) && ((num == 0) => (x_8))) && ((not (x_8) => (num > 0)) && ((num > 0) => not (x_8))) && not (x_8) && (∃x_10, ((x_10) && (∃b_6, ((b_6 > 0) && (b_6 == num) && ((0 <= num_app_func) && (num_app_func < b_6)))))))] 
+ ⊢ idx0_0 as num_arr_tau : int :
+[v:int | v == num_arr_tau]
+
+Type: (Ty_constructor(stlc_tyctx()))
+idx2_0:[v:stlc_tyctx | v == gamma]
+arg_tau:[v:stlc_ty | true]
+num_app_func:[v:int | true]
+pathcond_0:[v:unit | ∃x_8, ((((x_8) => (num == 0)) && ((num == 0) => (x_8))) && ((not (x_8) => (num > 0)) && ((num > 0) => not (x_8))) && not (x_8) && (∃x_10, ((x_10) && (∃b_6, ((b_6 > 0) && (b_6 == num) && ((0 <= num_app_func) && (num_app_func < b_6)))))))] 
+ ⊢ idx2_0 as gamma : stlc_tyctx :
+[v:stlc_tyctx | v == gamma]
+
+Type: (Ty_constructor(stlc_ty()))
+arg_tau:[v:stlc_ty | true]
+num_app_func:[v:int | true]
+pathcond_0:[v:unit | ∃x_8, ((((x_8) => (num == 0)) && ((num == 0) => (x_8))) && ((not (x_8) => (num > 0)) && ((num > 0) => not (x_8))) && not (x_8) && (∃x_10, ((x_10) && (∃b_6, ((b_6 > 0) && (b_6 == num) && ((0 <= num_app_func) && (num_app_func < b_6)))))))]
+idx9:[v:stlc_ty | v == arg_tau] 
+ ⊢ idx9 as arg_tau : stlc_ty :
+[v:stlc_ty | v == arg_tau]
+
+idx3_0:[v:stlc_ty | v == tau]
+arg_tau:[v:stlc_ty | true]
+num_app_func:[v:int | true]
+pathcond_0:[v:unit | ∃x_8, ((((x_8) => (num == 0)) && ((num == 0) => (x_8))) && ((not (x_8) => (num > 0)) && ((num > 0) => not (x_8))) && not (x_8) && (∃x_10, ((x_10) && (∃b_6, ((b_6 > 0) && (b_6 == num) && ((0 <= num_app_func) && (num_app_func < b_6)))))))] 
+ ⊢ idx3_0 as tau : stlc_ty :
+[v:stlc_ty | v == tau]
+

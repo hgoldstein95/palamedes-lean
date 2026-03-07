@@ -1,0 +1,32 @@
+Path Specific Collection:
+In Path:
+pathcond_0:[v:unit | ∃x_13, ((((x_13) => (d == 0)) && ((d == 0) => (x_13))) && ((not (x_13) => (d > 0)) && ((d > 0) => not (x_13))) && (x_13))]
+Cost: 1
+Type: Ty_int
+idx4_0:[v:int | v == hi]
+pathcond_0:[v:unit | ∃x_13, ((((x_13) => (d == 0)) && ((d == 0) => (x_13))) && ((not (x_13) => (d > 0)) && ((d > 0) => not (x_13))) && (x_13))] 
+ ⊢ idx4_0 as hi : int :
+[v:int | v == hi]
+
+idx3_0:[v:int | v == lo]
+pathcond_0:[v:unit | ∃x_13, ((((x_13) => (d == 0)) && ((d == 0) => (x_13))) && ((not (x_13) => (d > 0)) && ((d > 0) => not (x_13))) && (x_13))] 
+ ⊢ idx3_0 as lo : int :
+[v:int | v == lo]
+
+idx2_0:[v:int | v == d]
+pathcond_0:[v:unit | ∃x_13, ((((x_13) => (d == 0)) && ((d == 0) => (x_13))) && ((not (x_13) => (d > 0)) && ((d > 0) => not (x_13))) && (x_13))] 
+ ⊢ idx2_0 as d : int :
+[v:int | v == d]
+
+idx1_0:[v:int | true]
+pathcond_0:[v:unit | ∃x_13, ((((x_13) => (d == 0)) && ((d == 0) => (x_13))) && ((not (x_13) => (d > 0)) && ((d > 0) => not (x_13))) && (x_13))] 
+ ⊢ idx1_0 as int_gen () : int :
+[v:int | true]
+
+Cost: 10
+Type: (Ty_constructor(tree(Ty_int)))
+idx0_0:[v:int tree | (leaf v) && (depth v 0)]
+pathcond_0:[v:unit | ∃x_13, ((((x_13) => (d == 0)) && ((d == 0) => (x_13))) && ((not (x_13) => (d > 0)) && ((d > 0) => not (x_13))) && (x_13))] 
+ ⊢ idx0_0 as Leaf : int tree :
+[v:int tree | (leaf v) && (depth v 0)]
+

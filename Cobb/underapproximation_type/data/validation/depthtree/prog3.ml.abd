@@ -1,0 +1,1 @@
+[v:int tree | (not (leaf v) && not (s == 0)) && (∃u, ((depth v u) && (u <= s)))]

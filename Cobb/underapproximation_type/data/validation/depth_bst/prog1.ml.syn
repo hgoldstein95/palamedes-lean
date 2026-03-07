@@ -1,0 +1,69 @@
+let rec size_bst_gen = fun (d : int) ->
+  (fun (lo : int) ->
+     (fun (hi : int) ->
+        (let ((xccc13 : bool)) =
+           ((sizecheck : int -> bool) ((d : int) : int) : bool) in
+         (match ((xccc13 : bool) : bool) with
+          | true -> (Leaf : int tree)
+          | false ->
+              (let ((xccc14 : int)) =
+                 ((incr : int -> int) ((lo : int) : int) : int) in
+               (let ((xccc15 : bool)) =
+                  (((xccc14 : int) : int) < ((hi : int) : int) : bool) in
+                ((match ((xccc15 : bool) : bool) with
+                  | true ->
+                      (let ((xccc16 : int -> int)) =
+                         ((int_range : int -> int -> int) ((lo : int) : int) : 
+                         int -> int) in
+                       (let ((x : int)) =
+                          ((xccc16 : int -> int) ((hi : int) : int) : 
+                          int) in
+                        (let ((xccc17 : bool)) =
+                           ((bool_gen : unit -> bool) (() : unit) : bool) in
+                         ((match ((xccc17 : bool) : bool) with
+                           | true ->
+                               (let ((xccc18 : int)) =
+                                  ((subs : int -> int) ((d : int) : int) : 
+                                  int) in
+                                (let ((xccc19 : int -> int -> int tree)) =
+                                   ((size_bst_gen : int ->
+                                                      int -> int -> int tree)
+                                      ((xccc18 : int) : int) : int ->
+                                                                 int ->
+                                                                   int tree) in
+                                 (let ((xccc20 : int -> int tree)) =
+                                    ((xccc19 : int -> int -> int tree)
+                                       ((lo : int) : int) : int -> int tree) in
+                                  (let ((lt : int tree)) =
+                                     ((xccc20 : int -> int tree)
+                                        ((x : int) : int) : int tree) in
+                                   (let ((xccc21 : int)) =
+                                      ((subs : int -> int) ((d : int) : int) : 
+                                      int) in
+                                    (let ((xccc22 : int -> int -> int tree))
+                                       =
+                                       ((size_bst_gen : int ->
+                                                          int ->
+                                                            int -> int tree)
+                                          ((xccc21 : int) : int) : int ->
+                                                                    int ->
+                                                                    int tree) in
+                                     (let ((xccc23 : int -> int tree)) =
+                                        ((xccc22 : int -> int -> int tree)
+                                           ((x : int) : int) : int ->
+                                                                 int tree) in
+                                      (let ((rt : int tree)) =
+                                         ((xccc23 : int -> int tree)
+                                            ((hi : int) : int) : int tree) in
+                                       (Node
+                                          (((x : int) : int),
+                                            ((lt : int tree) : int tree),
+                                            ((rt : int tree) : int tree)) : 
+                                         int tree) : int tree) : int tree) : 
+                                      int tree) : int tree) : int tree) : 
+                                   int tree) : int tree) : int tree)
+                           | false -> (Leaf : int tree)) : int tree) : 
+                          int tree) : int tree) : int tree)
+                  | false -> (Leaf : int tree)) : int tree) : int tree) : 
+              int tree) : int tree) : int tree) : int -> int tree) : 
+  int -> int -> int tree)

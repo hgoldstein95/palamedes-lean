@@ -1,0 +1,37 @@
+Path Specific Collection:
+In Path:
+pathcond_0:[v:unit | ∃x_0, ((((x_0) => (num == 0)) && ((num == 0) => (x_0))) && ((not (x_0) => (num > 0)) && ((num > 0) => not (x_0))) && (x_0))]
+Cost: 1
+Type: Ty_int
+idx1:[v:int | v == num]
+pathcond_0:[v:unit | ∃x_0, ((((x_0) => (num == 0)) && ((num == 0) => (x_0))) && ((not (x_0) => (num > 0)) && ((num > 0) => not (x_0))) && (x_0))] 
+ ⊢ idx1 as num : int :
+[v:int | v == num]
+
+idx0:[v:int | v == num_arr_tau]
+pathcond_0:[v:unit | ∃x_0, ((((x_0) => (num == 0)) && ((num == 0) => (x_0))) && ((not (x_0) => (num > 0)) && ((num > 0) => not (x_0))) && (x_0))] 
+ ⊢ idx0 as num_arr_tau : int :
+[v:int | v == num_arr_tau]
+
+Type: (Ty_constructor(stlc_tyctx()))
+idx2:[v:stlc_tyctx | v == gamma]
+pathcond_0:[v:unit | ∃x_0, ((((x_0) => (num == 0)) && ((num == 0) => (x_0))) && ((not (x_0) => (num > 0)) && ((num > 0) => not (x_0))) && (x_0))] 
+ ⊢ idx2 as gamma : stlc_tyctx :
+[v:stlc_tyctx | v == gamma]
+
+Type: (Ty_constructor(stlc_ty()))
+idx3:[v:stlc_ty | v == tau]
+pathcond_0:[v:unit | ∃x_0, ((((x_0) => (num == 0)) && ((num == 0) => (x_0))) && ((not (x_0) => (num > 0)) && ((num > 0) => not (x_0))) && (x_0))] 
+ ⊢ idx3 as tau : stlc_ty :
+[v:stlc_ty | v == tau]
+
+Cost: 17
+Type: (Ty_constructor(stlc_tyctx()))
+idx3:[v:stlc_ty | v == tau]
+pathcond_0:[v:unit | ∃x_0, ((((x_0) => (num == 0)) && ((num == 0) => (x_0))) && ((not (x_0) => (num > 0)) && ((num > 0) => not (x_0))) && (x_0))]
+idx2:[v:stlc_tyctx | v == gamma]
+pathcond_0:[v:unit | ∃x_0, ((((x_0) => (num == 0)) && ((num == 0) => (x_0))) && ((not (x_0) => (num > 0)) && ((num > 0) => not (x_0))) && (x_0))]
+idx26_0:[v:stlc_tyctx | ∃idx26, ((stlc_tyctx_hd idx26 idx3) && (stlc_tyctx_tl idx26 idx2) && (v == idx26))] 
+ ⊢ idx26_0 as let (idx2) = gamma in let (idx3) = tau in Stlc_tyctx_cons (idx3, idx2) : stlc_tyctx :
+[v:stlc_tyctx | ∃idx26, ((stlc_tyctx_hd idx26 idx3) && (stlc_tyctx_tl idx26 idx2) && (v == idx26))]
+

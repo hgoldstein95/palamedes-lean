@@ -1,0 +1,16 @@
+(library
+ (name normal5ty)
+ (public_name language_utils.normal5ty)
+ (wrapped false)
+ (modules_without_implementation)
+ (libraries utils core ocaml5_parser)
+ (modules connective smtty t nt notatet ntopt typed frontend normalty)
+ (preprocess
+  (pps
+   ppx_optcomp
+   ppx_compare
+   ppx_sexp_conv
+   ppx_inline_test
+   ppx_assert
+   ppx_hash))
+ (inline_tests))

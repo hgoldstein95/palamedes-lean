@@ -1,0 +1,185 @@
+let rec rbtree_gen = fun (inv : int) ->
+  (fun (color : bool) ->
+     (fun (h : int) ->
+        (let ((xccc33 : bool)) =
+           ((sizecheck : int -> bool) ((h : int) : int) : bool) in
+         (match ((xccc33 : bool) : bool) with
+          | true ->
+              ((match ((color : bool) : bool) with
+                | true -> (Rbtleaf : int rbtree)
+                | false ->
+                    (let ((idx7 : bool)) =
+                       ((bool_gen : unit -> bool) (() : unit) : bool) in
+                     ((match ((idx7 : bool) : bool) with
+                       | true -> (Rbtleaf : int rbtree)
+                       | false ->
+                           (let ((idx2ccc12 : int rbtree)) =
+                              (Rbtleaf : int rbtree) in
+                            (let ((idx3ccc10 : int)) =
+                               ((int_gen : unit -> int) (() : unit) : 
+                               int) in
+                             (let ((idx2ccc11 : int rbtree)) =
+                                (Rbtleaf : int rbtree) in
+                              (let ((idx0ccc0 : bool)) = (True : bool) in
+                               (Rbtnode
+                                  (((idx0ccc0 : bool) : bool),
+                                    ((idx2ccc11 : int rbtree) : int rbtree),
+                                    ((idx3ccc10 : int) : int),
+                                    ((idx2ccc12 : int rbtree) : int rbtree)) : 
+                                 int rbtree) : int rbtree) : int rbtree) : 
+                              int rbtree) : int rbtree)) : int rbtree) : 
+                    int rbtree)) : int rbtree)
+          | false ->
+              ((match ((color : bool) : bool) with
+                | true ->
+                    (let ((xccc35 : int)) =
+                       ((subs : int -> int) ((inv : int) : int) : int) in
+                     (let ((xccc36 : bool -> int -> int rbtree)) =
+                        ((rbtree_gen : int -> bool -> int -> int rbtree)
+                           ((xccc35 : int) : int) : bool -> int -> int rbtree) in
+                      (let ((xccc37 : int -> int rbtree)) =
+                         ((xccc36 : bool -> int -> int rbtree) (false : bool) : 
+                         int -> int rbtree) in
+                       (let ((xccc38 : int)) =
+                          ((subs : int -> int) ((h : int) : int) : int) in
+                        (let ((lt2 : int rbtree)) =
+                           ((xccc37 : int -> int rbtree)
+                              ((xccc38 : int) : int) : int rbtree) in
+                         (let ((xccc39 : int)) =
+                            ((subs : int -> int) ((inv : int) : int) : 
+                            int) in
+                          (let ((xccc40 : bool -> int -> int rbtree)) =
+                             ((rbtree_gen : int -> bool -> int -> int rbtree)
+                                ((xccc39 : int) : int) : bool ->
+                                                           int -> int rbtree) in
+                           (let ((xccc41 : int -> int rbtree)) =
+                              ((xccc40 : bool -> int -> int rbtree)
+                                 (false : bool) : int -> int rbtree) in
+                            (let ((xccc42 : int)) =
+                               ((subs : int -> int) ((h : int) : int) : 
+                               int) in
+                             (let ((rt2 : int rbtree)) =
+                                ((xccc41 : int -> int rbtree)
+                                   ((xccc42 : int) : int) : int rbtree) in
+                              (let ((xccc43 : int)) =
+                                 ((int_gen : unit -> int) (() : unit) : 
+                                 int) in
+                               (Rbtnode
+                                  ((false : bool),
+                                    ((lt2 : int rbtree) : int rbtree),
+                                    ((xccc43 : int) : int),
+                                    ((rt2 : int rbtree) : int rbtree)) : 
+                                 int rbtree) : int rbtree) : int rbtree) : 
+                              int rbtree) : int rbtree) : int rbtree) : 
+                           int rbtree) : int rbtree) : int rbtree) : 
+                        int rbtree) : int rbtree) : int rbtree)
+                | false ->
+                    (let ((c : bool)) =
+                       ((bool_gen : unit -> bool) (() : unit) : bool) in
+                     ((match ((c : bool) : bool) with
+                       | true ->
+                           (let ((xccc44 : int)) =
+                              ((subs : int -> int) ((inv : int) : int) : 
+                              int) in
+                            (let ((xccc45 : bool -> int -> int rbtree)) =
+                               ((rbtree_gen : int ->
+                                                bool -> int -> int rbtree)
+                                  ((xccc44 : int) : int) : bool ->
+                                                             int ->
+                                                               int rbtree) in
+                             (let ((xccc46 : int -> int rbtree)) =
+                                ((xccc45 : bool -> int -> int rbtree)
+                                   (true : bool) : int -> int rbtree) in
+                              (let ((lt3 : int rbtree)) =
+                                 ((xccc46 : int -> int rbtree)
+                                    ((h : int) : int) : int rbtree) in
+                               (let ((xccc47 : int)) =
+                                  ((subs : int -> int) ((inv : int) : int) : 
+                                  int) in
+                                (let ((xccc48 : bool -> int -> int rbtree)) =
+                                   ((rbtree_gen : int ->
+                                                    bool -> int -> int rbtree)
+                                      ((xccc47 : int) : int) : bool ->
+                                                                 int ->
+                                                                   int rbtree) in
+                                 (let ((xccc49 : int -> int rbtree)) =
+                                    ((xccc48 : bool -> int -> int rbtree)
+                                       (true : bool) : int -> int rbtree) in
+                                  (let ((rt3 : int rbtree)) =
+                                     ((xccc49 : int -> int rbtree)
+                                        ((h : int) : int) : int rbtree) in
+                                   (let ((xccc50 : int)) =
+                                      ((int_gen : unit -> int) (() : unit) : 
+                                      int) in
+                                    (Rbtnode
+                                       ((true : bool),
+                                         ((lt3 : int rbtree) : int rbtree),
+                                         ((xccc50 : int) : int),
+                                         ((rt3 : int rbtree) : int rbtree)) : 
+                                      int rbtree) : int rbtree) : int rbtree) : 
+                                   int rbtree) : int rbtree) : int rbtree) : 
+                                int rbtree) : int rbtree) : int rbtree) : 
+                           int rbtree)
+                       | false ->
+                           (let ((xccc51 : int)) =
+                              ((subs : int -> int) ((inv : int) : int) : 
+                              int) in
+                            (let ((xccc52 : int)) =
+                               ((subs : int -> int) ((xccc51 : int) : int) : 
+                               int) in
+                             (let ((xccc53 : bool -> int -> int rbtree)) =
+                                ((rbtree_gen : int ->
+                                                 bool -> int -> int rbtree)
+                                   ((xccc52 : int) : int) : bool ->
+                                                              int ->
+                                                                int rbtree) in
+                              (let ((xccc54 : int -> int rbtree)) =
+                                 ((xccc53 : bool -> int -> int rbtree)
+                                    (false : bool) : int -> int rbtree) in
+                               (let ((xccc55 : int)) =
+                                  ((subs : int -> int) ((h : int) : int) : 
+                                  int) in
+                                (let ((lt4 : int rbtree)) =
+                                   ((xccc54 : int -> int rbtree)
+                                      ((xccc55 : int) : int) : int rbtree) in
+                                 (let ((xccc56 : int)) =
+                                    ((subs : int -> int) ((inv : int) : int) : 
+                                    int) in
+                                  (let ((xccc57 : int)) =
+                                     ((subs : int -> int)
+                                        ((xccc56 : int) : int) : int) in
+                                   (let ((xccc58 : bool -> int -> int rbtree))
+                                      =
+                                      ((rbtree_gen : int ->
+                                                       bool ->
+                                                         int -> int rbtree)
+                                         ((xccc57 : int) : int) : bool ->
+                                                                    int ->
+                                                                    int
+                                                                    rbtree) in
+                                    (let ((xccc59 : int -> int rbtree)) =
+                                       ((xccc58 : bool -> int -> int rbtree)
+                                          (false : bool) : int -> int rbtree) in
+                                     (let ((xccc60 : int)) =
+                                        ((subs : int -> int)
+                                           ((h : int) : int) : int) in
+                                      (let ((rt4 : int rbtree)) =
+                                         ((xccc59 : int -> int rbtree)
+                                            ((xccc60 : int) : int) : 
+                                         int rbtree) in
+                                       (let ((xccc61 : int)) =
+                                          ((int_gen : unit -> int)
+                                             (() : unit) : int) in
+                                        (Rbtnode
+                                           ((false : bool),
+                                             ((lt4 : int rbtree) : int rbtree),
+                                             ((xccc61 : int) : int),
+                                             ((rt4 : int rbtree) : int rbtree)) : 
+                                          int rbtree) : int rbtree) : 
+                                        int rbtree) : int rbtree) : int
+                                                                    rbtree) : 
+                                     int rbtree) : int rbtree) : int rbtree) : 
+                                  int rbtree) : int rbtree) : int rbtree) : 
+                               int rbtree) : int rbtree) : int rbtree)) : 
+                       int rbtree) : int rbtree)) : int rbtree) : int rbtree) : 
+        int rbtree) : int -> int rbtree) : bool -> int -> int rbtree)

@@ -1,0 +1,11 @@
+(library
+ (public_name underapproximation_type.language)
+ (name language)
+ (wrapped false)
+ (modules
+   language
+   simp
+ )
+ (preprocess
+  (pps ppx_optcomp ppx_compare ppx_sexp_conv))
+ (libraries syntax frontend_opt language_utils translate))
