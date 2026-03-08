@@ -45,4 +45,5 @@ Note that some of the benchmarks referred to in the paper
 (e.g. AVL tree, Well-scoped STLC term, `∃ a, a = 3 /\ v = a + 1`, among others)
 do not have corresponding sketches. These benchmarks could not be expressed in Cobb because the 
 necessary libraries and data types did not exist. These were considered failures for the purposes 
-of comparison with Palamedes.
+of comparison with Palamedes. Cobb benchmarks like unique list and duplicate list that 
+Palamedes could not express were similarly considered Palamedes failures for this comparison. 
