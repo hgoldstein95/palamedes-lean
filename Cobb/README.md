@@ -12,7 +12,8 @@ The Cobb files here are obtained directly from the Cobb artifact at https://zeno
 
 ## Running benchmarks
 
-To run the benchmarks used in the paper, execute the following commands:
+The Cobb benchmarks should have been automatically run as part of the building of the artifact, 
+but if you would like to re-run any of them, execute the following commands:
 
 `python3 scripts/synth.py underapproximation_type/data/validation/sortedlist/`            (Sorted List)
 `python3 scripts/synth.py underapproximation_type/data/validation/even_list/`             (List of even numbers)
