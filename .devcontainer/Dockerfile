@@ -28,24 +28,23 @@ RUN apt-get install -y zsh
 RUN apt-get install -y libgmp3-dev
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y pkg-config
 
-## Run in usermode
-
-# [Optional] Set the default user. Omit if you want to keep the default as root.
 USER $USERNAME
 
 # Configure opam/ocaml
+# Install Cobb dependencies
+WORKDIR /Cobb
 RUN opam init -y --disable-sandboxing --compiler=5.3.0
-RUN opam switch 5.3.0
 RUN opam install -y num
+RUN opam install -y dune
+RUN opam install -y ppx_jane
+RUN opam install -y pomap
+RUN opam install -y core_unix
+RUN opam install -y core_kernel
+RUN opam install -y async
+RUN opam install -y z3
+RUN opam install -y ocolor
+RUN opam install -y yojson
+RUN opam install -y dolog
 RUN opam update -y
 RUN opam upgrade -y
-RUN eval `opam config env`
 
-# Build Cobb
-WORKDIR /Cobb
-RUN opam switch create ./ --deps-only
-RUN opam install -y dune
-RUN eval $(opam env)
-RUN dune build
-
-# Run Cobb Experiments
