@@ -32,7 +32,7 @@ USER $USERNAME
 
 # Configure opam/ocaml
 # Install Cobb dependencies
-WORKDIR /Cobb
+WORKDIR /home/artifact/Cobb
 RUN opam init -y --disable-sandboxing --compiler=5.3.0
 RUN opam install -y num
 RUN opam install -y dune
@@ -48,3 +48,7 @@ RUN opam install -y dolog
 RUN opam update -y
 RUN opam upgrade -y
 
+COPY Cobb/ .
+
+WORKDIR /home/artifact
+COPY experiments.sh .
