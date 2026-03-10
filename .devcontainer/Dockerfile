@@ -49,6 +49,8 @@ RUN opam update -y
 RUN opam upgrade -y
 
 COPY --chown=$USERNAME:$USERNAME Cobb/ .
+RUN eval $(opam env)
+RUN opam exec -- dune build
 
 WORKDIR /home/artifact
 COPY --chown=$USERNAME:$USERNAME experiments.sh .
