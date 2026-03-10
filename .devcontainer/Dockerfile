@@ -48,7 +48,7 @@ RUN opam install -y dolog
 RUN opam update -y
 RUN opam upgrade -y
 
-COPY Cobb/ .
+COPY --chown=$USERNAME:$USERNAME Cobb/ .
 
 WORKDIR /home/artifact
-COPY experiments.sh .
+COPY --chown=$USERNAME:$USERNAME experiments.sh .
