@@ -54,3 +54,10 @@ RUN opam exec -- dune build
 
 WORKDIR /home/artifact
 COPY --chown=$USERNAME:$USERNAME experiments.sh .
+
+
+RUN opam pin add -y coq 8.20.0
+RUN opam repo add -y rocq-released https://rocq-prover.org/opam/released
+RUN opam install -y coq-quickchick
+
+COPY --chown=$USERNAME:$USERNAME QC/ QC/
