@@ -15,19 +15,22 @@
     "synfile": ".syn",
     "collectfile": ".collect",
     "abd_templates": [
-        "template_emp"
+        "template_leaf",
+        "template_eq_0",
+        "template_eq_2"
     ],
     "num_quantifier": 0,
-    "abduce_rlimit": 10000,
-    "synth_bound": 30,
-    "synth_rlimit": 300000,
-    "type_rlimit": 4000000,
+    "abduce_rlimit": 50000000,
+    "synth_bound": 50,
+    "synth_rlimit": 700000,
+    "type_rlimit": 100000000,
+    "use_missing_coverage_file": false,
     "comp_path": "components.txt",
     "prim_path": {
         "data_type_decls": "data/predefined/data_type_decls.ml",
         "templates": "data/predefined/templates.ml",
         "normal_typing": "data/predefined/normal_typing.ml",
-        "axioms": "data/validation/duplicatelist_max_sketch/axioms.ml",
-        "coverage_typing": "data/predefined/coverage_typing.ml"
+        "axioms": "data/validation/twos_tree/axioms.ml",
+        "coverage_typing": "data/validation/depth_bst/builtin_rty.ml"
     }
 }

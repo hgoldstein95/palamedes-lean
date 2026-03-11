@@ -13,36 +13,12 @@ The Cobb files here are obtained directly from the Cobb artifact at https://zeno
 ## Running benchmarks
 
 The Cobb benchmarks should have been automatically run as part `experiments.sh`,
-but if you would like to re-run any of them, execute the following commands:
+but if you would like to re-run any of them, execute the following command:
 
-`python scripts/synth.py underapproximation_type/data/validation/sortedlist/`            (Sorted List)
-`python scripts/synth.py underapproximation_type/data/validation/even_list/`             (List of even numbers)
-`python scripts/synth.py underapproximation_type/data/validation/list_incr_one/`         (List increasing by 1)
-`python scripts/synth.py underapproximation_type/data/validation/list_trues/`            (List of Trues)
-`python scripts/synth.py underapproximation_type/data/validation/len_even_list_max_sketch/`         (List of even length)
-`python scripts/synth.py underapproximation_type/data/validation/len_even_list_min_sketch/` 
-`python scripts/synth.py underapproximation_type/data/validation/list_twos_even_len_max_sketch/`   (List of 2s of even length)    
-`python scripts/synth.py underapproximation_type/data/validation/list_twos_even_len_min_sketch/`   
-`python scripts/synth.py underapproximation_type/data/validation/len_k_list/`            (List of length k)
-`python scripts/synth.py underapproximation_type/data/validation/list_twos_len_k/`   (List of 2s of length k)
-`python scripts/synth.py underapproximation_type/data/validation/unique_list/`       (Unique List)
-`python scripts/synth.py underapproximation_type/data/validation/duplicate_list/`    (List containing a duplicate)
+`python scripts/synth.py underapproximation_type/data/validation/*NAME*/`   
 
-`python scripts/synth.py underapproximation_type/data/validation/depthtree/`         (Tree of Depth k)
-`python scripts/synth.py underapproximation_type/data/validation/complete_tree/`     (Complete Tree)
-`python scripts/synth.py underapproximation_type/data/validation/nonemptytree/`      (Non-Empty Tree)
-`python scripts/synth.py underapproximation_type/data/validation/twos_tree/`         (Tree of All Twos)
-`python scripts/synth.py underapproximation_type/data/validation/rbtree_busted/`     (RB Tree with no BST)
-`python scripts/synth.py underapproximation_type/data/validation/depth_bst/`         (BST Tree)
-
-`python scripts/synth.py underapproximation_type/data/validation/equals2/`           (Number equal to 2)
-`python scripts/synth.py underapproximation_type/data/validation/equals2or5/`        (Number equal to 2 or 5)
-`python scripts/synth.py underapproximation_type/data/validation/gt5/`               (Number > 5)
-
-`python scripts/synth.py underapproximation_type/data/validation/stlc_gen_term_size_max_sketch/`    (STLC)
-`python scripts/synth.py underapproximation_type/data/validation/stlc_gen_term_size_min_sketch/`    
-
-The results will be written to `*.ml.result.csv` files inside respective benchmark's directory.
+where *Name* is the name of the benchmark. 
+The results will be written to `*.ml.result.csv` files inside the respective benchmark's directory.
 
 Note that some of the benchmarks referred to in the paper 
 (e.g. AVL tree, Well-scoped STLC term, `∃ a, a = 3 /\ v = a + 1`, among others)
