@@ -25,7 +25,7 @@
         "data_type_decls": "data/predefined/data_type_decls.ml",
         "templates": "data/predefined/templates.ml",
         "normal_typing": "data/predefined/normal_typing.ml",
-        "axioms": "data/validation/uniquelist/axioms.ml",
+        "axioms": "data/validation/uniquelist_min_sketch/axioms.ml",
         "coverage_typing": "data/predefined/coverage_typing.ml"
     }
 }

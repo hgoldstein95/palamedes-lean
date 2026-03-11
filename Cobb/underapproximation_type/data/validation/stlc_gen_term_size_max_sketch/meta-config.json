@@ -30,7 +30,7 @@
         "data_type_decls": "data/predefined/data_type_decls.ml",
         "templates": "data/predefined/templates.ml",
         "normal_typing": "data/predefined/normal_typing.ml",
-        "axioms": "data/validation/stlc_gen_term_size_2/axioms.ml",
+        "axioms": "data/validation/stlc_gen_term_size_max_sketch/axioms.ml",
         "coverage_typing": "data/predefined/coverage_typing.ml"
     }
 }

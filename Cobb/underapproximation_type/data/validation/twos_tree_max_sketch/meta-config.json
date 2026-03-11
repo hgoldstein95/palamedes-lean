@@ -30,7 +30,7 @@
         "data_type_decls": "data/predefined/data_type_decls.ml",
         "templates": "data/predefined/templates.ml",
         "normal_typing": "data/predefined/normal_typing.ml",
-        "axioms": "data/validation/twos_tree/axioms.ml",
-        "coverage_typing": "data/validation/depth_bst/builtin_rty.ml"
+        "axioms": "data/validation/twos_tree_max_sketch/axioms.ml",
+        "coverage_typing": "data/validation/twos_tree_max_sketch/builtin_rty.ml",
     }
 }
