@@ -19,7 +19,7 @@ def run_synthesis(dir_str: str):
                 run_synthesis(pp)
     else:
         for filename in os.listdir(dir_str):
-            matches = re.search(r"prog[0-9]+\.ml$", filename, re.MULTILINE)
+            matches = re.search(r"prog(Min|Max)\.ml$", filename, re.MULTILINE)
             if matches:
                 filename = dir_str + "/" + filename
                 cmd = cmd_prefix + [filename]

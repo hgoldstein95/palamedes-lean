@@ -1,3 +1,0 @@
-Stlc_abs
-Stlc_tyctx_cons
-get_num_arr

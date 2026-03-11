@@ -1,0 +1,79 @@
+description = ""
+requires =
+"language_utils.metalang
+ language_utils.normal5ty
+ language_utils.ocaml5_parser
+ language_utils.utils
+ language_utils.zzdatatype"
+archive(byte) = "language_utils.cma"
+archive(native) = "language_utils.cmxa"
+plugin(byte) = "language_utils.cma"
+plugin(native) = "language_utils.cmxs"
+package "metalang" (
+  directory = "metalang"
+  description = ""
+  requires =
+  "core
+   language_utils.ocaml5_parser
+   language_utils.utils
+   ppx_assert.runtime-lib
+   ppx_compare.runtime-lib
+   ppx_here.runtime-lib
+   ppx_inline_test.config
+   ppx_inline_test.runtime-lib
+   ppx_sexp_conv.runtime-lib
+   sexplib0"
+  archive(byte) = "metalang.cma"
+  archive(native) = "metalang.cmxa"
+  plugin(byte) = "metalang.cma"
+  plugin(native) = "metalang.cmxs"
+)
+package "normal5ty" (
+  directory = "normal5ty"
+  description = ""
+  requires =
+  "core
+   language_utils.ocaml5_parser
+   language_utils.utils
+   ppx_assert.runtime-lib
+   ppx_compare.runtime-lib
+   ppx_hash.runtime-lib
+   ppx_here.runtime-lib
+   ppx_inline_test.config
+   ppx_inline_test.runtime-lib
+   ppx_sexp_conv.runtime-lib
+   sexplib0"
+  archive(byte) = "normal5ty.cma"
+  archive(native) = "normal5ty.cmxa"
+  plugin(byte) = "normal5ty.cma"
+  plugin(native) = "normal5ty.cmxs"
+)
+package "ocaml5_parser" (
+  directory = "ocaml5_parser"
+  description = ""
+  requires = ""
+  archive(byte) = "ocaml5_parser.cma"
+  archive(native) = "ocaml5_parser.cmxa"
+  plugin(byte) = "ocaml5_parser.cma"
+  plugin(native) = "ocaml5_parser.cmxs"
+)
+package "utils" (
+  directory = "utils"
+  description = ""
+  requires =
+  "core core_unix dolog language_utils.zzdatatype ocolor ppx_here yojson"
+  archive(byte) = "utils.cma"
+  archive(native) = "utils.cmxa"
+  plugin(byte) = "utils.cma"
+  plugin(native) = "utils.cmxs"
+)
+package "zzdatatype" (
+  directory = "zzdatatype"
+  description = ""
+  requires =
+  "core ppx_compare.runtime-lib ppx_sexp_conv.runtime-lib sexplib0"
+  archive(byte) = "zzdatatype.cma"
+  archive(native) = "zzdatatype.cmxa"
+  plugin(byte) = "zzdatatype.cma"
+  plugin(native) = "zzdatatype.cmxs"
+)

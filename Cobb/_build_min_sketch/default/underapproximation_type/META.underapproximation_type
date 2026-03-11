@@ -1,0 +1,172 @@
+package "backend" (
+  directory = "backend"
+  description = ""
+  requires =
+  "async
+   ppx_inline_test.config
+   ppx_inline_test.runtime-lib
+   underapproximation_type.language
+   underapproximation_type.zzenv
+   z3"
+  archive(byte) = "backend.cma"
+  archive(native) = "backend.cmxa"
+  plugin(byte) = "backend.cma"
+  plugin(native) = "backend.cmxs"
+)
+package "commands" (
+  directory = "commands"
+  description = ""
+  requires =
+  "base
+   base_quickcheck
+   base_quickcheck.ppx_quickcheck.runtime
+   bin_prot
+   core
+   core_unix.sys_unix
+   fieldslib
+   ppx_assert.runtime-lib
+   ppx_bench.runtime-lib
+   ppx_compare.runtime-lib
+   ppx_enumerate.runtime-lib
+   ppx_expect.config
+   ppx_expect.runtime
+   ppx_hash.runtime-lib
+   ppx_here.runtime-lib
+   ppx_inline_test.config
+   ppx_inline_test.runtime-lib
+   ppx_log.syntax
+   ppx_log.types
+   ppx_module_timer.runtime
+   ppx_sexp_conv.runtime-lib
+   ppx_stable_witness.runtime
+   ppx_string.runtime
+   sexplib0
+   typerep
+   underapproximation_type.frontend_opt
+   underapproximation_type.preprocessing
+   underapproximation_type.syntax
+   underapproximation_type.translate
+   underapproximation_type.typing
+   variantslib"
+  archive(byte) = "commands.cma"
+  archive(native) = "commands.cmxa"
+  plugin(byte) = "commands.cma"
+  plugin(native) = "commands.cmxs"
+)
+package "frontend_opt" (
+  directory = "frontend_opt"
+  description = ""
+  requires =
+  "ppx_compare.runtime-lib
+   ppx_sexp_conv.runtime-lib
+   sexplib0
+   underapproximation_type.syntax
+   underapproximation_type.translate
+   underapproximation_type.zzenv"
+  archive(byte) = "frontend_opt.cma"
+  archive(native) = "frontend_opt.cmxa"
+  plugin(byte) = "frontend_opt.cma"
+  plugin(native) = "frontend_opt.cmxs"
+)
+package "inference" (
+  directory = "inference"
+  description = ""
+  requires =
+  "ppx_inline_test.config
+   ppx_inline_test.runtime-lib
+   underapproximation_type.language
+   underapproximation_type.zzenv"
+  archive(byte) = "inference.cma"
+  archive(native) = "inference.cmxa"
+  plugin(byte) = "inference.cma"
+  plugin(native) = "inference.cmxs"
+)
+package "language" (
+  directory = "language"
+  description = ""
+  requires =
+  "language_utils
+   ppx_compare.runtime-lib
+   ppx_sexp_conv.runtime-lib
+   sexplib0
+   underapproximation_type.frontend_opt
+   underapproximation_type.syntax
+   underapproximation_type.translate"
+  archive(byte) = "language.cma"
+  archive(native) = "language.cmxa"
+  plugin(byte) = "language.cma"
+  plugin(native) = "language.cmxs"
+)
+package "preprocessing" (
+  directory = "preprocessing"
+  description = ""
+  requires =
+  "underapproximation_type.language underapproximation_type.syntax"
+  archive(byte) = "preprocessing.cma"
+  archive(native) = "preprocessing.cmxa"
+  plugin(byte) = "preprocessing.cma"
+  plugin(native) = "preprocessing.cmxs"
+)
+package "subtyping" (
+  directory = "subtyping"
+  description = ""
+  requires =
+  "core
+   underapproximation_type.backend
+   underapproximation_type.language
+   underapproximation_type.zzenv"
+  archive(byte) = "subtyping.cma"
+  archive(native) = "subtyping.cmxa"
+  plugin(byte) = "subtyping.cma"
+  plugin(native) = "subtyping.cmxs"
+)
+package "syntax" (
+  directory = "syntax"
+  description = ""
+  requires =
+  "language_utils ppx_compare.runtime-lib ppx_sexp_conv.runtime-lib sexplib0"
+  archive(byte) = "syntax.cma"
+  archive(native) = "syntax.cmxa"
+  plugin(byte) = "syntax.cma"
+  plugin(native) = "syntax.cmxs"
+)
+package "translate" (
+  directory = "translate"
+  description = ""
+  requires = "language_utils underapproximation_type.syntax"
+  archive(byte) = "translate.cma"
+  archive(native) = "translate.cmxa"
+  plugin(byte) = "translate.cma"
+  plugin(native) = "translate.cmxs"
+)
+package "typing" (
+  directory = "typing"
+  description = ""
+  requires =
+  "core
+   underapproximation_type.inference
+   underapproximation_type.language
+   underapproximation_type.subtyping
+   underapproximation_type.zzenv"
+  archive(byte) = "typing.cma"
+  archive(native) = "typing.cmxa"
+  plugin(byte) = "typing.cma"
+  plugin(native) = "typing.cmxs"
+)
+package "zzenv" (
+  directory = "zzenv"
+  description = ""
+  requires =
+  "language_utils
+   ppx_assert.runtime-lib
+   ppx_compare.runtime-lib
+   ppx_here.runtime-lib
+   ppx_inline_test.config
+   ppx_inline_test.runtime-lib
+   ppx_sexp_conv.runtime-lib
+   sexplib0"
+  archive(byte) = "zzenv.cma"
+  archive(native) = "zzenv.cmxa"
+  plugin(byte) = "zzenv.cma"
+  plugin(native) = "zzenv.cmxs"
+)

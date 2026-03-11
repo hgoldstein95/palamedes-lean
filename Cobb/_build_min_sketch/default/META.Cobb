@@ -1,0 +1,46 @@
+package "context" (
+  directory = "context"
+  description = ""
+  requires = "Cobb.tracking underapproximation_type.typing"
+  archive(byte) = "context.cma"
+  archive(native) = "context.cmxa"
+  plugin(byte) = "context.cma"
+  plugin(native) = "context.cmxs"
+)
+package "pieces" (
+  directory = "pieces"
+  description = ""
+  requires =
+  "Cobb.context Cobb.tracking Cobb.utils underapproximation_type.typing"
+  archive(byte) = "pieces.cma"
+  archive(native) = "pieces.cmxa"
+  plugin(byte) = "pieces.cma"
+  plugin(native) = "pieces.cmxs"
+)
+package "postprocess" (
+  directory = "postprocess"
+  description = ""
+  requires = "Cobb.pieces underapproximation_type.typing"
+  archive(byte) = "postprocess.cma"
+  archive(native) = "postprocess.cmxa"
+  plugin(byte) = "postprocess.cma"
+  plugin(native) = "postprocess.cmxs"
+)
+package "tracking" (
+  directory = "tracking"
+  description = ""
+  requires = "Cobb.utils underapproximation_type.typing"
+  archive(byte) = "tracking.cma"
+  archive(native) = "tracking.cmxa"
+  plugin(byte) = "tracking.cma"
+  plugin(native) = "tracking.cmxs"
+)
+package "utils" (
+  directory = "utils"
+  description = ""
+  requires = "core language_utils.zzdatatype underapproximation_type.typing"
+  archive(byte) = "utils.cma"
+  archive(native) = "utils.cmxa"
+  plugin(byte) = "utils.cma"
+  plugin(native) = "utils.cmxs"
+)

@@ -1,1 +1,0 @@
-[v:int list | (not (len v 1) && (s == 0)) && (∃n, ((len v n) && ((n == (2 * s)) && (all_twos v))))]

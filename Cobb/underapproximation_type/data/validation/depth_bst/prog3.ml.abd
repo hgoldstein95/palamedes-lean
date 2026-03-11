@@ -1,1 +1,0 @@
-[v:int tree | ((leaf v) && not (d == 0)) && (not (leaf v) => (lower_bound v lo)) && (not (leaf v) => (upper_bound v hi)) && (bst v) && (∃n, ((depth v n) && (n <= d)))]

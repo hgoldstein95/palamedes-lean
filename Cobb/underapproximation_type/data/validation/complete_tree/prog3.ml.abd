@@ -1,1 +1,0 @@
-[v:int tree | ((leaf v) || not (leaf v)) && (depth v s) && (complete v)]

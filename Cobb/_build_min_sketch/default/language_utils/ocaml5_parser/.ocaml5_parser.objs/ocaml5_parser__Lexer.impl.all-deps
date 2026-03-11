@@ -1,0 +1,11 @@
+ocaml5_parser__Asttypes
+ocaml5_parser__Build_path_prefix_map
+ocaml5_parser__CamlinternalMenhirLib
+ocaml5_parser__Docstrings
+ocaml5_parser__Location
+ocaml5_parser__Longident
+ocaml5_parser__Misc
+ocaml5_parser__Parser
+ocaml5_parser__Parsetree
+ocaml5_parser__Warnings
+ocaml5_parser__Zsys

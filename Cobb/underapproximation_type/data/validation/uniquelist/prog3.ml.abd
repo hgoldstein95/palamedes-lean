@@ -1,1 +1,0 @@
-[v:int list | ((emp v) || not (emp v)) && (len v s) && (uniq v)]

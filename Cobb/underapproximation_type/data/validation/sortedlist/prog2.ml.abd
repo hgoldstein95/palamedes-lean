@@ -1,1 +1,0 @@
-[v:int list | not (emp v) && (len v s) && (sorted v) && (not (emp v) => (∃u, ((hd v u) && (x <= u))))]

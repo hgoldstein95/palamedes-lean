@@ -1,3 +1,0 @@
-let[@assert] missing_ty =
-  let s = (0 <= v : [%v: int]) [@over] in
-  ((emp v && not (s == 0)) && (fun ((n [@exists]) : int) ->  (len v n && n <= s)): [%v: int list]) [@under]

@@ -1,0 +1,129 @@
+(lang dune 3.21)
+(name Cobb)
+(sections (lib .) (libexec .) (bin ../../bin) (doc ../../doc/Cobb))
+(files
+ (lib
+  (META
+   context/context.a
+   context/context.cma
+   context/context.cmi
+   context/context.cmt
+   context/context.cmx
+   context/context.cmxa
+   context/context.ml
+   dune-package
+   opam
+   pieces/pieces.a
+   pieces/pieces.cma
+   pieces/pieces.cmi
+   pieces/pieces.cmt
+   pieces/pieces.cmx
+   pieces/pieces.cmxa
+   pieces/pieces.ml
+   postprocess/postprocess.a
+   postprocess/postprocess.cma
+   postprocess/postprocess.cmi
+   postprocess/postprocess.cmt
+   postprocess/postprocess.cmx
+   postprocess/postprocess.cmxa
+   postprocess/postprocess.ml
+   tracking/tracking.a
+   tracking/tracking.cma
+   tracking/tracking.cmi
+   tracking/tracking.cmt
+   tracking/tracking.cmx
+   tracking/tracking.cmxa
+   tracking/tracking.ml
+   utils/utils.a
+   utils/utils.cma
+   utils/utils.cmi
+   utils/utils.cmt
+   utils/utils.cmx
+   utils/utils.cmxa
+   utils/utils.ml))
+ (libexec
+  (context/context.cmxs
+   pieces/pieces.cmxs
+   postprocess/postprocess.cmxs
+   tracking/tracking.cmxs
+   utils/utils.cmxs))
+ (bin (Cobb frequify))
+ (doc (README.md)))
+(library
+ (name Cobb.context)
+ (kind normal)
+ (archives (byte context/context.cma) (native context/context.cmxa))
+ (plugins (byte context/context.cma) (native context/context.cmxs))
+ (native_archives context/context.a)
+ (requires underapproximation_type.typing Cobb.tracking)
+ (main_module_name Context)
+ (modes byte native)
+ (modules
+  (singleton
+   (obj_name context)
+   (visibility public)
+   (source (path Context) (impl (path context/context.ml))))))
+(library
+ (name Cobb.pieces)
+ (kind normal)
+ (archives (byte pieces/pieces.cma) (native pieces/pieces.cmxa))
+ (plugins (byte pieces/pieces.cma) (native pieces/pieces.cmxs))
+ (native_archives pieces/pieces.a)
+ (requires
+  underapproximation_type.typing
+  Cobb.utils
+  Cobb.tracking
+  Cobb.context)
+ (main_module_name Pieces)
+ (modes byte native)
+ (modules
+  (singleton
+   (obj_name pieces)
+   (visibility public)
+   (source (path Pieces) (impl (path pieces/pieces.ml))))))
+(library
+ (name Cobb.postprocess)
+ (kind normal)
+ (archives
+  (byte postprocess/postprocess.cma)
+  (native postprocess/postprocess.cmxa))
+ (plugins
+  (byte postprocess/postprocess.cma)
+  (native postprocess/postprocess.cmxs))
+ (native_archives postprocess/postprocess.a)
+ (requires Cobb.pieces underapproximation_type.typing)
+ (main_module_name Postprocess)
+ (modes byte native)
+ (modules
+  (singleton
+   (obj_name postprocess)
+   (visibility public)
+   (source (path Postprocess) (impl (path postprocess/postprocess.ml))))))
+(library
+ (name Cobb.tracking)
+ (kind normal)
+ (archives (byte tracking/tracking.cma) (native tracking/tracking.cmxa))
+ (plugins (byte tracking/tracking.cma) (native tracking/tracking.cmxs))
+ (native_archives tracking/tracking.a)
+ (requires underapproximation_type.typing Cobb.utils)
+ (main_module_name Tracking)
+ (modes byte native)
+ (modules
+  (singleton
+   (obj_name tracking)
+   (visibility public)
+   (source (path Tracking) (impl (path tracking/tracking.ml))))))
+(library
+ (name Cobb.utils)
+ (kind normal)
+ (archives (byte utils/utils.cma) (native utils/utils.cmxa))
+ (plugins (byte utils/utils.cma) (native utils/utils.cmxs))
+ (native_archives utils/utils.a)
+ (requires core underapproximation_type.typing language_utils.zzdatatype)
+ (main_module_name Utils)
+ (modes byte native)
+ (modules
+  (singleton
+   (obj_name utils)
+   (visibility public)
+   (source (path Utils) (impl (path utils/utils.ml))))))
