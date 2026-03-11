@@ -33,7 +33,7 @@ run "twos list even lengt max sketchh" timeout 900 python scripts/synth.py under
 run "length k list max sketch" timeout 900 python scripts/synth.py underapproximation_type/data/validation/len_k_list_max_sketch          
 run "list twos length k list max sketch" timeout 900 python scripts/synth.py underapproximation_type/data/validation/list_twos_len_k_max_sketch   
 run "unique list max sketch" timeout 900 python scripts/synth.py underapproximation_type/data/validation/unique_list_max_sketch      
-run "list with duplicates max sketch" timeout 900 python scripts/synth.py underapproximation_type/data/validation/duplicate_list_max_sketch   
+run "list with duplicates max sketch" timeout 900 python scripts/synth.py underapproximation_type/data/validation/duplicatelist_max_sketch   
 run "depth n tree max sketch"  timeout 900 python scripts/synth.py underapproximation_type/data/validation/depthtree_max_sketch       
 run "complete tree max sketch" timeout 900 python scripts/synth.py underapproximation_type/data/validation/complete_tree_max_sketch  
 run "nonempty tree max sketch" timeout 900 python scripts/synth.py underapproximation_type/data/validation/nonemptytree_max_sketch      
@@ -52,7 +52,7 @@ run "list of trues" timeout 900 python scripts/synth.py underapproximation_type/
 run "length k list" timeout 900 python scripts/synth.py underapproximation_type/data/validation/len_k_list_min_sketch           
 run "list twos length k list" timeout 900 python scripts/synth.py underapproximation_type/data/validation/list_twos_len_k_min_sketch  
 run "unique list" timeout 900 python scripts/synth.py underapproximation_type/data/validation/unique_list_min_sketch     
-run "list with duplicates" timeout 900 python scripts/synth.py underapproximation_type/data/validation/duplicate_list_min_sketch   
+run "list with duplicates" timeout 900 python scripts/synth.py underapproximation_type/data/validation/duplicatelist_min_sketch   
 run "depth n tree"  timeout 900 python scripts/synth.py underapproximation_type/data/validation/depthtree_min_sketch      
 run "complete tree" timeout 900 python scripts/synth.py underapproximation_type/data/validation/complete_tree_min_sketch
 run "nonempty tree" timeout 900 python scripts/synth.py underapproximation_type/data/validation/nonemptytree_min_sketch     

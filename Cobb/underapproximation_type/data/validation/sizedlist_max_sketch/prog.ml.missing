@@ -1,3 +1,0 @@
-let[@assert] missing_ty =
-  let s = (0 <= v : [%v: int]) [@over] in
-  (false : [%v: int list]) [@under]
