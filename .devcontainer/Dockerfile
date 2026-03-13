@@ -32,7 +32,7 @@ USER $USERNAME
 
 # Configure opam/ocaml
 # Install Cobb dependencies
-WORKDIR /home/artifact/Cobb
+
 RUN opam init -y --disable-sandboxing --compiler=5.3.0
 RUN opam install -y num
 RUN opam install -y dune
@@ -48,16 +48,18 @@ RUN opam install -y dolog
 RUN opam update -y
 RUN opam upgrade -y
 
+# Install QuickChick
+RUN opam pin add -y coq 8.20.0
+RUN opam repo add -y rocq-released https://rocq-prover.org/opam/released
+RUN opam install -y coq-quickchick
+
+WORKDIR /home/artifact/Cobb
 COPY --chown=$USERNAME:$USERNAME Cobb/ .
 RUN eval $(opam env)
 RUN opam exec -- dune build
 
 WORKDIR /home/artifact
-COPY --chown=$USERNAME:$USERNAME experiments.sh .
+COPY --chown=$USERNAME:$USERNAME run_cobb.sh .
 
-
-RUN opam pin add -y coq 8.20.0
-RUN opam repo add -y rocq-released https://rocq-prover.org/opam/released
-RUN opam install -y coq-quickchick
 
 COPY --chown=$USERNAME:$USERNAME QC/ QC/
