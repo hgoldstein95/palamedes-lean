@@ -30,6 +30,6 @@
         "templates": "data/predefined/templates.ml",
         "normal_typing": "data/predefined/normal_typing.ml",
         "axioms": "data/validation/depth_bst_min_sketch/axioms.ml",
-        "coverage_typing": "data/validation/depth_bst_min_sketch/builtin_rty.ml",
+        "coverage_typing": "data/validation/depth_bst_min_sketch/builtin_rty.ml"
     }
 }

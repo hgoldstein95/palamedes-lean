@@ -14,7 +14,9 @@
     "abdfile": ".abd",
     "synfile": ".syn",
     "collectfile": ".collect",
-    "abd_templates": ["template_emp"],
+    "abd_templates": [
+        "template_emp"
+    ],
     "num_quantifier": 0,
     "abduce_rlimit": 10000,
     "synth_bound": 30,
