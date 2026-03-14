@@ -45,6 +45,7 @@ FILES = [
     "Palamedes/Examples/Tree/AVL/AVL.lean",
     "Palamedes/Examples/Tree/BST/BST.lean",
     "Palamedes/Examples/Tree/RBT/RBT.lean",
+    "Palamedes/Examples/Tree/BadRBT/BadRBT.lean",
     "Palamedes/Examples/Tree/CompleteTree/CompleteTree.lean",
     "Palamedes/Examples/Tree/IncreasingByOne/IncreasingByOne.lean",
     "Palamedes/Examples/Tree/Nonempty/Nonempty.lean",
