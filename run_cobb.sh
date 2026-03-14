@@ -6,7 +6,7 @@ set -e
 cd Cobb
 eval $(opam env)
 
-benchmarks=('sortedlist' 'even_list' 'list_incr_one' 'list_trues' 'len_even_list' 'list_twos_even_len' 'len_k_list' 'list_twos_len_k' 'uniquelist' 'duplicatelist' 'depthtree' 'complete_tree' 'nonemptytree' 'twos_tree' 'rbtree_busted' 'depth_bst' 'equals2' 'equals2or5' 'gt5' 'stlc_gen_term')
+benchmarks=('sortedlist' 'even_list' 'list_trues' 'list_incr_one' 'list_twos' 'list_twos_even_len' 'len_even_list' 'len_k_list' 'list_twos_len_k' 'uniquelist' 'duplicatelist' 'depthtree' 'complete_tree' 'nonemptytree' 'twos_tree' 'rbtree_busted' 'depth_bst' 'stlc_gen_term' 'equals2' 'equals2or5' 'gt5' )
 
 cobbrun() {
     local b="$1"
