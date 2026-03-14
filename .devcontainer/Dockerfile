@@ -2,8 +2,9 @@ FROM python:3.10
 
 ## BEGIN: RUNS AS ROOT
 
-# Create a user
+SHELL ["/bin/bash", "-c"]
 
+# Create a user
 ARG USERNAME=artifact
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
@@ -63,3 +64,16 @@ COPY --chown=$USERNAME:$USERNAME run_cobb.sh .
 
 
 COPY --chown=$USERNAME:$USERNAME QC/ QC/
+
+RUN curl https://elan.lean-lang.org/elan-init.sh -sSf | sh -s -- -y
+ENV PATH="$PATH:/home/artifact/.elan/bin"
+
+COPY --chown=$USERNAME:$USERNAME Palamedes/ Palamedes/
+WORKDIR /home/artifact/Palamedes/
+RUN lake update
+RUN lake clean
+RUN lake exe cache get
+RUN lake build
+RUN pip install tqdm
+
+WORKDIR /home/artifact
