@@ -41,7 +41,7 @@ FILES = [
     "Palamedes/Examples/List/EvenLen/Fold.lean",
     "Palamedes/Examples/List/EvenLen/EvenLen.lean",
     "Palamedes/Examples/Tree/AllTwos/AllTwos.lean",
-    "Palamedes/Examples/List/AllEvens/AllEvens.lean",
+    "Palamedes/Examples/List/AllEvens/Evens.lean",
     "Palamedes/Examples/Tree/AVL/AVL.lean",
     "Palamedes/Examples/Tree/BST/BST.lean",
     "Palamedes/Examples/Tree/RBT/RBT.lean",
