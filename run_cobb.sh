@@ -45,9 +45,11 @@ cobbrun() {
     else
         res+=',error,'
     fi
+    echo $res >> cobbResults.txt
     echo $res
 }
 
+echo 'Benchmark,max sketch status,max sketch time,min sketch status,min sketch time' > cobbResults.txt
 echo 'Benchmark,max sketch status,max sketch time,min sketch status,min sketch time'
 for b in "${benchmarks[@]}"
 do
