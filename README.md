@@ -87,4 +87,93 @@ generator.
 
 ## The structure of this artifact
 
+```
+├── Palamedes
+│   ├── Data
+│   ├── Examples
+│   └── Synthesizer
+├── Cobb
+│   ├── scripts
+│   └── underapproximation_type
+│       └── data
+│           └── validation
+├── QC
+├── run_palamedes.sh
+├── run_cobb.sh
+├── ktt.sh
+└── README.md
+```
+
+### Palamedes directory
+
+### Cobb directory
+
+The `Cobb` directory is taken from Cobb's artifact (link here). 
+The `scripts` directory contains the `synth.py` script that we use to run our evaluation.
+The `underapproximation_type` directory is cloned from Cobb's git repository (https://github.com/Pat-Lafon/underapproximation_type/tree/61f5edf819c4733f199a48df4125da6e5759c988). `data/validation` is their original path for benchmarks, and where our versions of the benchmarks are stored.
+
+The directories inside `validation` are:
+```
+├── validation
+│   ├── complete_tree_max_sketch
+│   ├── complete_tree_min_sketch
+│   ├── depth_bst_max_sketch
+│   ├── depth_bst_min_sketch
+│   ├── depthtree_max_sketch
+│   ├── depthtree_min_sketch
+│   ├── duplicatelist_max_sketch
+│   ├── duplicatelist_min_sketch
+│   ├── equals2_max_sketch
+│   ├── equals2_min_sketch
+│   ├── equals2or5_max_sketch
+│   ├── equals2or5_min_sketch
+│   ├── even_list_max_sketch
+│   ├── even_list_min_sketch
+│   ├── gt5_max_sketch
+│   ├── gt5_min_sketch
+│   ├── len_even_list_max_sketch
+│   ├── len_even_list_min_sketch
+│   ├── len_k_list_max_sketch
+│   ├── len_k_list_min_sketch
+│   ├── list_incr_one_max_sketch
+│   ├── list_incr_one_min_sketch
+│   ├── list_trues_max_sketch
+│   ├── list_trues_min_sketch
+│   ├── list_twos_even_len_max_sketch
+│   ├── list_twos_even_len_min_sketch
+│   ├── list_twos_len_k_max_sketch
+│   ├── list_twos_len_k_min_sketch
+│   ├── list_twos_max_sketch
+│   ├── list_twos_min_sketch
+│   ├── nonemptytree_max_sketch
+│   ├── nonemptytree_min_sketch
+│   ├── proofs
+│   ├── rbtree_busted_max_sketch
+│   ├── rbtree_busted_min_sketch
+│   ├── sortedlist_max_sketch
+│   ├── sortedlist_min_sketch
+│   ├── stlc_gen_term_size_max_sketch
+│   ├── stlc_gen_term_size_min_sketch
+│   ├── twos_tree_max_sketch
+│   ├── twos_tree_min_sketch
+│   ├── uniquelist_max_sketch
+│   └── uniquelist_min_sketch
+```
+
+`proofs` is a helper directory necessary for Cobb's operation, the remaining pairs of directories are the benchmarks run in the experiment for RQ1. Of these, the following benchmarks were originally from Cobb's artifact (separated into individual directories by us):
+* complete_tree
+* depth_bst
+* depthtree
+* duplicatelist
+* even_list
+* len_k_list
+* rbtree_busted
+* sortedlist
+* stlc_gen_term_size
+* uniquelist
+
+### QC directory
+
+Contains the two `*.v` files detailed in the step by step guide for RQ2: Comparison with QuickChick, and `QC.md` containing the same information.
+
 ## Palamedes code
