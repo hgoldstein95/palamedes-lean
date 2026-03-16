@@ -108,7 +108,7 @@ generator.
 
 ### Cobb directory
 
-The `Cobb` directory is taken from Cobb's artifact (link here). 
+The `Cobb` directory is taken from Cobb's artifact (https://doi.org/10.5281/zenodo.16599071). 
 The `scripts` directory contains the `synth.py` script that we use to run our evaluation.
 The `underapproximation_type` directory is cloned from Cobb's git repository (https://github.com/Pat-Lafon/underapproximation_type/tree/61f5edf819c4733f199a48df4125da6e5759c988). `data/validation` is their original path for benchmarks, and where our versions of the benchmarks are stored.
 
