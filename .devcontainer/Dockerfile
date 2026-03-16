@@ -61,6 +61,7 @@ RUN opam exec -- dune build
 
 WORKDIR /home/artifact
 COPY --chown=$USERNAME:$USERNAME run_cobb.sh .
+COPY --chown=$USERNAME:$USERNAME cobb_ktt.sh .
 
 
 COPY --chown=$USERNAME:$USERNAME QC/ QC/
