@@ -45,6 +45,8 @@ Expected run time: 1 hour.
 
 Run produces a CSV table to standard output that is also saved to the file `Cobb/cobbResults.txt`. This table provides the Cobb data points for figure 18 and should (approximately) match the table in section E.2. in the appendix, with some slowdown due to virtualization.
 
+Further information about the Cobb benchmarks, including information about how to re-run individual benchmarks, can be found in the `Cobb/README.md` file. 
+
 **Note to artifact reviewers**: in the submitted version of the paper, one Cobb benchmark, `isNonEmpty`, is erroneously recorded as failing. This will be amended in the final version of the paper.
 
 ### Subsection 6.2: RQ2: Comparison with QuickChick
