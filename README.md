@@ -1,15 +1,21 @@
 # The Search for Constrained Random Generators (artifact)
 
-This docker image is the artifact for The Search for Constrained Random Generators (PLDI'26). The artifact includes the Palamedes library for Lean, our benchmarks, additional examples, and two baseline tools, QuickChick and Cobb.
+This docker image is the artifact for _The Search for Constrained Random Generators_ (PLDI'26). The
+artifact includes the Palamedes library for Lean, our benchmarks, additional examples, and two
+baseline tools, QuickChick and Cobb.
 
 The claims supported by this artifact are:
-1. Palamedes is more expressive than Cobb and finds generators faster, despite its search needing to solve a harder problem. (RQ1: Comparison with Cobb)
-2.  Palamedes is a useful complement to QuickChick, applying more directly to the common case where predicates are expressed as functions, but with trade-offs in terms of performance. (RQ2: Comparison with QuickChick)
+1. Palamedes is more expressive than Cobb and finds generators faster, despite its search needing to
+   solve a harder problem. (RQ1: Comparison with Cobb)
+2. Palamedes is a useful complement to QuickChick, applying more directly to the common case where
+   predicates are expressed as functions, but with trade-offs in terms of performance. (RQ2:
+   Comparison with QuickChick)
 
 Claims not supported by this artifact are:
 
 3. RQ3: Synthesized vs. Handwritten Generators.
-This is a qualitative comparison of generators that appear in our appendix and cannot be mechanically reproduced.
+   This is a qualitative comparison of generators that appear in our appendix and cannot be
+   mechanically reproduced.
 
 ## Getting started guide
 
@@ -43,27 +49,31 @@ from the artifact home directory.
 
 Expected run time: 1 hour.
 
-Run produces a CSV table to standard output that is also saved to the file `Cobb/cobbResults.txt`. This table provides the Cobb data points for figure 18 and should (approximately) match the table in section E.2. in the appendix, with some slowdown due to virtualization.
+Run produces a CSV table to standard output that is also saved to the file `Cobb/cobbResults.txt`.
+This table provides the Cobb data points for figure 18 and should (approximately) match the table in
+section E.2. in the appendix, with some slowdown due to virtualization.
 
-Further information about the Cobb benchmarks, including information about how to re-run individual benchmarks, can be found in the `Cobb/README.md` file. 
+Further information about the Cobb benchmarks, including information about how to re-run individual
+benchmarks, can be found in the `Cobb/README.md` file.
 
-**Note to artifact reviewers**: in the submitted version of the paper, one Cobb benchmark, `isNonEmpty`, is erroneously recorded as failing. This will be amended in the final version of the paper.
+**Note to artifact reviewers**: in the submitted version of the paper, one Cobb benchmark,
+*`isNonEmpty`, is erroneously recorded as failing. This will be amended in the final version of the
+*paper.
 
 ### Subsection 6.2: RQ2: Comparison with QuickChick
 
-There are two files in the QC directory, QC.v and LC.v.
-The majority of the generators are defined in QC.v; the other file, LC.v,
-contains only the generators that relate to STLC, to avoid some namespace
-collisions.
+There are two files in the QC directory, QC.v and LC.v.  The majority of the generators are defined
+in QC.v; the other file, LC.v, contains only the generators that relate to STLC, to avoid some
+namespace collisions.
 
 To compile the files, which derives the generators for RQ2, simply do:
 ```
 ~/.opam/5.3.0/bin/coqc QC.v
 ```
 
-To run a generator for testing purposes, simply uncomment the corresponding
-Sample command. For example, to sample the most complex generator (for
-red-black trees) at the end of QC.v, simply change the line:
+To run a generator for testing purposes, simply uncomment the corresponding Sample command. For
+example, to sample the most complex generator (for red-black trees) at the end of QC.v, simply
+change the line:
 
 ```
 (* Sample (genST (fun t => RBT black 2 0 17 t)). *)
@@ -76,12 +86,10 @@ to
 Sample (genST (fun t => RBT black 2 0 17 t)).
 ```
 
-and then re-run the coqc command above to see the sampled output in
-the terminal.
+and then re-run the coqc command above to see the sampled output in the terminal.
 
-The relevant appendix table was created by counting (by hand) the
-generators for which merging was required to derive an effective
-generator.
+The relevant appendix table was created by counting (by hand) the generators for which merging was
+required to derive an effective generator.
 
 ### Running Palamedes on additional examples
 
@@ -108,9 +116,12 @@ generator.
 
 ### Cobb directory
 
-The `Cobb` directory is taken from Cobb's artifact (https://doi.org/10.5281/zenodo.16599071). 
-The `scripts` directory contains the `synth.py` script that we use to run our evaluation.
-The `underapproximation_type` directory is cloned from Cobb's git repository (https://github.com/Pat-Lafon/underapproximation_type/tree/61f5edf819c4733f199a48df4125da6e5759c988). `data/validation` is their original path for benchmarks, and where our versions of the benchmarks are stored.
+- The `Cobb` directory is taken from Cobb's artifact (https://doi.org/10.5281/zenodo.16599071).
+- The `scripts` directory contains the `synth.py` script that we use to run our evaluation.
+- The `underapproximation_type` directory is cloned from Cobb's git repository
+  (https://github.com/Pat-Lafon/underapproximation_type/tree/61f5edf819c4733f199a48df4125da6e5759c988).
+  `data/validation` is their original path for benchmarks, and where our versions of the benchmarks
+  are stored.
 
 The directories inside `validation` are:
 ```
@@ -160,20 +171,23 @@ The directories inside `validation` are:
 │   └── uniquelist_min_sketch
 ```
 
-`proofs` is a helper directory necessary for Cobb's operation, the remaining pairs of directories are the benchmarks run in the experiment for RQ1. Of these, the following benchmarks were originally from Cobb's artifact (separated into individual directories by us):
-* complete_tree
-* depth_bst
-* depthtree
-* duplicatelist
-* even_list
-* len_k_list
-* rbtree_busted
-* sortedlist
-* stlc_gen_term_size
-* uniquelist
+`proofs` is a helper directory necessary for Cobb's operation, the remaining pairs of directories
+are the benchmarks run in the experiment for RQ1. Of these, the following benchmarks were originally
+from Cobb's artifact (separated into individual directories by us):
+- complete_tree
+- depth_bst
+- depthtree
+- duplicatelist
+- even_list
+- len_k_list
+- rbtree_busted
+- sortedlist
+- stlc_gen_term_size
+- uniquelist
 
 ### QC directory
 
-Contains the two `*.v` files detailed in the step by step guide for RQ2: Comparison with QuickChick, and `QC.md` containing the same information.
+Contains the two `*.v` files detailed in the step by step guide for RQ2: Comparison with QuickChick,
+and `QC.md` containing the same information.
 
 ## Palamedes code
