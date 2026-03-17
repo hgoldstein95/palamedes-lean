@@ -29,17 +29,52 @@ In the root directory, run the script `ktt.sh`:
 $ ./ktt.sh
 ```
 
-The expected runtime of this script is N minutes. The expected output is approximately:
+The expected runtime of this script is 20 seconds. The expected output is approximately:
 ```
 Running Palamedes kick-the-tires...
 predicate,type,total,mean,stdev
-"TARGET = 2","ℕ",True,0.0965,
-"isAllTwos TARGET = true","List ℕ",True,0.8849,
-"isBST TARGET (lo, hi) = true","Tree ℕ",True,1.3426,
+"TARGET = 2","ℕ",True,0.0675,
+"isAllTwos TARGET = true","List ℕ",True,0.8356,
+"isBST TARGET (lo, hi) = true","Tree ℕ",True,1.6055,
 
 Running Cobb kick-the-tires...
 Benchmark,max sketch status,max sketch time,min sketch status,min sketch time
-sortedlist,success, 0.44,success, 3.67
+sortedlist,success, 0.72,success, 7.05
+
+Running QuickChick kick-the-tires...
+between is defined
+between_ind is defined
+between_sind is defined
+X10 is defined
+X10_ind is defined
+X10_sind is defined
+X14 is defined
+X14_ind is defined
+X14_sind is defined
+File "./QC/QC.v", line 193, characters 0-35:
+Warning: Not a truly recursive fixpoint. [non-recursive,fixpoints,default]
+File "./QC/QC.v", line 193, characters 0-35:
+Warning: Not a truly recursive fixpoint. [non-recursive,fixpoints,default]
+File "./QC/QC.v", line 193, characters 0-35:
+Warning: Not a truly recursive fixpoint. [non-recursive,fixpoints,default]
+File "./QC/QC.v", line 196, characters 0-34:
+Warning: Not a truly recursive fixpoint. [non-recursive,fixpoints,default]
+File "./QC/QC.v", line 196, characters 0-34:
+Warning: Not a truly recursive fixpoint. [non-recursive,fixpoints,default]
+File "./QC/QC.v", line 196, characters 0-34:
+Warning: Not a truly recursive fixpoint. [non-recursive,fixpoints,default]
+AVL is defined
+AVL_ind is defined
+AVL_sind is defined
+File "./QC/QC.v", line 252, characters 0-35:
+Warning: Not a truly recursive fixpoint. [non-recursive,fixpoints,default]
+File "./QC/QC.v", line 252, characters 0-35:
+Warning: Not a truly recursive fixpoint. [non-recursive,fixpoints,default]
+File "./QC/QC.v", line 252, characters 0-35:
+Warning: Not a truly recursive fixpoint. [non-recursive,fixpoints,default]
+RBT is defined
+RBT_ind is defined
+RBT_sind is defined
 ```
 
 ## Step-by-Step Guide to Evaluating Palamedes
@@ -144,9 +179,11 @@ files interactively.
 
 ```
 ├── Palamedes
-│   ├── Data
-│   ├── Examples
-│   └── Synthesizer
+│   ├── Palamedes
+│   │   ├── Data
+│   │   ├── Examples
+│   │   └── Synthesizer
+│   └── scripts
 ├── Cobb
 │   ├── scripts
 │   └── underapproximation_type
@@ -160,6 +197,41 @@ files interactively.
 ```
 
 ### Palamedes directory
+
+- The (internal) `Palamedes` directory contains the code and benchmarks for Palamedes.
+The structure of the code is detailed below.
+- The `scripts` directory contains the script run by `run_palamedes.sh` in the step by step guide.
+- The `Palamedes/Examples` directory contains the benchmarks used in our evaluation. Its subdirectories are divided by the type of value being generated: 
+```
+├── Examples
+│   ├── List
+│   │   ├── AllEvens
+│   │   ├── AllTwos
+│   │   ├── AllTwosEvenLen
+│   │   ├── EvenLen
+│   │   ├── IncreasingByOne
+│   │   ├── LengthK
+│   │   ├── LengthKAllTwos
+│   │   ├── SortedBetween
+│   │   └── True
+│   ├── Range
+│   ├── STLC
+│   │   ├── WellScoped
+│   │   └── WellTyped
+│   ├── Simple
+│   ├── Stack
+│   ├── Tree
+│   │   ├── AVL
+│   │   ├── AllTwos
+│   │   ├── BST
+│   │   ├── BadRBT
+│   │   ├── CompleteTree
+│   │   ├── IncreasingByOne
+│   │   ├── MaxDepth
+│   │   ├── Nonempty
+│   │   └── RBT
+```
+Benchmarks for recursive types (list, tree, stack, stlc) also contain a variant saved in `Fold.lean` next to the benchmark file showing the benchmark after it is transformed into a fold. These are not part of the evaluation.
 
 ### Cobb directory
 
