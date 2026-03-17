@@ -1,34 +1,28 @@
+import argparse
 import subprocess
 import re
 import statistics
 from tqdm import tqdm
 
-NUM_RUNS = 30
+parser = argparse.ArgumentParser()
+parser.add_argument("--ktt",
+                    action="store_true",
+                    help="Run only KTT_FILES with 1 run")
+args = parser.parse_args()
+
+NUM_RUNS = 1 if args.ktt else 30
 BASE_CMD = [
     "lake",
     "env",
     "lean",
     "-Dtrace.profiler=true",
 ]
-FILES = [
+KTT_FILES = [
     "Palamedes/Examples/Simple/Eq2.lean",
-    "Palamedes/Examples/Simple/Eq2'.lean",
-    "Palamedes/Examples/Simple/Eq2Or5.lean",
-    "Palamedes/Examples/Simple/Eq2Or5'.lean",
-    "Palamedes/Examples/Simple/ThreePlusOne.lean",
-    "Palamedes/Examples/Range/Between5And10.lean",
-    "Palamedes/Examples/Range/BetweenLoAndHi.lean",
-    "Palamedes/Examples/Range/Gt5.lean",
-    "Palamedes/Examples/Range/ZeroOrInRange.lean",
-    "Palamedes/Examples/Arbitrary.lean",
     "Palamedes/Examples/List/AllTwos/AllTwos.lean",
-    "Palamedes/Examples/List/AllTwosEvenLen/AllTwosEvenLen.lean",
-    "Palamedes/Examples/List/EvenLen/EvenLen.lean",
-    "Palamedes/Examples/List/IncreasingByOne/IncreasingByOne.lean",
-    "Palamedes/Examples/List/LengthK/LengthK.lean",
-    "Palamedes/Examples/List/LengthKAllTwos/LengthKAllTwos.lean",
-    "Palamedes/Examples/List/SortedBetween/SortedBetween.lean",
-    "Palamedes/Examples/List/True/True.lean",
+    "Palamedes/Examples/Tree/BST/BST.lean",
+]
+FOLD_FILES = [
     "Palamedes/Examples/List/AllTwos/Fold.lean",
     "Palamedes/Examples/List/AllEvens/Fold.lean",
     "Palamedes/Examples/List/AllTwosEvenLen/Fold.lean",
@@ -39,16 +33,6 @@ FILES = [
     "Palamedes/Examples/List/SortedBetween/Fold.lean",
     "Palamedes/Examples/List/True/Fold.lean",
     "Palamedes/Examples/List/EvenLen/Fold.lean",
-    "Palamedes/Examples/List/EvenLen/EvenLen.lean",
-    "Palamedes/Examples/Tree/AllTwos/AllTwos.lean",
-    "Palamedes/Examples/List/AllEvens/Evens.lean",
-    "Palamedes/Examples/Tree/AVL/AVL.lean",
-    "Palamedes/Examples/Tree/BST/BST.lean",
-    "Palamedes/Examples/Tree/RBT/RBT.lean",
-    "Palamedes/Examples/Tree/BadRBT/BadRBT.lean",
-    "Palamedes/Examples/Tree/CompleteTree/CompleteTree.lean",
-    "Palamedes/Examples/Tree/IncreasingByOne/IncreasingByOne.lean",
-    "Palamedes/Examples/Tree/Nonempty/Nonempty.lean",
     "Palamedes/Examples/Tree/AllTwos/Fold.lean",
     "Palamedes/Examples/Tree/AVL/Fold.lean",
     "Palamedes/Examples/Tree/BST/Fold.lean",
@@ -56,15 +40,43 @@ FILES = [
     "Palamedes/Examples/Tree/CompleteTree/Fold.lean",
     "Palamedes/Examples/Tree/IncreasingByOne/Fold.lean",
     "Palamedes/Examples/Tree/Nonempty/Fold.lean",
-    "Palamedes/Examples/Stack/GoodStack.lean",
     "Palamedes/Examples/Stack/Fold.lean",
-    "Palamedes/Examples/STLC/WellScoped/WellScoped.lean",
-    "Palamedes/Examples/STLC/WellTyped/WellTyped.lean",
     "Palamedes/Examples/STLC/WellTyped/Fold.lean",
     "Palamedes/Examples/STLC/WellScoped/Fold.lean",
-    "Palamedes/Examples/Tree/MaxDepth/MaxDepth.lean",
     "Palamedes/Examples/Tree/MaxDepth/Fold.lean",
 ]
+REST_FILES = [
+    "Palamedes/Examples/Simple/Eq2'.lean",
+    "Palamedes/Examples/Simple/Eq2Or5.lean",
+    "Palamedes/Examples/Simple/Eq2Or5'.lean",
+    "Palamedes/Examples/Simple/ThreePlusOne.lean",
+    "Palamedes/Examples/Range/Between5And10.lean",
+    "Palamedes/Examples/Range/BetweenLoAndHi.lean",
+    "Palamedes/Examples/Range/Gt5.lean",
+    "Palamedes/Examples/Range/ZeroOrInRange.lean",
+    "Palamedes/Examples/Arbitrary.lean",
+    "Palamedes/Examples/List/AllTwosEvenLen/AllTwosEvenLen.lean",
+    "Palamedes/Examples/List/EvenLen/EvenLen.lean",
+    "Palamedes/Examples/List/IncreasingByOne/IncreasingByOne.lean",
+    "Palamedes/Examples/List/LengthK/LengthK.lean",
+    "Palamedes/Examples/List/LengthKAllTwos/LengthKAllTwos.lean",
+    "Palamedes/Examples/List/SortedBetween/SortedBetween.lean",
+    "Palamedes/Examples/List/True/True.lean",
+    "Palamedes/Examples/List/EvenLen/EvenLen.lean",
+    "Palamedes/Examples/Tree/AllTwos/AllTwos.lean",
+    "Palamedes/Examples/List/AllEvens/Evens.lean",
+    "Palamedes/Examples/Tree/AVL/AVL.lean",
+    "Palamedes/Examples/Tree/RBT/RBT.lean",
+    "Palamedes/Examples/Tree/BadRBT/BadRBT.lean",
+    "Palamedes/Examples/Tree/CompleteTree/CompleteTree.lean",
+    "Palamedes/Examples/Tree/IncreasingByOne/IncreasingByOne.lean",
+    "Palamedes/Examples/Tree/Nonempty/Nonempty.lean",
+    "Palamedes/Examples/Stack/GoodStack.lean",
+    "Palamedes/Examples/STLC/WellScoped/WellScoped.lean",
+    "Palamedes/Examples/STLC/WellTyped/WellTyped.lean",
+    "Palamedes/Examples/Tree/MaxDepth/MaxDepth.lean",
+]
+FILES = KTT_FILES if args.ktt else KTT_FILES + REST_FILES
 
 # Regular expression to match the desired output
 pattern = re.compile(r'\[palamedes\.trace\] \[(\d+(?:\.\d+)?)\] ⟪(.+)⟫⟪(.+)⟫')
@@ -106,7 +118,8 @@ partial_lines = []
 # Compute and print mean and standard deviation
 for label, numbers in [item for item in data.items()]:
     mean = statistics.mean(numbers["times"])
-    stdev = statistics.stdev(numbers["times"])
+    stdev = statistics.stdev(numbers["times"]) if len(
+        numbers["times"]) > 1 else None
     total = numbers["total"]
 
     (typ, pred) = label
@@ -122,18 +135,29 @@ for label, numbers in [item for item in data.items()]:
 
     pred = pred.replace("TARGET", "`\\textbf{v}`")
 
+    stdev_str = f"(${stdev:.2f}$)" if stdev is not None else ""
     line = ("\\mintinline[mathescape=true,escapeinside=``]{text}|" + pred +
             "| & \\mintinline[mathescape=true,escapeinside=``]{text}|" + typ +
-            "| & " + f"${mean:.2f}$ & (${stdev:.2f}$) \\\\")
+            "| & " + f"${mean:.2f}$ & " + stdev_str + " \\\\")
 
     if total:
         total_lines.append(line)
     else:
         partial_lines.append(line)
 
-with open("final-data.txt", "w") as f:
+with open("palamedes-latex-chart.txt", "w") as f:
     for line in total_lines:
         f.write(line + "\n")
     f.write("\\hline\n")
     for line in partial_lines:
         f.write(line + "\n")
+
+with open("palamedes-data.csv", "w") as f:
+    f.write("predicate,type,total,mean,stdev\n")
+    for label, numbers in data.items():
+        (typ, pred) = label
+        mean = statistics.mean(numbers["times"])
+        stdev = statistics.stdev(numbers["times"]) if len(
+            numbers["times"]) > 1 else ""
+        total = numbers["total"]
+        f.write(f'"{pred}","{typ}",{total},{mean:.4f},{stdev}\n')
