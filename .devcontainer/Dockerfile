@@ -27,6 +27,8 @@ RUN apt-get install -y time
 RUN apt-get install -y zip
 RUN apt-get install -y zsh
 RUN apt-get install -y libgmp3-dev
+RUN apt-get install -y vim
+RUN apt-get install -y nano
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y pkg-config
 
 USER $USERNAME
@@ -60,8 +62,11 @@ RUN eval $(opam env)
 RUN opam exec -- dune build
 
 WORKDIR /home/artifact
+COPY --chown=$USERNAME:$USERNAME README.md .
+COPY --chown=$USERNAME:$USERNAME run_palamedes.sh .
 COPY --chown=$USERNAME:$USERNAME run_cobb.sh .
 COPY --chown=$USERNAME:$USERNAME cobb_ktt.sh .
+COPY --chown=$USERNAME:$USERNAME ktt.sh .
 
 
 COPY --chown=$USERNAME:$USERNAME QC/ QC/
