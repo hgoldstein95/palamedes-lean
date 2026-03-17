@@ -233,3 +233,18 @@ Contains the two `*.v` files detailed in the step by step guide for RQ2: Compari
 and `QC.md` containing the same information.
 
 ## Palamedes code
+
+1. Gen.lean contains the basic generator type and a function to compute the support of a generator,
+   plus a couple of useful theorems about the supports of different structures (map, dependent
+   conditionals, etc.).
+2. CorrectGen.lean refines the generator type with a predicate and defines basic synthesis rules
+3. Synthesizer/CGeneratorSearch.lean adds all the synthesis rules to aesop (see the AesopRules
+   section), adds some macros for goal manipulation and for controlling when certain rules apply,
+   and defines the API (see API).
+4. The Data folder contains several recursive datatypes, along with synthesis rules for them (using
+   the unfold strategy described in the paper), useful lemmas for manipulating predicates about them
+   into the right forms, and lemmas about support and termination. It also contains base types like
+   Nat along with synthesis rules for them, in some cases rules for casing on them, and lemmas about
+   supports and totality.
+5. The Examples folder contains examples, both simple ones (Simple.lean and Range.lean) and complex
+   ones using the recursive datatypes.
