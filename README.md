@@ -116,10 +116,15 @@ required to derive an effective generator.
 
 If you would like to explore Palamedes further, you can change any of the examples that we provide
 in `Palamedes/Palamedes/Examples`. For example, you may edit
-`Palamedes/Palamedes/Examples/Range/Gt5.lean` to instead be `genGt6`:
+`Palamedes/Examples/List/AllTwos/AllTwos.lean` to instead be `genAllThrees`:
 ```
-def genGt6 : Gen Nat := by
-  generator_search? fun n => n > 6
+@[simp]
+def isAllThrees : List Nat → Bool
+  | [] => true
+  | x :: xs => x = 3 && isAllThrees xs
+
+def genAllThrees : Gen (List Nat) := by
+  generator_search? (fun xs => isAllThrees xs)
 ```
 (Adding the `?` after `generator_search` will cause the generator to be printed once it is built.)
 Then (from the `Palamedes` directory) run
@@ -128,7 +133,7 @@ lake env lean <path>
 ```
 so for example
 ```
-lake env lean Palamedes/Examples/Range/Gt5.lean
+lake env lean Palamedes/Examples/List/AllTwos/AllTwos.lean
 ```
 to see the generator.
 
