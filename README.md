@@ -231,7 +231,7 @@ The structure of the code is detailed below.
 │   │   ├── Nonempty
 │   │   └── RBT
 ```
-Benchmarks for recursive types (list, tree, stack, stlc) also contain a variant saved in `Fold.lean` next to the benchmark file showing the benchmark after it is transformed into a fold. These are not part of the evaluation.
+Benchmarks for recursive types (list, tree, stack, stlc) also contain a variant saved in `Fold.lean` next to the benchmark file showing the benchmark after it is transformed into a fold. These are not part of the evaluation, but can be run with the instructions for running Palamedes above.
 
 ### Cobb directory
 
