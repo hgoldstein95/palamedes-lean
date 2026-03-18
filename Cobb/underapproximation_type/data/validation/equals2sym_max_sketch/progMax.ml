@@ -2,4 +2,4 @@ let rec equals2_gen (s : int) : int = if true then Err else 2
 
 let[@assert] equals2_gen =
   let s = ((0 <= v : [%v: int]) [@over]) in
-  ((fun ((n [@exists]) : int) -> v == 2: [%v: int]) [@under])
+  ((fun ((n [@exists]) : int) -> 2 == v: [%v: int]) [@under])
