@@ -79,6 +79,7 @@ RBT_sind is defined
 
 ## Step-by-Step Guide to Evaluating Palamedes
 
+
 ### Subsection 6.1: RQ1: Comparison with Cobb
 
 The data for Figure 18 is generated via two scripts.
@@ -107,14 +108,23 @@ Expected run time: 1 hour.
 
 Run produces a CSV table to standard output that is also saved to the file `Cobb/cobbResults.txt`.
 This table provides the Cobb data points for figure 18 and should (approximately) match the table in
-section E.2. in the appendix, with some slowdown due to virtualization.
+section E.2. in the appendix. You may notice a few discrepancies:
+- Some (e.g., `Tree.isIncreasingByOne`) could not be expressed Cobb without
+  adding additional inductive predicates to the underlying Rocq library; we
+  wanted to test Cobb with the libraries it provided, so we did not express those
+  predicates.
+- The "Immediate failure (no sketch)" predicates all fall outside of the set of
+  predicates that Cobb attempts to handle (it does not work with numerical
+  constraints), so they do not appear at all.
+- **Error**: In the submitted version of the paper, one Cobb benchmark,
+  `isNonEmpty`, is erroneously recorded as failing. This will be amended in
+  the final version of the paper.
+
+As with Palamedes, you will also notice some slowdown due to virtualization.
 
 Further information about the Cobb benchmarks, including information about how to re-run individual
 benchmarks, can be found in the `Cobb/README.md` file.
 
-**Note to artifact reviewers**: in the submitted version of the paper, one Cobb benchmark,
-*`isNonEmpty`, is erroneously recorded as failing. This will be amended in the final version of the
-*paper.
 
 ### Subsection 6.2: RQ2: Comparison with QuickChick
 

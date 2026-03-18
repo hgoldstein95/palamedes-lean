@@ -1,6 +1,0 @@
-Nil
-Cons
-subs
-list_mem
-sizecheck
-<

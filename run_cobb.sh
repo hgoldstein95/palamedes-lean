@@ -6,7 +6,7 @@ set -e
 cd Cobb
 eval $(opam env)
 
-benchmarks=('sortedlist' 'even_list' 'list_trues' 'list_incr_one' 'list_twos' 'list_twos_even_len' 'len_even_list' 'len_k_list' 'list_twos_len_k' 'uniquelist' 'duplicatelist' 'depthtree' 'complete_tree' 'nonemptytree' 'twos_tree' 'rbtree_busted' 'depth_bst' 'stlc_gen_term_size' 'equals2' 'equals2or5' 'gt5' )
+benchmarks=('sortedlist' 'even_list' 'list_trues' 'list_twos' 'list_twos_even_len' 'len_even_list' 'len_k_list' 'list_twos_len_k' 'uniquelist' 'duplicatelist' 'depthtree' 'complete_tree' 'nonemptytree' 'twos_tree' 'rbtree_busted' 'depth_bst' 'stlc_gen_term_size' 'equals2' 'equals2or5' 'gt5' )
 
 cobbrun() {
     local b="$1"
@@ -19,7 +19,7 @@ cobbrun() {
 		status=$(echo $f| awk -F',' '{print $1}')
 		if [ "$status" != 'true' ]; then
 			res+=',error,'
-		else 
+		else
 			time=$(echo $f| awk -F',' '{print $10}')
 			res+=",success,${time}"
 		fi
@@ -36,7 +36,7 @@ cobbrun() {
 		status=$(echo $f| awk -F',' '{print $1}')
 		if [ "$status" != 'true' ]; then
 			res+=',error,'
-		else 
+		else
 			time=$(echo $f| awk -F',' '{print $10}')
 			res+=",success,${time}"
 		fi
