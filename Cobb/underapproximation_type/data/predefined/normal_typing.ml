@@ -41,6 +41,7 @@ val hd : 'a list -> 'a -> bool
 val tl : 'a list -> 'a list -> bool
 val list_mem : 'a list -> 'a -> bool
 val sorted : 'a list -> bool
+val incr_one : int list -> bool
 val uniq : 'a list -> bool
 val all_evens : 'a list -> bool
 val all_twos: int list -> bool

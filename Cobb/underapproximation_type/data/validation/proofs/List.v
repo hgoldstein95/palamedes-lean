@@ -30,6 +30,11 @@ Inductive sorted : list nat -> Prop :=
 | lsorted2: forall n, sorted [n]
 | lsorted3: forall n n' l, sorted (n' :: l) -> n <= n' -> sorted (n :: n' :: l).
 
+Inductive incr_one : list nat -> Prop :=
+| lincr1: incr_one []
+| lincr2: forall n, incr_one [n]
+| lincr3: forall n n' l, incr_one (n' :: l) -> n' = n + 1 -> incr_one (n :: n' :: l).
+
 Inductive uniq : list nat -> Prop :=
 | luniq1 : uniq []
 | luniq2 : forall n, uniq [n]
@@ -40,10 +45,9 @@ Hint Constructors tl: core.
 Hint Constructors emp: core.
 Hint Constructors len: core.
 Hint Constructors sorted: core.
+Hint Constructors incr_one: core.
 Hint Constructors uniq: core.
 Hint Constructors list_mem: core.
-
-
 
 
 Lemma list_emp_no_hd : forall l, (forall x, (emp l -> ~hd l x)). Proof.
@@ -154,9 +158,35 @@ Lemma list_sorted_hd : forall l, (forall l1, (forall x, (forall y, ((tl l l1 /\ 
     intros. simp. induction l. my_inversion H1. my_inversion H1; clear H1. constructor. my_inversion H; clear H. my_inversion H2. constructor; auto. constructor; auto.
  Qed. Hint Resolve list_sorted_hd: core.
 
+Lemma list_emp_incr_one : forall l, (emp l -> incr_one l). Proof.
+    intros. my_inversion H. constructor.
+Qed. Hint Resolve list_emp_incr_one: core.
+
+Lemma list_single_incr_one : forall l, (len l 1 -> incr_one l). Proof.
+    intros. my_inversion H. my_inversion H2.
+    - constructor.
+    - lia.
+ Qed. Hint Resolve list_single_incr_one: core.
+
+Lemma list_tl_incr_one : forall l, (forall l1, ((tl l l1 /\ incr_one l) -> incr_one l1)). Proof.
+    intros. simp. my_inversion H. my_inversion H0. constructor.
+ Qed. Hint Resolve list_tl_incr_one: core.
+
+Lemma list_hd_incr_one : forall l, (forall l1, (forall x, (forall y, ((tl l l1 /\ incr_one l) -> (emp l1 \/ ((hd l1 y /\ hd l x) -> x + 1 = y)))))). Proof.
+    intros. simp. my_inversion H. my_inversion H0.
+    - left. constructor.
+    - right. intro. simp. clear H. my_inversion H1.
+    + my_inversion H2. 
+    + my_inversion H2. 
+ Qed. Hint Resolve list_hd_incr_one: core.
+
+Lemma list_incr_one_hd : forall l, (forall l1, (forall x, (forall y, ((tl l l1 /\ (incr_one l1 /\ (hd l y /\ (hd l1 x /\ y + 1 = x)))) -> incr_one l)))). Proof.
+    intros. simp. induction l. my_inversion H1. my_inversion H1; clear H1. constructor. my_inversion H; clear H. my_inversion H2. constructor; auto. constructor; auto.
+ Qed. Hint Resolve list_incr_one_hd: core.
+
 Lemma list_emp_unique : forall l, (emp l -> uniq l). Proof.
     intros. my_inversion H. constructor.
- Qed. Hint Resolve list_emp_unique: core.
+Qed. Hint Resolve list_emp_unique: core.
 
 Lemma list_tl_unique : forall l, (forall l1, ((tl l l1 /\ uniq l) -> uniq l1)). Proof.
     intros. simp. my_inversion H. my_inversion H0. constructor.
