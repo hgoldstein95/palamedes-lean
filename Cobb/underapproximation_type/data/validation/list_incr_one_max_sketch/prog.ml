@@ -13,6 +13,6 @@ let[@assert] incr_one_list_gen =
   let s = ((0 <= v : [%v: int]) [@over]) in
   let x = ((true : [%v: int]) [@over]) in
   ((len v s && incr_one v
-    && (not (emp v)) #==> (fun ((u [@exists]) : int) -> hd v u && x <= u)
+    && (not (emp v)) #==> (fun ((u [@exists]) : int) -> hd v u && u == x + 1)
     : [%v: int list])
     [@under])
