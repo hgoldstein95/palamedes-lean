@@ -47,7 +47,7 @@ let[@axiom] list_tl_incr_one (l : int list) (l1 : int list) =
   (tl l l1 && incr_one l)#==>(incr_one l1)
 
 let[@axiom] list_hd_incr_one (l : int list) (l1 : int list) (x : int) =
-  (tl l l1 && incr_one l)#==>(emp l1 || ((hd l x) #==> hd l1 (x+1)))
+  (tl l l1 && incr_one l)#==>(emp l1 || ((hd l x) #==> (hd l1 (x+1))))
 
 let[@axiom] list_incr_one_hd (l : int list) (l1 : int list) (y : int) =
 
