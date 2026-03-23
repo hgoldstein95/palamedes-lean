@@ -1,8 +1,8 @@
 let rec trues_list_gen (s : int) : bool list =
-  if sizecheck s then [ true ]
-  else
-    if bool_gen () then [ true ]
-  else true :: trues_list_gen (subs s)
+  if sizecheck s then [ True ]
+  else 
+    let (l : bool list) = trues_list_gen (subs s) in 
+    True :: l
 
 let[@assert] trues_list_gen =
   let s = ((0 <= v : [%v: int]) [@over]) in

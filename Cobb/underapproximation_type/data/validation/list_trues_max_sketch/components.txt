@@ -1,5 +1,6 @@
 Nil
 Cons
+True
 subs
 sizecheck
 <

@@ -30,6 +30,6 @@
         "templates": "data/predefined/templates.ml",
         "normal_typing": "data/predefined/normal_typing.ml",
         "axioms": "data/validation/list_trues_max_sketch/axioms.ml",
-        "coverage_typing": "data/predefined/coverage_typing.ml"
+        "coverage_typing": "data/validation/list_trues_max_sketch/builtin_rty.ml"
     }
 }
