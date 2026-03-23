@@ -31,3 +31,7 @@ type stlc_term =
   | Stlc_abs of stlc_ty * stlc_term
 
 type stlc_tyctx = Stlc_tyctx_nil | Stlc_tyctx_cons of stlc_ty * stlc_tyctx
+
+type label = Pub | Sec
+type atom = Atm of int * label
+type stack = Mty | StackCons of atom * stack | RetCons of atom * stack

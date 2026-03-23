@@ -55,7 +55,27 @@ with bst : Tree -> Prop :=
    ) -> (
     (not (leaf r)) -> lower_bound r x) -> bst l -> bst r -> bst (Node l x r).
 
+Inductive tree_incr_one : Tree -> Prop :=
+| incr_one_leaf : tree_incr_one Leaf
+| incr_one_node_left l n r : 
+    tree_incr_one (Node l (n + 1) r) -> 
+    tree_incr_one (Node (Node l (n + 1) r) n Leaf)
+| incr_one_node_right l n r : 
+    tree_incr_one (Node l (n + 1) r) -> 
+    tree_incr_one (Node Leaf n (Node l (n + 1) r))
+| incr_one_node_both l1 l2 n r1 r2 : 
+    tree_incr_one (Node l1 (n + 1) r1) -> 
+    tree_incr_one (Node l2 (n + 1) r2) ->
+    tree_incr_one (Node (Node l1 (n + 1) r1) n (Node l2 (n + 1) r2))
+.
 
+Inductive avl_balanced : nat -> Tree -> Prop :=
+| bal_leaf0 : avl_balanced 0 Leaf
+| bal_leaf1 : avl_balanced 1 Leaf
+| bal_node : forall n t1 t2 m,
+    avl_balanced n t1 -> avl_balanced n t2 -> avl_balanced (S n) (Node t1 m t2).
+
+    
 Hint Constructors leaf: core.
 Hint Constructors root: core.
 Hint Constructors lch: core.
@@ -64,8 +84,10 @@ Hint Constructors depth: core.
 Hint Constructors complete: core.
 Hint Constructors tree_mem: core.
 Hint Constructors bst: core.
+Hint Constructors avl_balanced: core.
 Hint Constructors lower_bound : core.
 Hint Constructors upper_bound : core.
+Hint Constructors tree_incr_one: core.
 Hint Unfold not: core.
 
 Lemma tree_no_root_is_tree : forall l, forall i, not ( (root l i) /\ leaf l).

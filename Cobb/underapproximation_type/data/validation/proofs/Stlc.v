@@ -108,6 +108,24 @@ Inductive typing (e : env) : term -> type -> Prop :=
       typing e t2 tau1 ->
       typing e (App t1 t2) tau2.
 
+Inductive scoped : env -> term -> Prop :=
+| SId :
+    forall e x tau,
+      nth_error e x = Some tau ->
+      scoped e (Id x)
+| SConst :
+    forall e n,
+      scoped e (Const n)
+| SAbs :
+    forall e t tau,
+      scoped (cons N e) t ->
+      scoped e (Abs tau t)
+| SApp :
+    forall e t1 t2,
+      scoped e t1 ->
+      scoped e t2 ->
+      scoped e (App t1 t2).
+
 Hint Constructors type: core.
 Hint Constructors term: core.
 Hint Constructors app_free: core.
@@ -127,6 +145,7 @@ Hint Constructors stlc_ty_arr2: core.
 Hint Constructors stlc_tyctx_hd: core.
 Hint Constructors stlc_tyctx_tl: core.
 Hint Constructors typing: core.
+Hint Constructors scoped: core.
 Hint Unfold not: core.
 
 Lemma stlc_num_arr_geq_0 : forall tau, (forall n, (num_arr tau n -> n >= 0)). Proof.

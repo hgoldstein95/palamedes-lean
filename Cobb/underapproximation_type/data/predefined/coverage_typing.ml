@@ -168,6 +168,10 @@ let[@library] gen_term_no_app =
   let tau = (true : [%v: stlc_ty]) [@over] in
   (typing gamma v tau && num_app v 0 : [%v: stlc_term]) [@under]
 
+let[@library] gen_scoped_term_no_app =
+  let gamma = (true : [%v: stlc_tyctx]) [@over] in
+  (scoping gamma v && num_app v 0 : [%v: stlc_term]) [@under]
+
 (* the built-in random generators *)
 
 let[@library] int_range =
@@ -270,3 +274,20 @@ let[@library] hidden_rbtree_gen =
 let[@library] hidden_stlc_term_gen =
   let _ = (true : [%v: unit]) [@over] in
   (true : [%v: stlc_term]) [@under]
+
+let[@library] Pub = (pub_label v : [%v: label]) [@under]
+let[@library] Sec = (sec_label v : [%v: label]) [@under]
+let[@library] Atm = 
+  let x = (true : [%v: int]) [@over] in 
+  let l = (true : [%v: label]) [@over] in 
+  (atom_elements x l v : [%v: atom]) [@under]
+
+let[@library] StackCons =
+  let x = (true : [%v: atom]) [@over] in
+  let xs = (true : [%v: stack]) [@over] in
+  (stack_hd v x && stack_cons_tl v xs : [%v: stack]) [@under]
+
+let[@library] RetCons =
+  let x = (true : [%v: atom]) [@over] in
+  let xs = (true : [%v: stack]) [@over] in
+  (stack_hd v x && stack_retcons_tl v xs : [%v: stack]) [@under]

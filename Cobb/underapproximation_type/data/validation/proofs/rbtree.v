@@ -38,6 +38,22 @@ Inductive no_red_red : RBTree -> Prop :=
 | no_red_red_true : forall v l r, no_red_red l -> no_red_red r -> ~ (rb_root_color l true) -> ~(rb_root_color r true) -> no_red_red ((RBNode true l v r))
 | no_red_red_false : forall v l r, no_red_red l -> no_red_red r -> no_red_red ((RBNode false l v r)).
 
+Inductive rbt_lower_bound : RBTree -> nat -> Prop :=
+| LowerBoundBaseCase : forall r x y c, rb_bst (RBNode c RBLeaf x r) -> y < x -> rbt_lower_bound (RBNode c RBLeaf x r) y
+| LowerBoundRecursiveCase : forall l l1 x, rb_bst l -> not (rb_leaf l1) -> rb_lch l l1 -> rbt_lower_bound l1 x -> rbt_lower_bound l x
+
+with rbt_upper_bound : RBTree -> nat -> Prop :=
+| UpperBoundBaseCase : forall l x y c, rb_bst (RBNode c l x RBLeaf) -> y > x -> rbt_upper_bound (RBNode c l x RBLeaf) y
+| UpperBoundRecursiveCase : forall l l1 x, rb_bst l -> not (rb_leaf l1) -> rb_rch l l1 -> rbt_upper_bound l1 x -> rbt_upper_bound l x
+
+with rb_bst : RBTree -> Prop :=
+| BstLeaf : rb_bst RBLeaf
+| BstNode : forall x l r c, (
+
+    (not (rb_leaf l)) -> rbt_upper_bound l x
+   ) -> (
+    (not (rb_leaf r)) -> rbt_lower_bound r x) -> rb_bst l -> rb_bst r -> rb_bst (RBNode c l x r).
+
 Hint Constructors rb_leaf: core.
 Hint Constructors rb_root: core.
 Hint Constructors rb_root_color: core.
@@ -45,6 +61,9 @@ Hint Constructors rb_lch: core.
 Hint Constructors rb_rch: core.
 Hint Constructors num_black: core.
 Hint Constructors no_red_red: core.
+Hint Constructors rbt_lower_bound: core.
+Hint Constructors rbt_upper_bound: core.
+Hint Constructors rb_bst: core.
 Hint Unfold not: core.
 
 Lemma rbtree_leaf_is_leaf : forall l, (forall l2, ((rb_leaf l /\ rb_leaf l2) -> l = l2)). Proof.

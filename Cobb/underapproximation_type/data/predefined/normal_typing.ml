@@ -55,10 +55,12 @@ val lch : 'a tree -> 'a tree -> bool
 val rch : 'a tree -> 'a tree -> bool
 val tree_mem : 'a tree -> 'a -> bool
 val bst : 'a tree -> bool
+val avl_balanced : int -> 'a tree -> bool
 val heap : 'a tree -> bool
 val complete : 'a tree -> bool
 val lower_bound : int tree -> int -> bool
 val upper_bound : int tree -> int -> bool
+val tree_incr_one : int tree -> bool
 
 (* for rbtree *)
 val num_black : 'a rbtree -> int -> bool
@@ -68,6 +70,9 @@ val rb_root_color : 'a rbtree -> bool -> bool
 val rb_lch : 'a rbtree -> 'a rbtree -> bool
 val rb_rch : 'a rbtree -> 'a rbtree -> bool
 val no_red_red : 'a rbtree -> bool
+val rb_bst : 'a rbtree -> bool
+val rbt_lower_bound : int rbtree -> int -> bool
+val rbt_upper_bound : int rbtree -> int -> bool
 
 (* for stream *)
 val forc : 'a stream lazyty -> 'a stream
@@ -103,6 +108,7 @@ val is_var : stlc_term -> bool
 val is_abs : stlc_term -> bool
 val is_app : stlc_term -> bool
 val typing : stlc_tyctx -> stlc_term -> stlc_ty -> bool
+val scoping : stlc_tyctx -> stlc_term -> bool
 val num_app : stlc_term -> int -> bool
 
 (* val dec_pair : stlc_ty -> int -> int -> bool *)
@@ -125,3 +131,15 @@ val get_num_arr : stlc_ty -> int
 val gen_type : unit -> stlc_ty
 val vars_with_type : stlc_tyctx -> stlc_ty -> stlc_term
 val gen_term_no_app : stlc_tyctx -> stlc_ty -> stlc_term
+
+(* stacks *)
+val stack_len : stack -> int -> bool 
+val empty_stack : stack -> bool
+val pub_label : label -> bool
+val sec_label : label -> bool
+val atom_elements : int -> label -> atom -> bool
+val stack_hd : stack -> atom -> bool
+val stack_cons_tl : stack -> stack -> bool
+val stack_retcons_tl : stack -> stack -> bool
+val good_atom : atom -> bool 
+val good_stack : int -> stack -> bool 

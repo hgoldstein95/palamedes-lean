@@ -1,6 +1,7 @@
 let rec trues_list_gen (s : int) : bool list =
-  if sizecheck s then [ true ]
-  else if bool_gen () then [ true ]
+  if sizecheck s then Err
+  else 
+    if bool_gen () then [ true ]
   else true :: trues_list_gen (subs s)
 
 let[@assert] trues_list_gen =
