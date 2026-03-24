@@ -1,5 +1,5 @@
 let rec incr_one_tree_gen (s : int) (x : int) : int tree =
-  if sizecheck s then Err else if bool_gen () then Leaf else Err
+  if sizecheck s then Err else Err
 
 let[@assert] incr_one_tree_gen =
   let s = ((0 <= v : [%v: int]) [@over]) in
