@@ -1,3 +1,7 @@
 /.lake
 
 Palamedes/.lake
+*.collect
+*.ml.abd
+*.syn 
+*.result.csv
