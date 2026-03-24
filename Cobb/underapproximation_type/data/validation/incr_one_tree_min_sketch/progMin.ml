@@ -1,11 +1,5 @@
 let rec incr_one_tree_gen (s : int) (x : int) : int tree =
-  if sizecheck s then Err
-  else if bool_gen () then Leaf
-  else
-    let (ss : int) = subs s in
-    let (lt : int tree) = incr_one_tree_gen ss (x + 1) in
-    let (rt : int tree) = incr_one_tree_gen ss (x + 1) in
-    Node (x + 1, lt, rt)
+  if sizecheck s then Err else if bool_gen () then Leaf else Err
 
 let[@assert] incr_one_tree_gen =
   let s = ((0 <= v : [%v: int]) [@over]) in

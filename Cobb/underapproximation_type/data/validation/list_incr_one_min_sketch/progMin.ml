@@ -2,9 +2,7 @@ let rec incr_one_list_gen (s : int) (x : int) : int list =
   if sizecheck s then Err
   else
     let (y : int) = int_gen () in
-    if y == x + 1 then
-      Err
-    else Exn
+    if y == x + 1 then Err else Exn
 
 let[@assert] incr_one_list_gen =
   let s = ((0 <= v : [%v: int]) [@over]) in

@@ -57,6 +57,8 @@ with bst : Tree -> Prop :=
 
 Inductive tree_incr_one : Tree -> Prop :=
 | incr_one_leaf : tree_incr_one Leaf
+| incr_one_node_both_leaf n : 
+    tree_incr_one (Node Leaf n Leaf)
 | incr_one_node_left l n r : 
     tree_incr_one (Node l (n + 1) r) -> 
     tree_incr_one (Node (Node l (n + 1) r) n Leaf)
@@ -86,7 +88,6 @@ Hint Constructors lch: core.
 Hint Constructors rch: core.
 Hint Constructors depth: core.
 Hint Constructors complete: core.
-Hint Constructors all_twos_tree: core.
 Hint Constructors tree_mem: core.
 Hint Constructors bst: core.
 Hint Constructors avl_balanced: core.
