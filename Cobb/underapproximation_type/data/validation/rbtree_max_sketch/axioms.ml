@@ -151,3 +151,69 @@ let[@axiom] root_color_single (v : int rbtree) =
 
 let[@axiom] leaf_no_root_color (v : int rbtree) =
   (rb_leaf v)#==>((not (rb_root_color v false)) && not (rb_root_color v true))
+
+(** bst *)
+
+let[@axiom] rbtree_leaf_bst (l : int rbtree) = (rb_leaf l)#==>(rb_bst l)
+
+let[@axiom] rbtree_bst_lch_bst (l : int rbtree) (l1 : int rbtree) =
+  (rb_lch l l1 && rb_bst l)#==>(rb_bst l1)
+
+let[@axiom] rbtree_bst_rch_bst (l : int rbtree) (l1 : int rbtree) =
+  (rb_rch l l1 && rb_bst l)#==>(rb_bst l1)
+
+let[@axiom] rbtree_node_bst (l : int rbtree) (l1 : int rbtree) (l2 : int rbtree)
+    (x : int) =
+  (rb_bst l1 && rb_bst l2 && rb_lch l l1 && rb_rch l l2 && rb_root l x
+  && ((not (rb_leaf l1))#==>(rbt_upper_bound l1 x))
+  && ((not (rb_leaf l2))#==>(rbt_lower_bound l2 x)))#==>(rb_bst l)
+
+(** Lower/upper bounds*)
+
+let[@axiom] rbtree_lower_bound_base (l : int rbtree) (l1 : int rbtree) (x : int)
+    (y : int) =
+  (rb_bst l && rb_root l x && rb_lch l l1 && rb_leaf l1 && y < x)#==>(rbt_lower_bound
+                                                                        l y)
+
+let[@axiom] rbtree_lower_bound_other (l : int rbtree) (l1 : int rbtree)
+    (x : int) (y : int) =
+  (rb_bst l && rb_root l x && rb_lch l l1
+  && (not (rb_leaf l1))
+  && rbt_lower_bound l1 y && y < x)#==>(rbt_lower_bound l y)
+
+let[@axiom] rbtree_lower_bound_destruct (l : int rbtree) (l1 : int rbtree)
+    (x : int) =
+  (rbt_lower_bound l x && rb_lch l l1 && not (rb_leaf l1))#==>(rbt_lower_bound
+                                                                 l1 x)
+
+let[@axiom] rbtree_lower_bound_destruct_2 (l : int rbtree) (l1 : int rbtree)
+    (x : int) =
+  (rb_bst l && rb_root l x && rb_rch l l1 && not (rb_leaf l1))#==>(rbt_lower_bound
+                                                                     l1 x)
+
+let[@axiom] rbtree_lower_bound_root (l : int rbtree) (x : int) (y : int) =
+  (rb_bst l && rb_root l x && rbt_lower_bound l y)#==>(y < x)
+
+let[@axiom] rbtree_upper_bound_base (l : int rbtree) (l1 : int rbtree) (x : int)
+    (y : int) =
+  (rb_bst l && rb_root l x && rb_rch l l1 && rb_leaf l1 && y > x)#==>(rbt_upper_bound
+                                                                        l y)
+
+let[@axiom] rbtree_upper_bound_other (l : int rbtree) (l1 : int rbtree)
+    (x : int) (y : int) =
+  (rb_bst l && rb_root l x && rb_rch l l1
+  && (not (rb_leaf l1))
+  && rbt_upper_bound l1 y && y > x)#==>(rbt_upper_bound l y)
+
+let[@axiom] rbtree_upper_bound_destruct (l : int rbtree) (l1 : int rbtree)
+    (x : int) =
+  (rbt_upper_bound l x && rb_rch l l1 && not (rb_leaf l1))#==>(rbt_upper_bound
+                                                                 l1 x)
+
+let[@axiom] rbtree_upper_bound_destruct_2 (l : int rbtree) (l1 : int rbtree)
+    (x : int) =
+  (rb_bst l && rb_root l x && rb_lch l l1 && not (rb_leaf l1))#==>(rbt_upper_bound
+                                                                     l1 x)
+
+let[@axiom] rbtree_upper_bound_root (l : int rbtree) (x : int) (y : int) =
+  (rb_bst l && rb_root l x && rbt_upper_bound l y)#==>(y > x)

@@ -15,7 +15,7 @@
     "synfile": ".syn",
     "collectfile": ".collect",
     "abd_templates": [
-        // "template_rb_leaf",
+        "template_rb_leaf",
         "template_eq_0",
         "template_num_black_0",
         "template_black_root",
