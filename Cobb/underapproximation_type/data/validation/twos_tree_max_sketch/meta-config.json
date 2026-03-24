@@ -20,10 +20,11 @@
         "template_eq_2"
     ],
     "num_quantifier": 0,
-    "abduce_rlimit": 50000000,
-    "synth_bound": 50,
-    "synth_rlimit": 700000,
-    "type_rlimit": 100000000,
+    "abduce_rlimit": 4000000,
+    "synth_bound": 100,
+    "synth_rlimit": 50000,
+    "synth_timeout": 1000, // Sadly Z3 doesn't always respect the rlimit
+    "type_rlimit": 70000000,
     "use_missing_coverage_file": false,
     "comp_path": "components.txt",
     "prim_path": {

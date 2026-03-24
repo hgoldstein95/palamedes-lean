@@ -131,11 +131,12 @@ let[@axiom] tree_depth_lch (l : int tree) (l1 : int tree) (n : int) (n1 : int) =
    #==> (((n1 > n2) #==> (depth l (n1 + 1)))
         && ((n2 >= n1) #==> (depth l (n2 + 1)))) *)
 
-
 let[@axiom] tree_depth_node (l : int tree) (l1 : int tree) (l2 : int tree)
     (n1 : int) (n2 : int) (___weight : bool) =
-  (depth l1 n1 && depth l2 n2 && lch l l1 && rch l l2)#==>(depth l ((ite (n1 >= n2) n1 n2) + 1))
-
+  (depth l1 n1 && depth l2 n2 && lch l l1 && rch l l2)#==>(depth l
+                                                             (ite (n1 >= n2) n1
+                                                                n2
+                                                             + 1))
 
 (* let[@axiom] tree_depth_node_lch (l : int tree) (l1 : int tree) (l2 : int tree)
     (n1 : int) (n2 : int) =

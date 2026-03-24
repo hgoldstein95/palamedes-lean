@@ -44,8 +44,8 @@ val sorted : 'a list -> bool
 val incr_one : int list -> bool
 val uniq : 'a list -> bool
 val all_evens : 'a list -> bool
-val all_twos: int list -> bool
-val all_trues: bool list -> bool
+val all_twos : int list -> bool
+val all_trues : bool list -> bool
 
 (* for tree *)
 val depth : 'a tree -> int -> bool
@@ -61,6 +61,7 @@ val complete : 'a tree -> bool
 val lower_bound : int tree -> int -> bool
 val upper_bound : int tree -> int -> bool
 val tree_incr_one : int tree -> bool
+val all_twos_tree : int tree -> bool
 
 (* for rbtree *)
 val num_black : 'a rbtree -> int -> bool
@@ -133,7 +134,7 @@ val vars_with_type : stlc_tyctx -> stlc_ty -> stlc_term
 val gen_term_no_app : stlc_tyctx -> stlc_ty -> stlc_term
 
 (* stacks *)
-val stack_len : stack -> int -> bool 
+val stack_len : stack -> int -> bool
 val empty_stack : stack -> bool
 val pub_label : label -> bool
 val sec_label : label -> bool
@@ -141,5 +142,5 @@ val atom_elements : int -> label -> atom -> bool
 val stack_hd : stack -> atom -> bool
 val stack_cons_tl : stack -> stack -> bool
 val stack_retcons_tl : stack -> stack -> bool
-val good_atom : atom -> bool 
-val good_stack : int -> stack -> bool 
+val good_atom : atom -> bool
+val good_stack : int -> stack -> bool

@@ -69,6 +69,10 @@ Inductive tree_incr_one : Tree -> Prop :=
     tree_incr_one (Node (Node l1 (n + 1) r1) n (Node l2 (n + 1) r2))
 .
 
+Inductive all_twos_tree : Tree -> Prop :=
+| TwosLeaf : all_twos_tree Leaf
+| TwosNode : forall l r, all_twos_tree l -> all_twos_tree r -> all_twos_tree (Node l 2 r).
+
 Inductive avl_balanced : nat -> Tree -> Prop :=
 | bal_leaf0 : avl_balanced 0 Leaf
 | bal_leaf1 : avl_balanced 1 Leaf
@@ -82,6 +86,7 @@ Hint Constructors lch: core.
 Hint Constructors rch: core.
 Hint Constructors depth: core.
 Hint Constructors complete: core.
+Hint Constructors all_twos_tree: core.
 Hint Constructors tree_mem: core.
 Hint Constructors bst: core.
 Hint Constructors avl_balanced: core.

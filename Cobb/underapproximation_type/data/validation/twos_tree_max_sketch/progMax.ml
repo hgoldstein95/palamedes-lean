@@ -9,8 +9,6 @@ let rec twos_tree_gen (d : int) : int tree =
 
 let[@assert] twos_tree_gen =
   let d = ((0 <= v : [%v: int]) [@over]) in
-  ((((not (leaf v))#==>(lower_bound v 2))
-    && ((not (leaf v))#==>(upper_bound v 2))
-    && fun ((n [@exists]) : int) -> depth v n && n <= d
+  ((all_twos_tree v && fun ((n [@exists]) : int) -> depth v n && n <= d
     : [%v: int tree])
     [@under])
