@@ -132,6 +132,7 @@ val get_num_arr : stlc_ty -> int
 val gen_type : unit -> stlc_ty
 val vars_with_type : stlc_tyctx -> stlc_ty -> stlc_term
 val gen_term_no_app : stlc_tyctx -> stlc_ty -> stlc_term
+val gen_scoped_term_no_app : stlc_tyctx -> stlc_term
 
 (* stacks *)
 val stack_len : stack -> int -> bool

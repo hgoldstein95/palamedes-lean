@@ -2,11 +2,11 @@
     "mode": "debug",
     "max_printing_size": 300,
     "debug_tags": [
-        // "preprocess",
-        // "ntyping",
-        // "typing",
-        // "queries",
-        // "model",
+        "preprocess",
+        "ntyping",
+        "typing",
+        "queries",
+        "model",
         "result",
         "never-use"
     ],
