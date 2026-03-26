@@ -1,8 +1,4 @@
-let rec trues_list_gen (s : int) : bool list =
-  if sizecheck s then Err
-  else
-    Err
-  else Err
+let rec trues_list_gen (s : int) : bool list = if sizecheck s then Err else Err
 
 let[@assert] trues_list_gen =
   let s = ((0 <= v : [%v: int]) [@over]) in
