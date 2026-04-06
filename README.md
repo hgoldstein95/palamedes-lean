@@ -369,7 +369,8 @@ The directories inside `data-OOB/validation` are:
 │   └── uniquelist_min_sketch
 ```
 
-In both directories, `proofs` is a helper directory necessary for Cobb's operation, the remaining 
+In both directories, `proofs` is a helper directory necessary for Cobb's operation, and it is
+the main difference betweeh the OOB and AE version of the benchmarks. The remaining 
 pairs of directories are the benchmarks run in the experiment for RQ1. Of these, the following 
 benchmarks were originally from Cobb's artifact (separated into individual directories by us):
 - complete_tree

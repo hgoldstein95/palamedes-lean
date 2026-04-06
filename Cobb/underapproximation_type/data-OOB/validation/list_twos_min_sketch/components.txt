@@ -1,6 +1,0 @@
-Nil
-Cons
-subs
-two
-sizecheck
-<

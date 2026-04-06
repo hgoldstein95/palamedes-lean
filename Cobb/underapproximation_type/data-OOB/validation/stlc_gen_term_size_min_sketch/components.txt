@@ -1,4 +1,0 @@
-Stlc_app
-Stlc_ty_arr
-difference_inex
-get_num_arr
