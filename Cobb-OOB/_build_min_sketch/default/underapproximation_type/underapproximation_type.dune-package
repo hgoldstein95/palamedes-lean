@@ -1,0 +1,801 @@
+(lang dune 3.21)
+(name underapproximation_type)
+(sections (lib .) (libexec .) (doc ../../doc/underapproximation_type))
+(files
+ (lib
+  (META
+   backend/backend.a
+   backend/backend.cma
+   backend/backend.cmi
+   backend/backend.cmt
+   backend/backend.cmx
+   backend/backend.cmxa
+   backend/backend.ml
+   backend/backend__Check.cmi
+   backend/backend__Check.cmt
+   backend/backend__Check.cmx
+   backend/backend__Litencoding.cmi
+   backend/backend__Litencoding.cmt
+   backend/backend__Litencoding.cmx
+   backend/backend__Propencoding.cmi
+   backend/backend__Propencoding.cmt
+   backend/backend__Propencoding.cmx
+   backend/backend__Smtquery.cmi
+   backend/backend__Smtquery.cmt
+   backend/backend__Smtquery.cmx
+   backend/backend__Z3aux.cmi
+   backend/backend__Z3aux.cmt
+   backend/backend__Z3aux.cmx
+   backend/check.ml
+   backend/litencoding.ml
+   backend/propencoding.ml
+   backend/smtquery.ml
+   backend/z3aux.ml
+   commands/caux.ml
+   commands/commands.a
+   commands/commands.cma
+   commands/commands.cmi
+   commands/commands.cmt
+   commands/commands.cmx
+   commands/commands.cmxa
+   commands/commands.ml
+   commands/commands__Caux.cmi
+   commands/commands__Caux.cmt
+   commands/commands__Caux.cmx
+   commands/commands__Cre.cmi
+   commands/commands__Cre.cmt
+   commands/commands__Cre.cmx
+   commands/cre.ml
+   dune-package
+   frontend_opt/frontend_opt.a
+   frontend_opt/frontend_opt.cma
+   frontend_opt/frontend_opt.cmi
+   frontend_opt/frontend_opt.cmt
+   frontend_opt/frontend_opt.cmx
+   frontend_opt/frontend_opt.cmxa
+   frontend_opt/frontend_opt.ml
+   frontend_opt/frontend_opt__To_constant.cmi
+   frontend_opt/frontend_opt__To_constant.cmt
+   frontend_opt/frontend_opt__To_constant.cmx
+   frontend_opt/frontend_opt__To_cty.cmi
+   frontend_opt/frontend_opt__To_cty.cmt
+   frontend_opt/frontend_opt__To_cty.cmx
+   frontend_opt/frontend_opt__To_id.cmi
+   frontend_opt/frontend_opt__To_id.cmt
+   frontend_opt/frontend_opt__To_id.cmx
+   frontend_opt/frontend_opt__To_item.cmi
+   frontend_opt/frontend_opt__To_item.cmt
+   frontend_opt/frontend_opt__To_item.cmx
+   frontend_opt/frontend_opt__To_lit.cmi
+   frontend_opt/frontend_opt__To_lit.cmt
+   frontend_opt/frontend_opt__To_lit.cmx
+   frontend_opt/frontend_opt__To_notation.cmi
+   frontend_opt/frontend_opt__To_notation.cmt
+   frontend_opt/frontend_opt__To_notation.cmx
+   frontend_opt/frontend_opt__To_op.cmi
+   frontend_opt/frontend_opt__To_op.cmt
+   frontend_opt/frontend_opt__To_op.cmx
+   frontend_opt/frontend_opt__To_prop.cmi
+   frontend_opt/frontend_opt__To_prop.cmt
+   frontend_opt/frontend_opt__To_prop.cmx
+   frontend_opt/frontend_opt__To_raw_term.cmi
+   frontend_opt/frontend_opt__To_raw_term.cmt
+   frontend_opt/frontend_opt__To_raw_term.cmx
+   frontend_opt/frontend_opt__To_rty.cmi
+   frontend_opt/frontend_opt__To_rty.cmt
+   frontend_opt/frontend_opt__To_rty.cmx
+   frontend_opt/frontend_opt__To_type_dec.cmi
+   frontend_opt/frontend_opt__To_type_dec.cmt
+   frontend_opt/frontend_opt__To_type_dec.cmx
+   frontend_opt/frontend_opt__To_typectx.cmi
+   frontend_opt/frontend_opt__To_typectx.cmt
+   frontend_opt/frontend_opt__To_typectx.cmx
+   frontend_opt/to_constant.ml
+   frontend_opt/to_cty.ml
+   frontend_opt/to_id.ml
+   frontend_opt/to_item.ml
+   frontend_opt/to_lit.ml
+   frontend_opt/to_notation.ml
+   frontend_opt/to_op.ml
+   frontend_opt/to_prop.ml
+   frontend_opt/to_raw_term.ml
+   frontend_opt/to_rty.ml
+   frontend_opt/to_type_dec.ml
+   frontend_opt/to_typectx.ml
+   inference/cegis.ml
+   inference/feature.ml
+   inference/fvec_tab.ml
+   inference/inference.a
+   inference/inference.cma
+   inference/inference.cmi
+   inference/inference.cmt
+   inference/inference.cmx
+   inference/inference.cmxa
+   inference/inference.ml
+   inference/inference__Cegis.cmi
+   inference/inference__Cegis.cmt
+   inference/inference__Cegis.cmx
+   inference/inference__Feature.cmi
+   inference/inference__Feature.cmt
+   inference/inference__Feature.cmx
+   inference/inference__Fvec_tab.cmi
+   inference/inference__Fvec_tab.cmt
+   inference/inference__Fvec_tab.cmx
+   language/language.a
+   language/language.cma
+   language/language.cmi
+   language/language.cmt
+   language/language.cmx
+   language/language.cmxa
+   language/language.ml
+   language/simp.cmi
+   language/simp.cmt
+   language/simp.cmx
+   language/simp.ml
+   opam
+   preprocessing/normal_constant_typing.ml
+   preprocessing/normal_cty_typing.ml
+   preprocessing/normal_id_typing.ml
+   preprocessing/normal_item_typing.ml
+   preprocessing/normal_lit_typing.ml
+   preprocessing/normal_op_typing.ml
+   preprocessing/normal_prop_typing.ml
+   preprocessing/normal_rty_typing.ml
+   preprocessing/normal_term_typing.ml
+   preprocessing/preprocessing.a
+   preprocessing/preprocessing.cma
+   preprocessing/preprocessing.cmi
+   preprocessing/preprocessing.cmt
+   preprocessing/preprocessing.cmx
+   preprocessing/preprocessing.cmxa
+   preprocessing/preprocessing.ml
+   preprocessing/preprocessing__Normal_constant_typing.cmi
+   preprocessing/preprocessing__Normal_constant_typing.cmt
+   preprocessing/preprocessing__Normal_constant_typing.cmx
+   preprocessing/preprocessing__Normal_cty_typing.cmi
+   preprocessing/preprocessing__Normal_cty_typing.cmt
+   preprocessing/preprocessing__Normal_cty_typing.cmx
+   preprocessing/preprocessing__Normal_id_typing.cmi
+   preprocessing/preprocessing__Normal_id_typing.cmt
+   preprocessing/preprocessing__Normal_id_typing.cmx
+   preprocessing/preprocessing__Normal_item_typing.cmi
+   preprocessing/preprocessing__Normal_item_typing.cmt
+   preprocessing/preprocessing__Normal_item_typing.cmx
+   preprocessing/preprocessing__Normal_lit_typing.cmi
+   preprocessing/preprocessing__Normal_lit_typing.cmt
+   preprocessing/preprocessing__Normal_lit_typing.cmx
+   preprocessing/preprocessing__Normal_op_typing.cmi
+   preprocessing/preprocessing__Normal_op_typing.cmt
+   preprocessing/preprocessing__Normal_op_typing.cmx
+   preprocessing/preprocessing__Normal_prop_typing.cmi
+   preprocessing/preprocessing__Normal_prop_typing.cmt
+   preprocessing/preprocessing__Normal_prop_typing.cmx
+   preprocessing/preprocessing__Normal_rty_typing.cmi
+   preprocessing/preprocessing__Normal_rty_typing.cmt
+   preprocessing/preprocessing__Normal_rty_typing.cmx
+   preprocessing/preprocessing__Normal_term_typing.cmi
+   preprocessing/preprocessing__Normal_term_typing.cmt
+   preprocessing/preprocessing__Normal_term_typing.cmx
+   subtyping/subcty.ml
+   subtyping/subrty.ml
+   subtyping/subtyping.a
+   subtyping/subtyping.cma
+   subtyping/subtyping.cmi
+   subtyping/subtyping.cmt
+   subtyping/subtyping.cmx
+   subtyping/subtyping.cmxa
+   subtyping/subtyping.ml
+   subtyping/subtyping__Subcty.cmi
+   subtyping/subtyping__Subcty.cmt
+   subtyping/subtyping__Subcty.cmx
+   subtyping/subtyping__Subrty.cmi
+   subtyping/subtyping__Subrty.cmt
+   subtyping/subtyping__Subrty.cmx
+   syntax/constant.cmi
+   syntax/constant.cmt
+   syntax/constant.cmx
+   syntax/constant.ml
+   syntax/constructor_declaration.cmi
+   syntax/constructor_declaration.cmt
+   syntax/constructor_declaration.cmx
+   syntax/constructor_declaration.ml
+   syntax/cty.cmi
+   syntax/cty.cmt
+   syntax/cty.cmx
+   syntax/cty.ml
+   syntax/item.cmi
+   syntax/item.cmt
+   syntax/item.cmx
+   syntax/item.ml
+   syntax/lit.cmi
+   syntax/lit.cmt
+   syntax/lit.cmx
+   syntax/lit.ml
+   syntax/op.cmi
+   syntax/op.cmt
+   syntax/op.cmx
+   syntax/op.ml
+   syntax/prop.cmi
+   syntax/prop.cmt
+   syntax/prop.cmx
+   syntax/prop.ml
+   syntax/raw_term.cmi
+   syntax/raw_term.cmt
+   syntax/raw_term.cmx
+   syntax/raw_term.ml
+   syntax/rty.cmi
+   syntax/rty.cmt
+   syntax/rty.cmx
+   syntax/rty.ml
+   syntax/syntax.a
+   syntax/syntax.cma
+   syntax/syntax.cmxa
+   syntax/term.cmi
+   syntax/term.cmt
+   syntax/term.cmx
+   syntax/term.ml
+   syntax/typectx.cmi
+   syntax/typectx.cmt
+   syntax/typectx.cmx
+   syntax/typectx.ml
+   translate/anf_to_raw_term.cmi
+   translate/anf_to_raw_term.cmt
+   translate/anf_to_raw_term.cmx
+   translate/anf_to_raw_term.ml
+   translate/raw_term_to_anf.cmi
+   translate/raw_term_to_anf.cmt
+   translate/raw_term_to_anf.cmx
+   translate/raw_term_to_anf.ml
+   translate/translate.a
+   translate/translate.cma
+   translate/translate.cmxa
+   typing/checkaux.ml
+   typing/infer_prop.ml
+   typing/itemcheck.ml
+   typing/termcheck.ml
+   typing/termsyn.ml
+   typing/typing.a
+   typing/typing.cma
+   typing/typing.cmi
+   typing/typing.cmt
+   typing/typing.cmx
+   typing/typing.cmxa
+   typing/typing.ml
+   typing/typing__Checkaux.cmi
+   typing/typing__Checkaux.cmt
+   typing/typing__Checkaux.cmx
+   typing/typing__Infer_prop.cmi
+   typing/typing__Infer_prop.cmt
+   typing/typing__Infer_prop.cmx
+   typing/typing__Itemcheck.cmi
+   typing/typing__Itemcheck.cmt
+   typing/typing__Itemcheck.cmx
+   typing/typing__Termcheck.cmi
+   typing/typing__Termcheck.cmt
+   typing/typing__Termcheck.cmx
+   typing/typing__Termsyn.cmi
+   typing/typing__Termsyn.cmt
+   typing/typing__Termsyn.cmx
+   zzenv/zzenv.a
+   zzenv/zzenv.cma
+   zzenv/zzenv.cmi
+   zzenv/zzenv.cmt
+   zzenv/zzenv.cmx
+   zzenv/zzenv.cmxa
+   zzenv/zzenv.ml))
+ (libexec
+  (backend/backend.cmxs
+   commands/commands.cmxs
+   frontend_opt/frontend_opt.cmxs
+   inference/inference.cmxs
+   language/language.cmxs
+   preprocessing/preprocessing.cmxs
+   subtyping/subtyping.cmxs
+   syntax/syntax.cmxs
+   translate/translate.cmxs
+   typing/typing.cmxs
+   zzenv/zzenv.cmxs))
+ (doc (LICENSE README.md)))
+(library
+ (name underapproximation_type.backend)
+ (kind normal)
+ (archives (byte backend/backend.cma) (native backend/backend.cmxa))
+ (plugins (byte backend/backend.cma) (native backend/backend.cmxs))
+ (native_archives backend/backend.a)
+ (requires
+  underapproximation_type.language
+  underapproximation_type.zzenv
+  z3
+  async
+  ppx_inline_test.config
+  ppx_inline_test.runtime-lib)
+ (main_module_name Backend)
+ (modes byte native)
+ (modules
+  (wrapped
+   (group
+    (alias
+     (obj_name backend)
+     (visibility public)
+     (kind alias)
+     (source (path Backend) (impl (path backend/backend.ml-gen))))
+    (name Backend)
+    (modules
+     (module
+      (obj_name backend__Check)
+      (visibility public)
+      (source (path Check) (impl (path backend/check.ml))))
+     (module
+      (obj_name backend__Litencoding)
+      (visibility public)
+      (source (path Litencoding) (impl (path backend/litencoding.ml))))
+     (module
+      (obj_name backend__Propencoding)
+      (visibility public)
+      (source (path Propencoding) (impl (path backend/propencoding.ml))))
+     (module
+      (obj_name backend__Smtquery)
+      (visibility public)
+      (source (path Smtquery) (impl (path backend/smtquery.ml))))
+     (module
+      (obj_name backend__Z3aux)
+      (visibility public)
+      (source (path Z3aux) (impl (path backend/z3aux.ml))))))
+   (wrapped true))))
+(library
+ (name underapproximation_type.commands)
+ (kind normal)
+ (archives (byte commands/commands.cma) (native commands/commands.cmxa))
+ (plugins (byte commands/commands.cma) (native commands/commands.cmxs))
+ (native_archives commands/commands.a)
+ (requires
+  core
+  core_unix.sys_unix
+  underapproximation_type.frontend_opt
+  underapproximation_type.syntax
+  underapproximation_type.preprocessing
+  underapproximation_type.translate
+  underapproximation_type.typing
+  ppx_sexp_conv.runtime-lib
+  sexplib0
+  ppx_compare.runtime-lib
+  ppx_enumerate.runtime-lib
+  ppx_hash.runtime-lib
+  ppx_here.runtime-lib
+  ppx_assert.runtime-lib
+  ppx_bench.runtime-lib
+  bin_prot
+  fieldslib
+  ppx_inline_test.config
+  ppx_inline_test.runtime-lib
+  ppx_module_timer.runtime
+  ppx_stable_witness.runtime
+  ppx_string.runtime
+  base
+  typerep
+  variantslib
+  ppx_expect.runtime
+  ppx_expect.config
+  ppx_log.types
+  ppx_log.syntax
+  base_quickcheck.ppx_quickcheck.runtime
+  base_quickcheck)
+ (main_module_name Commands)
+ (modes byte native)
+ (modules
+  (wrapped
+   (group
+    (alias
+     (obj_name commands)
+     (visibility public)
+     (kind alias)
+     (source (path Commands) (impl (path commands/commands.ml-gen))))
+    (name Commands)
+    (modules
+     (module
+      (obj_name commands__Caux)
+      (visibility public)
+      (source (path Caux) (impl (path commands/caux.ml))))
+     (module
+      (obj_name commands__Cre)
+      (visibility public)
+      (source (path Cre) (impl (path commands/cre.ml))))))
+   (wrapped true))))
+(library
+ (name underapproximation_type.frontend_opt)
+ (kind normal)
+ (archives
+  (byte frontend_opt/frontend_opt.cma)
+  (native frontend_opt/frontend_opt.cmxa))
+ (plugins
+  (byte frontend_opt/frontend_opt.cma)
+  (native frontend_opt/frontend_opt.cmxs))
+ (native_archives frontend_opt/frontend_opt.a)
+ (requires
+  underapproximation_type.translate
+  underapproximation_type.syntax
+  underapproximation_type.zzenv
+  ppx_sexp_conv.runtime-lib
+  sexplib0
+  ppx_compare.runtime-lib)
+ (main_module_name Frontend_opt)
+ (modes byte native)
+ (modules
+  (wrapped
+   (group
+    (alias
+     (obj_name frontend_opt)
+     (visibility public)
+     (kind alias)
+     (source
+      (path Frontend_opt)
+      (impl (path frontend_opt/frontend_opt.ml-gen))))
+    (name Frontend_opt)
+    (modules
+     (module
+      (obj_name frontend_opt__To_constant)
+      (visibility public)
+      (source (path To_constant) (impl (path frontend_opt/to_constant.ml))))
+     (module
+      (obj_name frontend_opt__To_cty)
+      (visibility public)
+      (source (path To_cty) (impl (path frontend_opt/to_cty.ml))))
+     (module
+      (obj_name frontend_opt__To_id)
+      (visibility public)
+      (source (path To_id) (impl (path frontend_opt/to_id.ml))))
+     (module
+      (obj_name frontend_opt__To_item)
+      (visibility public)
+      (source (path To_item) (impl (path frontend_opt/to_item.ml))))
+     (module
+      (obj_name frontend_opt__To_lit)
+      (visibility public)
+      (source (path To_lit) (impl (path frontend_opt/to_lit.ml))))
+     (module
+      (obj_name frontend_opt__To_notation)
+      (visibility public)
+      (source (path To_notation) (impl (path frontend_opt/to_notation.ml))))
+     (module
+      (obj_name frontend_opt__To_op)
+      (visibility public)
+      (source (path To_op) (impl (path frontend_opt/to_op.ml))))
+     (module
+      (obj_name frontend_opt__To_prop)
+      (visibility public)
+      (source (path To_prop) (impl (path frontend_opt/to_prop.ml))))
+     (module
+      (obj_name frontend_opt__To_raw_term)
+      (visibility public)
+      (source (path To_raw_term) (impl (path frontend_opt/to_raw_term.ml))))
+     (module
+      (obj_name frontend_opt__To_rty)
+      (visibility public)
+      (source (path To_rty) (impl (path frontend_opt/to_rty.ml))))
+     (module
+      (obj_name frontend_opt__To_type_dec)
+      (visibility public)
+      (source (path To_type_dec) (impl (path frontend_opt/to_type_dec.ml))))
+     (module
+      (obj_name frontend_opt__To_typectx)
+      (visibility public)
+      (source (path To_typectx) (impl (path frontend_opt/to_typectx.ml))))))
+   (wrapped true))))
+(library
+ (name underapproximation_type.inference)
+ (kind normal)
+ (archives (byte inference/inference.cma) (native inference/inference.cmxa))
+ (plugins (byte inference/inference.cma) (native inference/inference.cmxs))
+ (native_archives inference/inference.a)
+ (requires
+  underapproximation_type.language
+  underapproximation_type.zzenv
+  ppx_inline_test.config
+  ppx_inline_test.runtime-lib)
+ (main_module_name Inference)
+ (modes byte native)
+ (modules
+  (wrapped
+   (group
+    (alias
+     (obj_name inference)
+     (visibility public)
+     (kind alias)
+     (source (path Inference) (impl (path inference/inference.ml-gen))))
+    (name Inference)
+    (modules
+     (module
+      (obj_name inference__Cegis)
+      (visibility public)
+      (source (path Cegis) (impl (path inference/cegis.ml))))
+     (module
+      (obj_name inference__Feature)
+      (visibility public)
+      (source (path Feature) (impl (path inference/feature.ml))))
+     (module
+      (obj_name inference__Fvec_tab)
+      (visibility public)
+      (source (path Fvec_tab) (impl (path inference/fvec_tab.ml))))))
+   (wrapped true))))
+(library
+ (name underapproximation_type.language)
+ (kind normal)
+ (archives (byte language/language.cma) (native language/language.cmxa))
+ (plugins (byte language/language.cma) (native language/language.cmxs))
+ (native_archives language/language.a)
+ (requires
+  underapproximation_type.syntax
+  underapproximation_type.frontend_opt
+  language_utils
+  underapproximation_type.translate
+  ppx_sexp_conv.runtime-lib
+  sexplib0
+  ppx_compare.runtime-lib)
+ (modes byte native)
+ (modules
+  (unwrapped
+   (module
+    (obj_name language)
+    (visibility public)
+    (source (path Language) (impl (path language/language.ml))))
+   (module
+    (obj_name simp)
+    (visibility public)
+    (source (path Simp) (impl (path language/simp.ml)))))))
+(library
+ (name underapproximation_type.preprocessing)
+ (kind normal)
+ (archives
+  (byte preprocessing/preprocessing.cma)
+  (native preprocessing/preprocessing.cmxa))
+ (plugins
+  (byte preprocessing/preprocessing.cma)
+  (native preprocessing/preprocessing.cmxs))
+ (native_archives preprocessing/preprocessing.a)
+ (requires underapproximation_type.syntax underapproximation_type.language)
+ (main_module_name Preprocessing)
+ (modes byte native)
+ (modules
+  (wrapped
+   (group
+    (alias
+     (obj_name preprocessing)
+     (visibility public)
+     (kind alias)
+     (source
+      (path Preprocessing)
+      (impl (path preprocessing/preprocessing.ml-gen))))
+    (name Preprocessing)
+    (modules
+     (module
+      (obj_name preprocessing__Normal_constant_typing)
+      (visibility public)
+      (source
+       (path Normal_constant_typing)
+       (impl (path preprocessing/normal_constant_typing.ml))))
+     (module
+      (obj_name preprocessing__Normal_cty_typing)
+      (visibility public)
+      (source
+       (path Normal_cty_typing)
+       (impl (path preprocessing/normal_cty_typing.ml))))
+     (module
+      (obj_name preprocessing__Normal_id_typing)
+      (visibility public)
+      (source
+       (path Normal_id_typing)
+       (impl (path preprocessing/normal_id_typing.ml))))
+     (module
+      (obj_name preprocessing__Normal_item_typing)
+      (visibility public)
+      (source
+       (path Normal_item_typing)
+       (impl (path preprocessing/normal_item_typing.ml))))
+     (module
+      (obj_name preprocessing__Normal_lit_typing)
+      (visibility public)
+      (source
+       (path Normal_lit_typing)
+       (impl (path preprocessing/normal_lit_typing.ml))))
+     (module
+      (obj_name preprocessing__Normal_op_typing)
+      (visibility public)
+      (source
+       (path Normal_op_typing)
+       (impl (path preprocessing/normal_op_typing.ml))))
+     (module
+      (obj_name preprocessing__Normal_prop_typing)
+      (visibility public)
+      (source
+       (path Normal_prop_typing)
+       (impl (path preprocessing/normal_prop_typing.ml))))
+     (module
+      (obj_name preprocessing__Normal_rty_typing)
+      (visibility public)
+      (source
+       (path Normal_rty_typing)
+       (impl (path preprocessing/normal_rty_typing.ml))))
+     (module
+      (obj_name preprocessing__Normal_term_typing)
+      (visibility public)
+      (source
+       (path Normal_term_typing)
+       (impl (path preprocessing/normal_term_typing.ml))))))
+   (wrapped true))))
+(library
+ (name underapproximation_type.subtyping)
+ (kind normal)
+ (archives (byte subtyping/subtyping.cma) (native subtyping/subtyping.cmxa))
+ (plugins (byte subtyping/subtyping.cma) (native subtyping/subtyping.cmxs))
+ (native_archives subtyping/subtyping.a)
+ (requires
+  underapproximation_type.language
+  core
+  underapproximation_type.backend
+  underapproximation_type.zzenv)
+ (main_module_name Subtyping)
+ (modes byte native)
+ (modules
+  (wrapped
+   (group
+    (alias
+     (obj_name subtyping)
+     (visibility public)
+     (kind alias)
+     (source (path Subtyping) (impl (path subtyping/subtyping.ml-gen))))
+    (name Subtyping)
+    (modules
+     (module
+      (obj_name subtyping__Subcty)
+      (visibility public)
+      (source (path Subcty) (impl (path subtyping/subcty.ml))))
+     (module
+      (obj_name subtyping__Subrty)
+      (visibility public)
+      (source (path Subrty) (impl (path subtyping/subrty.ml))))))
+   (wrapped true))))
+(library
+ (name underapproximation_type.syntax)
+ (kind normal)
+ (archives (byte syntax/syntax.cma) (native syntax/syntax.cmxa))
+ (plugins (byte syntax/syntax.cma) (native syntax/syntax.cmxs))
+ (native_archives syntax/syntax.a)
+ (requires
+  language_utils
+  ppx_sexp_conv.runtime-lib
+  sexplib0
+  ppx_compare.runtime-lib)
+ (modes byte native)
+ (modules
+  (unwrapped
+   (module
+    (obj_name constant)
+    (visibility public)
+    (source (path Constant) (impl (path syntax/constant.ml))))
+   (module
+    (obj_name constructor_declaration)
+    (visibility public)
+    (source
+     (path Constructor_declaration)
+     (impl (path syntax/constructor_declaration.ml))))
+   (module
+    (obj_name cty)
+    (visibility public)
+    (source (path Cty) (impl (path syntax/cty.ml))))
+   (module
+    (obj_name item)
+    (visibility public)
+    (source (path Item) (impl (path syntax/item.ml))))
+   (module
+    (obj_name lit)
+    (visibility public)
+    (source (path Lit) (impl (path syntax/lit.ml))))
+   (module
+    (obj_name op)
+    (visibility public)
+    (source (path Op) (impl (path syntax/op.ml))))
+   (module
+    (obj_name prop)
+    (visibility public)
+    (source (path Prop) (impl (path syntax/prop.ml))))
+   (module
+    (obj_name raw_term)
+    (visibility public)
+    (source (path Raw_term) (impl (path syntax/raw_term.ml))))
+   (module
+    (obj_name rty)
+    (visibility public)
+    (source (path Rty) (impl (path syntax/rty.ml))))
+   (module
+    (obj_name term)
+    (visibility public)
+    (source (path Term) (impl (path syntax/term.ml))))
+   (module
+    (obj_name typectx)
+    (visibility public)
+    (source (path Typectx) (impl (path syntax/typectx.ml)))))))
+(library
+ (name underapproximation_type.translate)
+ (kind normal)
+ (archives (byte translate/translate.cma) (native translate/translate.cmxa))
+ (plugins (byte translate/translate.cma) (native translate/translate.cmxs))
+ (native_archives translate/translate.a)
+ (requires underapproximation_type.syntax language_utils)
+ (modes byte native)
+ (modules
+  (unwrapped
+   (module
+    (obj_name anf_to_raw_term)
+    (visibility public)
+    (source (path Anf_to_raw_term) (impl (path translate/anf_to_raw_term.ml))))
+   (module
+    (obj_name raw_term_to_anf)
+    (visibility public)
+    (source (path Raw_term_to_anf) (impl (path translate/raw_term_to_anf.ml)))))))
+(library
+ (name underapproximation_type.typing)
+ (kind normal)
+ (archives (byte typing/typing.cma) (native typing/typing.cmxa))
+ (plugins (byte typing/typing.cma) (native typing/typing.cmxs))
+ (native_archives typing/typing.a)
+ (requires
+  underapproximation_type.language
+  underapproximation_type.subtyping
+  core
+  underapproximation_type.zzenv
+  underapproximation_type.inference)
+ (main_module_name Typing)
+ (modes byte native)
+ (modules
+  (wrapped
+   (group
+    (alias
+     (obj_name typing)
+     (visibility public)
+     (kind alias)
+     (source (path Typing) (impl (path typing/typing.ml-gen))))
+    (name Typing)
+    (modules
+     (module
+      (obj_name typing__Checkaux)
+      (visibility public)
+      (source (path Checkaux) (impl (path typing/checkaux.ml))))
+     (module
+      (obj_name typing__Infer_prop)
+      (visibility public)
+      (source (path Infer_prop) (impl (path typing/infer_prop.ml))))
+     (module
+      (obj_name typing__Itemcheck)
+      (visibility public)
+      (source (path Itemcheck) (impl (path typing/itemcheck.ml))))
+     (module
+      (obj_name typing__Termcheck)
+      (visibility public)
+      (source (path Termcheck) (impl (path typing/termcheck.ml))))
+     (module
+      (obj_name typing__Termsyn)
+      (visibility public)
+      (source (path Termsyn) (impl (path typing/termsyn.ml))))))
+   (wrapped true))))
+(library
+ (name underapproximation_type.zzenv)
+ (kind normal)
+ (archives (byte zzenv/zzenv.cma) (native zzenv/zzenv.cmxa))
+ (plugins (byte zzenv/zzenv.cma) (native zzenv/zzenv.cmxs))
+ (native_archives zzenv/zzenv.a)
+ (requires
+  language_utils
+  ppx_sexp_conv.runtime-lib
+  sexplib0
+  ppx_inline_test.config
+  ppx_inline_test.runtime-lib
+  ppx_compare.runtime-lib
+  ppx_here.runtime-lib
+  ppx_assert.runtime-lib)
+ (main_module_name Zzenv)
+ (modes byte native)
+ (modules
+  (singleton
+   (obj_name zzenv)
+   (visibility public)
+   (source (path Zzenv) (impl (path zzenv/zzenv.ml))))))

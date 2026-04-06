@@ -1,0 +1,9 @@
+(library
+ (name language_utils)
+ (public_name language_utils)
+ (wrapped false)
+ (libraries zzdatatype utils ocaml5_parser normal5ty metalang)
+ (modules
+   language_utils
+ )
+)

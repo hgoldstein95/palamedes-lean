@@ -1,0 +1,141 @@
+(executable
+ (public_name Cobb)
+ (modes
+  (native exe))
+ (name main)
+ (modules main)
+ (libraries
+  core_unix.command_unix
+  utils
+  block
+  blocks
+  pieces
+  localization
+  preprocess
+  postprocess
+  underapproximation_type.translate
+  underapproximation_type.typing
+  underapproximation_type.preprocessing
+  underapproximation_type.commands)
+ (preprocess
+  (pps ppx_jane)))
+
+(library
+ (public_name Cobb.context)
+ (name context)
+ (libraries underapproximation_type.typing tracking)
+ (modules context))
+
+(library
+ (name blocks)
+ (libraries
+  underapproximation_type.typing
+  context
+  timeout
+  tracking
+  pieces
+  pomap
+  block
+  extraction
+  relation
+  blockset
+  blockmap
+  blockcollection)
+ (modules blocks)
+ (preprocess
+  (pps ppx_optcomp ppx_compare ppx_sexp_conv)))
+
+(library
+ (public_name Cobb.pieces)
+ (name pieces)
+ (libraries underapproximation_type.typing utils tracking context)
+ (modules pieces))
+
+(library
+ (name timeout)
+ (libraries underapproximation_type.typing utils)
+ (modules timeout))
+
+(library
+ (public_name Cobb.tracking)
+ (name tracking)
+ (libraries underapproximation_type.typing utils)
+ (modules tracking))
+
+(library
+ (name localization)
+ (libraries
+  underapproximation_type.typing
+  underapproximation_type.syntax
+  pieces
+  block
+  blocks
+  tracking
+  timeout
+  context
+  utils)
+ (modules localization)
+ (inline_tests)
+ (preprocess
+  (pps ppx_inline_test)))
+
+(library
+ (name preprocess)
+ (libraries
+  tracking
+  underapproximation_type.typing
+  underapproximation_type.commands)
+ (modules preprocess))
+
+(library
+ (public_name Cobb.postprocess)
+ (name postprocess)
+ (libraries pieces underapproximation_type.typing)
+ (modules postprocess))
+
+(library
+ (public_name Cobb.utils)
+ (name utils)
+ (modules utils)
+ (libraries core underapproximation_type.typing language_utils.zzdatatype))
+
+(library
+ (name term_utils)
+ (modules term_utils)
+ (libraries
+  underapproximation_type.typing
+  underapproximation_type.syntax
+  block
+  timeout
+  utils))
+
+(library
+ (name extraction)
+ (modules extraction)
+ (libraries
+  blockmap
+  context
+  pomap
+  blockcollection
+  term_utils
+  tracking
+  synthesiscollection))
+
+(executable
+  (public_name frequify)
+  (name frequify)
+  (modules frequify)
+  (libraries 
+    language_utils.metalang
+    underapproximation_type.commands 
+    underapproximation_type.syntax
+    underapproximation_type.frontend_opt
+  ))
+
+(env
+ (dev
+  (flags
+   (:standard -w -32-26-34-69-27-21)))
+ (release
+  (ocamlopt_flags
+   (:standard -O3))))

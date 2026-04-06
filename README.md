@@ -202,6 +202,11 @@ files interactively.
 │   └── underapproximation_type
 │       └── data
 │           └── validation
+├── Cobb-OOB
+│   ├── scripts
+│   └── underapproximation_type
+│       └── data
+│           └── validation
 ├── QC
 ├── run_palamedes.sh
 ├── run_cobb.sh
@@ -249,16 +254,19 @@ Benchmarks for recursive types (list, tree, stack, stlc) also contain a variant 
 
 ### Cobb directory
 
-- The `Cobb` directory is taken from Cobb's artifact (https://doi.org/10.5281/zenodo.16599071).
-- The `scripts` directory contains the `synth.py` script that we use to run our evaluation.
-- The `underapproximation_type` directory is cloned from Cobb's git repository
+- The `Cobb` and `Cobb-OOB` directories are copies, taken from Cobb's 
+  artifact (https://doi.org/10.5281/zenodo.16599071). They differ by the internal `proofs` directory
+  they are built with: `Cobb-OOB` has the proofs directory from the artifact and `Cobb` has the
+  "Additional Engineering" version of the proofs directory.
+- In both, the `scripts` directory contains the `synth.py` script that we use to run our evaluation.
+- In both, the `underapproximation_type` directory is cloned from Cobb's git repository
   (https://github.com/Pat-Lafon/underapproximation_type/tree/61f5edf819c4733f199a48df4125da6e5759c988).
   It contains two copies of the `data` directory from it, `data` for the AE set of benchmarks, and
   `data-OOB` for showing Cobb's abilities with its out of the box predicates.
   Within each, the `validation/` directory, their original path for benchmarks, is where our 
   versions of the benchmarks are stored.
   
-The directories inside `data/validation` are:
+The directories inside `data/validation` are under `Cobb`:
 ```
 ├── validation
 │   ├── between_5_10_max_sketch
@@ -321,7 +329,7 @@ The directories inside `data/validation` are:
 │   └── uniquelist_min_sketch
 ```
 
-The directories inside `data-OOB/validation` are:
+The directories inside `data/validation` are under `Cobb-OOB`:
 ```
 ├── validation
 │   ├── complete_tree_max_sketch
@@ -370,7 +378,8 @@ The directories inside `data-OOB/validation` are:
 ```
 
 In both directories, `proofs` is a helper directory necessary for Cobb's operation, and it is
-the main difference betweeh the OOB and AE version of the benchmarks. The remaining 
+the main difference betweeh the OOB and AE version of the benchmarks. The entire directory is
+duplicated as Cobb is built with a set of proofs; this keeps the two sets separate. The remaining 
 pairs of directories are the benchmarks run in the experiment for RQ1. Of these, the following 
 benchmarks were originally from Cobb's artifact (separated into individual directories by us):
 - complete_tree

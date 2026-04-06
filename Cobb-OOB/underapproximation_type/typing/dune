@@ -1,0 +1,6 @@
+(library
+ (public_name underapproximation_type.typing)
+ (name typing)
+ (wrapped true)
+ (libraries language subtyping core zzenv inference)
+ (modules checkaux termcheck infer_prop termsyn itemcheck))

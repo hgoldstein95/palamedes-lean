@@ -61,6 +61,11 @@ COPY --chown=$USERNAME:$USERNAME Cobb/ .
 RUN eval $(opam env)
 RUN opam exec -- dune build
 
+WORKDIR /home/artifact/Cobb-OOB
+COPY --chown=$USERNAME:$USERNAME Cobb-OOB/ .
+RUN eval $(opam env)
+RUN opam exec -- dune build
+
 WORKDIR /home/artifact
 COPY --chown=$USERNAME:$USERNAME README.md .
 COPY --chown=$USERNAME:$USERNAME run_palamedes.sh .

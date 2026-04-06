@@ -1,0 +1,22 @@
+(library
+ (name metalang)
+ (public_name language_utils.metalang)
+ (wrapped false)
+ (modules_without_implementation)
+ (libraries utils core ocaml5_parser)
+ (modules
+   convention
+   mtyped
+   msyntax
+   mkfv
+   mkfvid
+   mksubst
+   mksubstinstance
+   mkmap
+   mkcompare
+   mkequal
+   test
+ )
+ (preprocess (pps ppx_optcomp ppx_compare ppx_sexp_conv ppx_inline_test ppx_assert))
+ (inline_tests)
+)
