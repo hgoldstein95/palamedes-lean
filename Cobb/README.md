@@ -12,16 +12,21 @@ The Cobb files here are obtained directly from the Cobb artifact at https://zeno
 
 ## Running benchmarks
 
-The Cobb benchmarks should have been automatically run as part `experiments.sh`,
+The Cobb benchmarks should have been automatically run as part `run_cobb.sh`,
 but if you would like to re-run any of them, execute the following command:
 
 `python scripts/synth.py underapproximation_type/data/validation/*NAME*/`   
 
 where *Name* is the name of the benchmark. 
+
+Use 
+`python scripts/synth.py underapproximation_type/data-OOB/validation/*NAME*/`   
+for its version without additional invariants.
+
 The results will be written to `*.ml.result.csv` files inside the respective benchmark's directory.
 
 Note that some of the benchmarks referred to in the paper 
-(e.g. AVL tree, Well-scoped STLC term, `∃ a, a = 3 /\ v = a + 1`, among others)
+(e.g. AVL tree, Well-scoped STLC term, among others)
 do not have corresponding sketches. These benchmarks could not be expressed in Cobb because the 
 necessary libraries and data types did not exist. These were considered failures for the purposes 
 of comparison with Palamedes. Cobb benchmarks like unique list and duplicate list that 

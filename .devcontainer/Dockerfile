@@ -65,6 +65,7 @@ WORKDIR /home/artifact
 COPY --chown=$USERNAME:$USERNAME README.md .
 COPY --chown=$USERNAME:$USERNAME run_palamedes.sh .
 COPY --chown=$USERNAME:$USERNAME run_cobb.sh .
+COPY --chown=$USERNAME:$USERNAME run_cobb_oob.sh .
 COPY --chown=$USERNAME:$USERNAME cobb_ktt.sh .
 COPY --chown=$USERNAME:$USERNAME ktt.sh .
 

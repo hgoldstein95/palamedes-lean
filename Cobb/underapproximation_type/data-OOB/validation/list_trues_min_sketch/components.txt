@@ -1,0 +1,5 @@
+Nil
+Cons
+subs
+sizecheck
+<
