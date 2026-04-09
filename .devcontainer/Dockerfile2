@@ -1,0 +1,23 @@
+FROM palamedes
+
+# Create a user
+ARG USERNAME=artifact
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+WORKDIR /home/artifact
+RUN mv Cobb Cobb-OOB
+
+WORKDIR /home/artifact/Cobb
+COPY --chown=$USERNAME:$USERNAME Cobb/ .
+RUN eval $(opam env)
+RUN opam exec -- dune build
+
+WORKDIR /home/artifact
+COPY --chown=$USERNAME:$USERNAME README.md .
+COPY --chown=$USERNAME:$USERNAME run_palamedes.sh .
+COPY --chown=$USERNAME:$USERNAME run_cobb.sh .
+COPY --chown=$USERNAME:$USERNAME run_cobb_oob.sh .
+COPY --chown=$USERNAME:$USERNAME cobb_ktt.sh .
+COPY --chown=$USERNAME:$USERNAME ktt.sh .
+
