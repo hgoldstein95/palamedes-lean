@@ -1,4 +1,5 @@
 import Palamedes.Gen
+import Palamedes.OptimizeCongr
 import Palamedes.CorrectGen
 import Palamedes.Total
 import Palamedes.Util
@@ -188,6 +189,7 @@ theorem Ty.support_unfold :
       rw [Nat.add_comm]
       simp_all [Ty.unfold_aux_monotonic]
 
+@[gen_congr]
 theorem Ty.support_unfold_congr
     {hf : ∀ {b}, support (f b) = support (f' b)} :
     support (Ty.unfold f b) = support (Ty.unfold f' b) := by
@@ -511,6 +513,7 @@ def support_Ty_caseTy
   . intro h
     cases h <;> aesop
 
+@[gen_congr]
 theorem support_caseTy_congr
     {unitCase : (τ = .unit) → Gen α}
     {h_unitCase : ∀ {h}, support (unitCase h) = support (unitCase' h)}

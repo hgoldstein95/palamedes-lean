@@ -13,18 +13,19 @@ def expandAssertOptimizes : CommandElab := fun stx =>
       let mα ← mkFreshExprMVar none
       let e1 ← elabTerm t1 (some (.app (.const ``Gen []) mα))
       let e2 ← elabTerm t2 (some (.app (.const ``Gen []) mα))
-      let e1' ← optimizeGen e1
+      let (e1', proof) ← optimizeGen e1
       unless ← isDefEq e1' e2 do
         throwError "{e1}\n~~>\n{e1'}\n!=\n{e2}"
 
+      -- The optimizer now hands back a proof that `support` was preserved; check it proves exactly
+      -- `support e1 = support e1'` and is well-typed.
       let thm ← mkEq (← mkAppM ``support #[e1]) (← mkAppM ``support #[e1'])
-      let g ← mkFreshExprMVar thm
-      let [] ←
-        try
-          Tactic.run g.mvarId! (Tactic.evalTactic (← `(tactic|aesop)))
-        catch e =>
-          throwError "could not prove: {thm}\n{e.toMessageData}"
-        | throwError "could not prove: {thm}\ngoals remain"
+      unless ← isDefEq (← inferType proof) thm do
+        throwError "carried proof has wrong type: expected {thm}, got {← inferType proof}"
+      try
+        Lean.Meta.check proof
+      catch e =>
+        throwError "carried proof does not type-check\n{e.toMessageData}"
   | _ => throwError "invalid syntax {stx}"
 
 private axiom g : Gen Nat

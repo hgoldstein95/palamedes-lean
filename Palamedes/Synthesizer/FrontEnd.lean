@@ -2,13 +2,13 @@ import Palamedes.Gen
 import Palamedes.CorrectGen
 import Palamedes.Optimizer
 import Palamedes.Synthesizer.CGeneratorSearch
-import Palamedes.Synthesizer.Optimality
 import Palamedes.Synthesizer.Totality
 
 open Lean Tactic Elab Meta Tactic
 
 initialize
   registerTraceClass `palamedes.synthesis
+  registerTraceClass `palamedes.trace
 
 register_option palamedes.debug : Bool := {
   defValue := false
@@ -37,7 +37,7 @@ elab "optimize_gen " t:term : tactic =>
     let m ← mkFreshExprMVar (some (.sort 0))
     let gen ← elabTerm t (some (.app (.const ``Gen []) m))
     let gen' ← extractGen gen
-    let gen'' ← optimizeGen gen'
+    let (gen'', _) ← optimizeGen gen'
     let gen''' ← withReducible (reduce gen'')
     closeMainGoal `optimize_gen gen'''
 
@@ -70,8 +70,6 @@ def generatorSearchElab
     cgenerator_search
   let g : Gen ({← ppExpr α}) := by
     optimize_gen cg.val
-  let _ : support cg.val = support g := by
-    optimality
   let _ : Gen.total g := by
     totality
   exact g"
@@ -99,16 +97,11 @@ def generatorSearchElab
       throwError m!"Failed during generator synthesis.\n{e.toMessageData}"
   if verbose then do
     logInfo m!"Synthesized generator:\n{(← ppExpr gen)}"
-
-  -- Optimize the generator and prove that the optimized version is correct.
   let gen' ←
     try
-      let gen' ← optimizeGen gen
-      let gen' ← withReducible (reduce gen')
-      let _ ← solveGoalWithTactic
-        (← mkEq (← mkAppM ``Gen.support #[gen]) (← mkAppM ``Gen.support #[gen']))
-        (← `(tactic| optimality))
-      pure gen'
+      let (gen', proof) ← optimizeGen gen
+      Lean.Meta.check proof
+      withReducible (reduce gen')
     catch e =>
       throwError m!"Failed during optimization.\n{e.toMessageData}"
   if verbose then do

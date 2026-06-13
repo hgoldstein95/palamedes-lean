@@ -5,9 +5,10 @@ import Palamedes.Basic
 
 Every example in `Palamedes/Examples/` synthesizes a generator at elaboration time, but a
 silent extraction failure does not break the build: if the `extract` simp set fails to
-strip the `CorrectGen` combinator wrappers, the generator is left unchanged, so `optimality`
-still closes by `rfl`, and a `totality` failure is only a warning. The result is a definition
-that elaborates fine but contains `(… : CorrectGen P).val` wrappers instead of raw `Gen` code.
+strip the `CorrectGen` combinator wrappers, the generator is left unchanged, so the optimizer's
+support-preservation proof still holds trivially, and a `totality` failure is only a warning. The
+result is a definition that elaborates fine but contains `(… : CorrectGen P).val` wrappers instead
+of raw `Gen` code.
 
 This module walks every `Gen`-typed definition in the example corpus and *fails to compile* if any
 synthesis residue survives in a compiled term.

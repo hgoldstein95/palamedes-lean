@@ -1,4 +1,5 @@
 import Palamedes.Gen
+import Palamedes.OptimizeCongr
 import Palamedes.CorrectGen
 import Palamedes.Total
 import Palamedes.Data.Stack.Atom
@@ -226,6 +227,7 @@ theorem Stack.support_unfold :
       simp_all
       exists (some s')
 
+@[gen_congr]
 theorem Stack.support_unfold_congr
     {hf : ∀ {b}, support (f b) = support (f' b)} :
     support (Stack.unfold f b) = support (Stack.unfold f' b) := by

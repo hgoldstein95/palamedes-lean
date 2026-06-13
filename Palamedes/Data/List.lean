@@ -1,4 +1,5 @@
 import Palamedes.Gen
+import Palamedes.OptimizeCongr
 import Palamedes.CorrectGen
 import Palamedes.Total
 import Palamedes.Util
@@ -164,6 +165,7 @@ theorem List.support_unfold :
       simp_all
       exists some xs
 
+@[gen_congr]
 theorem List.support_unfold_congr
     {hf : ∀ {b}, support (f b) = support (f' b)} :
     support (List.unfold f b) = support (List.unfold f' b) := by

@@ -1,4 +1,5 @@
 import Palamedes.Gen
+import Palamedes.OptimizeCongr
 import Palamedes.CorrectGen
 import Palamedes.Total
 import Palamedes.Data.STLC.Ty
@@ -317,6 +318,7 @@ theorem Term.support_unfold :
       rw [Nat.add_comm]
       simp_all [Term.unfold_aux_monotonic]
 
+@[gen_congr]
 theorem Term.support_unfold_congr
     {hf : ∀ {b}, support (f b) = support (f' b)} :
     support (Term.unfold f b) = support (Term.unfold f' b) := by

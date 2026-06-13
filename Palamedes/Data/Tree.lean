@@ -1,4 +1,5 @@
 import Palamedes.Gen
+import Palamedes.OptimizeCongr
 import Palamedes.CorrectGen
 import Palamedes.Total
 import Palamedes.Util
@@ -186,6 +187,7 @@ theorem Tree.support_unfold :
       rw [Nat.add_comm]
       simp_all [Tree.unfold_aux_monotonic]
 
+@[gen_congr]
 theorem Tree.support_unfold_congr
     {hf : ∀ {b}, support (f b) = support (f' b)} :
     support (Tree.unfold f b) = support (Tree.unfold f' b) := by

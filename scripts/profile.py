@@ -3,14 +3,17 @@ import re
 import statistics
 from tqdm import tqdm
 
-NUM_RUNS = 30
+NUM_RUNS = 2
+
 BASE_CMD = [
     "lake",
     "env",
     "lean",
     "-Dtrace.profiler=true",
+    "-Dweak.palamedes.trace=true",
 ]
-FILES = [
+
+STANDARD = [
     "Palamedes/Examples/Simple/Eq2.lean",
     "Palamedes/Examples/Simple/Eq2'.lean",
     "Palamedes/Examples/Simple/Eq2Or5.lean",
@@ -22,6 +25,7 @@ FILES = [
     "Palamedes/Examples/Range/ZeroOrInRange.lean",
     "Palamedes/Examples/Arbitrary.lean",
     "Palamedes/Examples/List/AllTwos/AllTwos.lean",
+    "Palamedes/Examples/List/AllEvens/Evens.lean",
     "Palamedes/Examples/List/AllTwosEvenLen/AllTwosEvenLen.lean",
     "Palamedes/Examples/List/EvenLen/EvenLen.lean",
     "Palamedes/Examples/List/IncreasingByOne/IncreasingByOne.lean",
@@ -29,6 +33,21 @@ FILES = [
     "Palamedes/Examples/List/LengthKAllTwos/LengthKAllTwos.lean",
     "Palamedes/Examples/List/SortedBetween/SortedBetween.lean",
     "Palamedes/Examples/List/True/True.lean",
+    "Palamedes/Examples/Tree/AllTwos/AllTwos.lean",
+    "Palamedes/Examples/Tree/AVL/AVL.lean",
+    "Palamedes/Examples/Tree/BST/BST.lean",
+    "Palamedes/Examples/Tree/RBT/RBT.lean",
+    "Palamedes/Examples/Tree/CompleteTree/CompleteTree.lean",
+    "Palamedes/Examples/Tree/IncreasingByOne/IncreasingByOne.lean",
+    "Palamedes/Examples/Tree/Nonempty/Nonempty.lean",
+    "Palamedes/Examples/Tree/MaxDepth/MaxDepth.lean",
+    "Palamedes/Examples/Stack/GoodStack.lean",
+    "Palamedes/Examples/STLC/WellScoped/WellScoped.lean",
+    "Palamedes/Examples/STLC/WellTyped/WellTyped.lean",
+    "Palamedes/Examples/Tree/BadRBT/BadRBT.lean",
+]
+
+FOLD = [
     "Palamedes/Examples/List/AllTwos/Fold.lean",
     "Palamedes/Examples/List/AllEvens/Fold.lean",
     "Palamedes/Examples/List/AllTwosEvenLen/Fold.lean",
@@ -38,16 +57,6 @@ FILES = [
     "Palamedes/Examples/List/LengthKAllTwos/Fold.lean",
     "Palamedes/Examples/List/SortedBetween/Fold.lean",
     "Palamedes/Examples/List/True/Fold.lean",
-    "Palamedes/Examples/List/EvenLen/Fold.lean",
-    "Palamedes/Examples/List/EvenLen/EvenLen.lean",
-    "Palamedes/Examples/Tree/AllTwos/AllTwos.lean",
-    "Palamedes/Examples/List/AllEvens/AllEvens.lean",
-    "Palamedes/Examples/Tree/AVL/AVL.lean",
-    "Palamedes/Examples/Tree/BST/BST.lean",
-    "Palamedes/Examples/Tree/RBT/RBT.lean",
-    "Palamedes/Examples/Tree/CompleteTree/CompleteTree.lean",
-    "Palamedes/Examples/Tree/IncreasingByOne/IncreasingByOne.lean",
-    "Palamedes/Examples/Tree/Nonempty/Nonempty.lean",
     "Palamedes/Examples/Tree/AllTwos/Fold.lean",
     "Palamedes/Examples/Tree/AVL/Fold.lean",
     "Palamedes/Examples/Tree/BST/Fold.lean",
@@ -55,18 +64,25 @@ FILES = [
     "Palamedes/Examples/Tree/CompleteTree/Fold.lean",
     "Palamedes/Examples/Tree/IncreasingByOne/Fold.lean",
     "Palamedes/Examples/Tree/Nonempty/Fold.lean",
-    "Palamedes/Examples/Stack/GoodStack.lean",
-    "Palamedes/Examples/Stack/Fold.lean",
-    "Palamedes/Examples/STLC/WellScoped/WellScoped.lean",
-    "Palamedes/Examples/STLC/WellTyped/WellTyped.lean",
-    "Palamedes/Examples/STLC/WellTyped/Fold.lean",
-    "Palamedes/Examples/STLC/WellScoped/Fold.lean",
-    "Palamedes/Examples/Tree/MaxDepth/MaxDepth.lean",
     "Palamedes/Examples/Tree/MaxDepth/Fold.lean",
+    "Palamedes/Examples/Tree/BadRBT/Fold.lean",
+    "Palamedes/Examples/Stack/Fold.lean",
+    "Palamedes/Examples/STLC/WellScoped/Fold.lean",
+    "Palamedes/Examples/STLC/WellTyped/Fold.lean",
 ]
 
+ACCUOPT = [
+    "Palamedes/Examples/List/AllTwos/AccuOpt.lean",
+    "Palamedes/Examples/List/AllEvens/AccuOpt.lean",
+    "Palamedes/Examples/List/EvenLen/AccuOpt.lean",
+    "Palamedes/Examples/List/LengthK/AccuOpt.lean",
+    "Palamedes/Examples/List/True/AccuOpt.lean",
+]
+
+FILES = STANDARD
+
 # Regular expression to match the desired output
-pattern = re.compile(r'\[palamedes\.trace\] \[(\d+(?:\.\d+)?)\] ⟪(.+)⟫⟪(.+)⟫')
+pattern = re.compile(r'\[palamedes\.trace\] \[(\d+(?:\.\d+)?)\].*?⟪(.+)⟫⟪(.+)⟫')
 
 # Dictionary to store extracted numbers by string
 data = dict()
@@ -82,6 +98,8 @@ for file in iter:
                                 check=True)
         output = result.stdout
         matches = pattern.findall(output)
+        if not matches:
+            raise SystemExit(f"\nERROR: no palamedes.trace nodes matched for {file} (trace format changed?)")
         for (numRepr, typ, pred) in matches:
             label = (typ, pred)
             if label in data:
