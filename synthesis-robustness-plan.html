@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Palamedes synthesis: robustness plan</title>
+<style>
+  :root {
+    --ink: #1a1a1a; --muted: #5a5a5a; --line: #e2e2e2;
+    --accent: #6b3fa0; --accent-soft: #f3eefa;
+    --good: #1f7a4d; --good-soft: #ecf7f0;
+    --warn: #9a6b00; --warn-soft: #fbf4e3;
+    --code-bg: #1e1e24; --code-ink: #e8e8ec;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink); max-width: 860px; margin: 0 auto; padding: 48px 28px 96px;
+    background: #fafafa;
+  }
+  h1 { font-size: 30px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); font-size: 15px; margin: 0 0 36px; }
+  h2 {
+    font-size: 21px; margin: 44px 0 14px; padding-bottom: 8px;
+    border-bottom: 2px solid var(--line); letter-spacing: -0.01em;
+  }
+  h3 { font-size: 16px; margin: 26px 0 8px; }
+  p { margin: 12px 0; }
+  code { font-family: var(--mono); font-size: 0.88em; background: #efeff1; padding: 1px 5px; border-radius: 4px; }
+  pre {
+    background: var(--code-bg); color: var(--code-ink); padding: 16px 18px; border-radius: 8px;
+    overflow-x: auto; font-family: var(--mono); font-size: 13px; line-height: 1.5; margin: 14px 0;
+  }
+  pre code { background: none; padding: 0; color: inherit; font-size: inherit; }
+  .tag { color: #b08cd8; }
+  .cmt { color: #8a8a96; font-style: italic; }
+  .lead {
+    font-size: 17px; background: var(--accent-soft); border-left: 4px solid var(--accent);
+    padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 0 0 8px;
+  }
+  .box { border: 1px solid var(--line); border-radius: 8px; padding: 4px 20px; margin: 16px 0; background: #fff; }
+  .good { background: var(--good-soft); border-left: 4px solid var(--good); border-radius: 0 8px 8px 0; padding: 4px 20px; margin: 16px 0; }
+  .warn { background: var(--warn-soft); border-left: 4px solid var(--warn); border-radius: 0 8px 8px 0; padding: 4px 20px; margin: 16px 0; }
+  .good h3, .warn h3 { margin-top: 16px; }
+  .good h3 { color: var(--good); }
+  .warn h3 { color: var(--warn); }
+  ul, ol { margin: 12px 0; padding-left: 26px; }
+  li { margin: 7px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: #f1f1f3; font-weight: 600; }
+  .phase { display: flex; gap: 14px; align-items: baseline; margin: 18px 0 6px; }
+  .pn {
+    flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: #fff;
+    font-weight: 700; font-size: 14px; display: grid; place-items: center;
+  }
+  .phase h3 { margin: 0; }
+  .meta { color: var(--muted); font-size: 13px; }
+  .arrow { color: var(--accent); font-weight: 700; }
+  .keyline { font-weight: 600; }
+  footer { margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<h1>Making generator synthesis robust</h1>
+<p class="sub">A plan to retire most of the guarding and the per-combinator <code>norm_for_*</code> cascade in <code>CGeneratorSearch.lean</code> by <em>hoisting</em> <code>convert</code> to a single canonicalizing step &mdash; without the abandoned <code>Desc</code>/Canonical re-architecture, and without giving up what <code>convert</code> buys us.</p>
+
+<p class="lead">
+<code>convert</code> is not the smell. It does two jobs at once, and only one of them hurts. As an
+<em>adaptor</em> &mdash; a value-transparent bridge that parks a propositional equality in a
+proof-erased field &mdash; it is exactly what keeps extraction clean and makes synthesis complete up
+to provable equality. As a <em>router</em> &mdash; the way <code>apply convert ?pf ?arg</code> defers
+rule choice to whichever <code>norm_for_*</code> can discharge the leftover equality &mdash; it forces
+the backtracking cascade we dislike. The plan keeps the adaptor and kills the router: canonicalize the
+predicate once so routing happens by <code>apply</code>'s own unification, and emit a <em>single</em>
+<code>convert</code> at the root instead of a bespoke one per combinator.
+</p>
+
+<div class="box">
+<h3>Implementation status &mdash; 2026-06-14</h3>
+<p><span class="keyline">Foundation landed and verified green</span> (<code>lake build</code> 535/535,
+<code>ExtractionAudit</code> passes). The core mechanism is no longer a hypothesis:</p>
+<ul>
+<li><span class="keyline">The extraction claim is confirmed against the audit's exact residue checks.</span>
+Goal-side <code>simp</code> canonicalization extracts to <code>&uarr;(_proof.mpr (s_pure 2))</code> with residue
+<code>[Subtype.val, Eq.mpr, &hellip;]</code> &mdash; rejected; the hoisted <code>convert</code> extracts to clean
+raw <code>Gen</code> (<code>pure 2</code>, <code>(pure 2).pick (pure 5)</code>). This is the reason
+<code>synth_canon</code> builds a <code>convert</code> rather than rewriting the goal (see &sect;3).</li>
+<li><span class="keyline">Infrastructure in place.</span> <code>Palamedes/SynthNorm.lean</code> registers the
+<code>@[synth_norm]</code> attribute; <code>CGeneratorSearch.lean</code> seeds it
+(<code>decide_eq_true_eq</code>, <code>beq_iff_eq</code>, <code>eq_iff_iff</code>), defines <code>synth_canon</code>
+(one root <code>convert</code> &rarr; canonicalize &rarr; <code>rflm</code>), and makes
+<code>normalize_and_apply</code> a <code>first | (synth_canon; direct apply) | (legacy cascade)</code>.</li>
+<li><span class="keyline">Additive fast-path live for the unambiguous leaves.</span> <code>s_pure</code>
+(<code>= e</code>, including <code>decide</code>/<code>==</code> forms) and <code>s_bind</code> (<code>&exist;</code>) now
+route by direct <code>apply</code>, skipping the <code>norm_for_*</code> proof. The legacy path remains the
+fallback, so the change <em>cannot regress coverage</em>; it is one rule, so Aesop branching is unchanged.</li>
+</ul>
+<p><span class="keyline">The governing constraint, learned the hard way.</span> A first attempt that also
+direct-applied <code>s_pick</code> regressed ~25 examples. The cause is a design law, not a bug: <strong>a rule
+is only safe to direct-apply if its canonical head has no specialized competitor.</strong> Bare
+<code>apply s_pick</code> can't distinguish a plain <code>&or;</code> from a case-split, so it steals goals from
+<code>s_caseNat</code> &mdash; that discrimination was hiding inside <code>norm_for_pick</code>'s
+<code>&larr; Decidable.or_iff_not_imp_left</code>. <code>s_pure</code>/<code>s_bind</code> have no competitor;
+<code>&or;</code> genuinely belongs to Phase 3. The same hazard bounds how far <code>@[synth_norm]</code> can be
+enriched: each new lemma must be checked against a full build for the fast-path stealing from
+<code>s_elements</code>/fold.</p>
+<p><span class="keyline">Not yet done.</span> The headline metric &mdash; deleting
+<code>norm_for_pure</code>/<code>norm_for_bind</code>/<code>norm_for_pick</code> &mdash; is <em>not</em> reached.
+The legacy leaf branches still do preprocessing the minimal <code>synth_canon</code> does not yet replicate
+(<code>Eq.comm</code> for reversed equalities, <code>exists_comm</code>/<code>true_and</code> for binds,
+<code>unfold_matches</code>/<code>guard</code>/<code>Option.bind</code> for complex predicates). Reaching deletion is
+the Phase&nbsp;1 normal-form-parity work below, gated build-by-build &mdash; exactly the confluence risk the
+plan flags.</p>
+</div>
+
+<h2>1. Diagnosis: <code>convert</code> is doing two jobs</h2>
+
+<p>
+Every synthesis goal has the same head: <code>CorrectGen ?P</code>. All the discriminating information
+lives one level down, in the predicate's outermost structure. But each synthesis rule's conclusion is
+stated in a <em>specific</em> shape:
+</p>
+
+<pre><code><span class="tag">s_pure</span>  : CorrectGen (fun a =&gt; a = a')
+<span class="tag">s_bind</span>  : CorrectGen (fun b =&gt; &exist; a, P a &and; Q a b)
+<span class="tag">s_pick</span>  : CorrectGen (fun a =&gt; P a &or; Q a)
+<span class="tag">s_caseNat</span> (h : &forall; {a}, P a n = Q a) ... : CorrectGen Q   <span class="cmt">-- convert baked in via h</span></code></pre>
+
+<p>
+The user's predicate arrives as a concrete <code>Bool</code> function &mdash; a <code>match</code>, <code>&amp;&amp;</code>,
+<code>decide</code>, <code>Option.bind</code>/<code>guard</code> &mdash; whose top connective is <em>not syntactically</em>
+<code>&or;</code>&hairsp;/&hairsp;<code>=</code>&hairsp;/&hairsp;<code>&exist;</code>. To bridge that gap we reach for <code>convert</code>, and there
+the two jobs get welded together.</p>
+
+<div class="box">
+<h3>The job worth keeping: <code>convert</code> as adaptor</h3>
+<p>Look at what <code>convert</code> actually is (<code>CorrectGen.lean</code>):</p>
+<pre><code>def convert (h : P = Q) (g : CorrectGen P) : CorrectGen Q :=
+  Subtype.mk g.val (by simp [h, g.property])
+<span class="tag">@[extract]</span> theorem convert_val ... : (convert h g).val = g.val := rfl</code></pre>
+<p>It is <em>value-transparent</em> (<code>.val</code> is <code>g.val</code> by <code>rfl</code>) and the
+equality <code>h</code> lives only in the proof field, which is <em>erased at extraction</em>. That single
+fact is responsible for two properties we genuinely depend on:</p>
+<ul>
+<li><span class="keyline">Extraction stays clean.</span> The combinator discipline &mdash; every node built
+from an <code>s_*</code>/<code>convert</code> combinator with an <code>@[extract] _val</code> rfl-lemma &mdash;
+is what guarantees the synthesized term reduces to raw <code>Subtype.mk</code>; <code>ExtractionAudit.lean</code>
+enforces exactly that invariant. <code>convert</code> respects it <em>because</em> it is a no-op on the value:
+the propositional massaging is quarantined where extraction throws it away.</li>
+<li><span class="keyline">Synthesis is complete up to provable equality.</span> <code>convert</code>'s <code>?pf</code>
+slot can call arbitrary automation, so any predicate we can <em>prove</em> equal to a matched shape is in
+scope &mdash; strictly more than a fixed rewrite system can reach. (In practice today this is bounded by
+what the bespoke <code>norm_for_X</code> proves, not arbitrary automation; the generality is real but we are
+currently under-using it.)</li>
+</ul>
+</div>
+
+<div class="box">
+<h3>The job that hurts: <code>convert</code> as router</h3>
+<ol>
+<li><span class="keyline">Unification can't route the bare goal.</span> So <code>normalize_and_apply</code> (the
+99% rule) opens with <code>apply convert ?pf ?arg</code>, making <code>?arg : CorrectGen ?P</code> with
+<code>?P</code> a <em>fresh metavariable</em>. Now <code>apply s_pick</code> <em>always</em> succeeds (it just
+sets <code>?P</code>), so routing is no longer decided by <code>apply</code> &mdash; it's decided by whether
+the leftover <code>?pf : ?P = G</code> can be <em>proved</em>. That is why the rule is a backtracking
+<code>first | norm_for_pure | norm_for_bind | norm_for_pick</code> cascade.</li>
+<li><span class="keyline">The leftover equality is propositional, not definitional</span> (it needs
+<code>eq_iff_iff</code>, <code>&exist;</code>-commutation, <code>true_and</code>, Bool&hairsp;&harr;&hairsp;Prop), so each
+combinator needs its <em>own</em> <code>norm_for_*</code> to rewrite one side into the other's shape. The
+reconciliation work is duplicated per rule because it is being done <em>after</em> a blind match rather than
+once, up front.</li>
+<li><span class="keyline">Indexing can't prune it</span> either (head is always <code>CorrectGen</code>), so the
+fold path and the case rules re-derive routing by hand: <code>goal_is_not_fold_*</code>, <code>goal_is_or</code>,
+and the brute-force <code>s_caseNat (by nth_assumption 0/1/2/3) ...</code> enumeration of which subterm is
+the case index.</li>
+</ol>
+</div>
+
+<p>Everything brittle is downstream of the router role, and the router role is downstream of one root cause:
+<strong>the predicate is never put into a form where its outermost structure is apparent before we match.</strong>
+Fix that, and <code>convert</code> reverts to being a pure adaptor &mdash; used once, in the open, against a
+known target.</p>
+
+<h2>2. Answering the three questions directly</h2>
+
+<table>
+<tr><th>Your question</th><th>Answer</th></tr>
+<tr>
+  <td>An automation tactic more willing to set mvars than <code>grind</code>?</td>
+  <td><strong>Wrong lever.</strong> Anything that routes by <em>unification</em> (grind, <code>apply</code>, <code>exact?</code>)
+  only assigns mvars up to defeq; our gap is propositional and fundamentally needs a rewrite/proof.
+  And we <em>already</em> have the willing setter: <code>rflm</code> (<code>Util.lean</code>) kabstract-generalizes and
+  assigns the higher-order <code>?P</code>. <code>grind</code> can't build a <code>Gen</code> term anyway. The fix is to make
+  the outermost structure syntactically apparent so routing is decided by <code>apply</code> and the residual
+  equality is closed by the <em>existing</em> <code>rflm</code>/<code>convert</code> &mdash; not to find a cleverer unifier.</td>
+</tr>
+<tr>
+  <td>Would an up-front canonicalization help?</td>
+  <td><strong>Yes &mdash; the right one, applied the right way.</strong> Not the abandoned <code>Desc</code>/<code>reflect</code>/Canonical
+  reification (that moved the predicate into a <em>data</em> type and handed search to an external tactic).
+  What helps is a modest <em>Prop-level</em> normalizer that exposes the outermost structure once. Crucially,
+  it must hand its result to <code>convert</code> as an <em>explicit</em> equality, not rewrite the
+  <code>CorrectGen</code> goal in place &mdash; see &sect;3, where that distinction turns out to be load-bearing for
+  extraction.</td>
+</tr>
+<tr>
+  <td>General robustness?</td>
+  <td>Replace inline curated <code>simp only [&hellip;]</code> lists (with their <code>-beq_iff_eq</code>, <code>-Bool.true_and</code>
+  exclusions, duplicated across macros) with one named, auditable normal-form set; route by <code>apply</code> on
+  the canonical head so every leaf branch ends in a single <code>convert</code>/<code>rflm</code>; replace
+  <code>nth_assumption</code> enumeration with a scrutinee-picking metaprogram.</td>
+</tr>
+</table>
+
+<h2>3. The plan: hoist <code>convert</code>, route by <code>apply</code></h2>
+
+<p>
+Introduce one canonicalizer, <code>synth_canon</code>, backed by a closed simp-attribute set
+<code>@[synth_norm]</code> with a written normal-form spec. It computes the canonical predicate and exposes
+its outermost head, each mapping to exactly one rule class:
+</p>
+
+<pre><code><span class="cmt">-- canonical heads, each mapping to exactly one rule class:</span>
+fun a =&gt; a = e             <span class="arrow">&rarr;</span>  s_pure
+fun a =&gt; P a &or; Q a         <span class="arrow">&rarr;</span>  s_pick     / s_case*
+fun b =&gt; &exist; a, P a &and; Q a b  <span class="arrow">&rarr;</span>  s_bind
+fun a =&gt; &lt;match on data&gt;    <span class="arrow">&rarr;</span>  s_case* / s_unfold (fold path)</code></pre>
+
+<p>Once the head is explicit, routing happens by <code>apply</code>'s own unification &mdash; reliably, and
+<em>without</em> depending on discrimination-tree indexing under binders (which is unreliable for
+<code>CorrectGen (fun a =&gt; &hellip;)</code>). <code>convert</code> does not disappear; it moves. Instead of one bespoke
+<code>convert</code> <em>per combinator</em>, with a target that's a fresh mvar and a proof that doubles as the
+router, we emit <em>one</em> <code>convert</code> at the root against the <em>known</em> canonical target, and then
+<code>apply</code> the matching rule directly.</p>
+
+<div class="warn">
+<h3>Why canonicalization must build the <code>convert</code> &mdash; not <code>simp</code> the goal</h3>
+<p>The obvious implementation, <code>synth_canon = simp only [synth_norm]</code> run on the
+<code>CorrectGen P</code> goal, <strong>breaks extraction</strong>, and it breaks it in exactly the way
+<code>ExtractionAudit.lean</code> is built to catch. Rewriting the goal's <em>type</em> from
+<code>CorrectGen G</code> to <code>CorrectGen G'</code> is a propositional rewrite, so it inserts an
+<code>Eq.mpr</code> cast into the value-bearing proof term &mdash; and the <code>extract</code> simp set has no
+lemma to push <code>.val</code> through it. (This is the same class of leakage as the <code>id</code> wrappers we
+already had to handle with <code>id_eq</code>; <code>Eq.mpr</code> is the harder cousin.)</p>
+<p>Confirmed empirically (Lean v4.30.0). Synthesizing <code>CorrectGen (fun n =&gt; decide (n = 2) = true)</code>
+two ways and extracting <code>.val</code>:</p>
+<pre><code><span class="cmt">-- (A) goal-side: simp only [decide_eq_true_eq]; exact s_pure 2</span>
+extracted = &uarr;(cgenA._proof_1.mpr (s_pure 2))
+residue   = [Subtype.val, Eq.mpr, CorrectGen, s_pure]     <span class="cmt">-- audit REJECTS</span>
+
+<span class="cmt">-- (B) convert: apply convert ?pf (s_pure 2); case pf =&gt; funext n; simp</span>
+extracted = pure 2
+residue   = []                                            <span class="cmt">-- clean</span></code></pre>
+<p>The <code>Eq.mpr</code> from the goal rewrite survives and drags <code>Subtype.val</code> and
+<code>s_pure</code> along with it. <code>convert</code> parks the same equality in <code>_proof_1</code>, which is
+erased, and <code>convert_val</code>&hairsp;+&hairsp;<code>s_pure_val</code> reduce to <code>pure 2</code>. So
+<code>synth_canon</code> is a <em>metaprogram</em> that computes <code>G'</code>, proves <code>G = G'</code> from the
+<code>@[synth_norm]</code> set, and emits <code>convert</code> once &mdash; keeping the cast in the erased field. This
+is the mechanical reason the adaptor cannot simply be replaced by a goal normalizer.</p>
+</div>
+
+<div class="good">
+<h3>What this removes</h3>
+<ul>
+<li><span class="keyline">The per-combinator <code>norm_for_*</code> cascade.</span> After the single root
+<code>convert</code> to canonical form, the goal is literally <code>CorrectGen (fun a =&gt; _ &or; _)</code>, so
+<code>apply s_pick</code> unifies directly and <em>no per-rule equality side-goal is created</em>. The
+<code>norm_for_pure</code>/<code>norm_for_bind</code>/<code>norm_for_pick</code> trio collapses into the one
+canonicalizer plus, at most, a residual <code>rflm</code>.</li>
+<li><span class="keyline">The <code>convert</code>-as-router pattern</span> (<code>apply convert ?pf ?arg</code> with a
+fresh-mvar target whose proof decides routing). The <em>combinator</em> <code>convert</code> stays; what goes is
+using it to defer rule choice to a backtracking proof search.</li>
+<li><span class="keyline">The <code>goal_is_*</code> routing guards</span> in the common combinators: <code>apply</code>
+now fails fast on the wrong rule (e.g. <code>fun a =&gt; ?P a &or; ?Q a</code> won't unify with a non-<code>&or;</code>
+head), so guards are no longer needed to prevent spurious matches.</li>
+<li><span class="keyline">The <code>nth_assumption 0/1/2/3</code> enumeration</span> in the case rules: in canonical
+form the scrutinee is explicit, so a small metaprogram picks the case index directly and hands it to
+<code>s_caseNat</code> &mdash; one rule instead of four-per-connective.</li>
+<li><span class="keyline">The duplicated inline <code>simp only</code> exclusion lists</span>: one <code>@[synth_norm]</code>
+set, defined and tested in one place.</li>
+</ul>
+</div>
+
+<div class="warn">
+<h3>What this does <em>not</em> fix (calibrated expectations)</h3>
+<p>The fold/unfold path (<code>*_coerce_fold</code>, <code>*_convert_to_accuM</code>, the <code>merge</code> rewrites) is
+different in kind. Those apply <em>substantive representation-change theorems</em>
+(<code>coerce_to_fold</code>, <code>fold_accu_Option_*</code>), and <em>which</em> accu lemma applies is itself a
+backtracking search. Canonicalization can route a predicate <em>into</em> &ldquo;this is fold-shaped&rdquo;
+(subsuming the <code>goal_is_not_fold_*</code> probes) and centralize the <code>simp</code>, but it <strong>cannot
+pick the accu lemma for you</strong>. That part stays a guided <code>first | &hellip;</code> search, and the
+<code>library_search</code> calls nested inside it stay a perf/robustness liability until each accu choice can be
+made deterministic. Note this path is itself <code>convert</code>-shaped &mdash; <code>s_elements</code> and the
+coercions <em>are</em> the adaptor used for an essential representation change, which is further evidence that
+<code>convert</code> is the right primitive, not a smell. This matches the existing finding that
+<code>s_unfold</code> + <code>s_caseNat</code> is the part of the system whose complexity is essential.</p>
+</div>
+
+<h2>4. Why I'm confident the core works</h2>
+<ol>
+<li><span class="keyline">The two benefits are preserved by construction.</span> Extraction stays clean because
+the single root <code>convert</code> keeps the canonicalization cast in the erased proof field (the test above
+is the proof); completeness up to provable equality stays because the canonical target is still reached via a
+<code>convert</code> proof, now invoked once and in the open. We are relocating the adaptor, not removing it.</li>
+<li><span class="keyline">Routing-by-<code>apply</code> is reliable; routing-by-index is not.</span> The plan
+deliberately leans on unification failure (well-understood, deterministic) rather than discr-tree
+indexing under lambdas (unreliable), and rather than routing-by-proof (the cascade). So the routing claim
+doesn't rest on a shaky assumption.</li>
+<li><span class="keyline">The mvar-assignment already works.</span> <code>s_caseNat</code>'s
+<code>h : &forall; {a}, P a n = Q a</code> closed by <code>rflm</code> is a live, working example of exactly the
+&ldquo;assign the higher-order predicate&rdquo; step we'd reuse. We're not inventing a mechanism, we're
+feeding it cleaner input.</li>
+<li><span class="keyline">The canonicalization step already exists in pieces.</span> <code>preprocess</code>
+(<code>funext</code> + <code>simp [eq_iff_iff]</code>) and the <code>case' pf =&gt; unfold_matches; simp [&hellip;]</code> prefix
+already do partial normalization successfully &mdash; today as the <em>proof</em> side of a <code>convert</code>.
+We are consolidating and specifying them, and moving the call site to the root, not building from zero.</li>
+<li><span class="keyline">It degrades gracefully.</span> Where the canonical form doesn't reach a lemma's
+exact shape, the residual is still discharged by the same <code>convert</code>/<code>rflm</code> we use today.
+Worst case for an un-improved predicate is status quo, so the change can't regress coverage &mdash; only reduce
+the per-combinator machinery the covered cases need.</li>
+</ol>
+
+<h2>5. Phased, testable rollout</h2>
+
+<div class="phase"><div class="pn">1</div><h3>Specify and build <code>@[synth_norm]</code> + <code>synth_canon</code></h3></div>
+<p class="meta">Write the normal-form spec (heads above). Move the scattered <code>simp only</code> lists into one
+attribute set. Implement <code>synth_canon</code> as a metaprogram that computes the canonical predicate and
+emits a single <code>convert</code> &mdash; <em>not</em> a goal-side <code>simp</code> (see &sect;3: that injects
+<code>Eq.mpr</code> the audit rejects). <span class="arrow">Test:</span> <code>#guard_msgs</code> snapshots that each
+<code>Examples/Simple</code> and <code>Examples/Range</code> predicate normalizes to its expected head, <em>and</em>
+that <code>ExtractionAudit</code> stays green on the canonicalized terms (the <code>Eq.mpr</code>-residue regression
+is the one to watch first).</p>
+
+<div class="phase"><div class="pn">2</div><h3>Direct-apply the leaf combinators</h3></div>
+<p class="meta">Rewrite <code>normalize_and_apply</code> so that after <code>synth_canon</code> it does
+<code>first | apply s_pure | apply s_bind | apply s_pick</code> on the canonical head, with a single
+<code>rflm</code> fallback for residual defeq. <span class="arrow">Measure:</span> the <code>norm_for_*</code>
+branches eliminated and the <code>convert</code>-as-router call sites removed; confirm <code>Examples/Simple</code>,
+<code>Examples/Range</code>, <code>List/AllTwos/AllTwos.lean</code> still elaborate and <code>ExtractionAudit</code>
+stays green.</p>
+
+<div class="phase"><div class="pn">3</div><h3>Replace case-rule enumeration</h3></div>
+<p class="meta">Swap the eight <code>goal_is_or; &hellip; nth_assumption k</code> rules for one metaprogram that reads the
+scrutinee from the canonical match and applies <code>s_caseNat</code>/<code>s_caseBool</code>/&hellip; once.
+<span class="arrow">Test:</span> the case-analysis examples (Nat/Bool/Color) plus a profile run to confirm
+the smaller rule set doesn't slow Aesop.</p>
+
+<div class="phase"><div class="pn">4</div><h3>Fold path: routing only</h3></div>
+<p class="meta">Let <code>synth_canon</code> tag &ldquo;fold-shaped&rdquo; predicates so the <code>goal_is_not_fold_*</code> probes
+become a single classification, and the <code>coerce_to_fold</code> step keys off it. Leave the accu-lemma
+<code>first | &hellip;</code> search intact &mdash; it is the essential-complexity <code>convert</code>-shaped core.
+<span class="arrow">Test:</span> every <code>Fold.lean</code> in the corpus, plus
+<code>scripts/profile.py</code> before/after to watch for synthesis-time regressions.</p>
+
+<div class="box">
+<h3>Success metrics</h3>
+<ul>
+<li><code>lake build</code> green, <code>ExtractionAudit.lean</code> green (no surviving <code>CorrectGen</code>/<code>Eq.mpr</code> residue).</li>
+<li>Net reduction in macro count in <code>CGeneratorSearch.lean</code> &mdash; target: the
+<code>norm_for_pure/bind/pick</code> trio gone, the <code>convert</code>-as-router call sites and <code>goal_is_*</code>
+guards on leaf rules gone, case rules 8&hairsp;&rarr;&hairsp;1. The <code>convert</code> <em>combinator</em> remains,
+now called once per goal.</li>
+<li><code>scripts/profile.py</code> synthesis time flat or better (smaller rule set, no per-rule proof backtracking).</li>
+</ul>
+</div>
+
+<h2>6. Risks &amp; mitigations</h2>
+<table>
+<tr><td><span class="keyline">Risk</span></td><td><span class="keyline">Mitigation</span></td></tr>
+<tr><td>Canonicalization reintroduces <code>Eq.mpr</code> residue (implemented as goal-<code>simp</code> instead of as an explicit <code>convert</code>).</td>
+<td>This is the headline failure mode (&sect;3). Implement <code>synth_canon</code> as a metaprogram that emits <code>convert</code>; gate with the <code>ExtractionAudit</code> snapshot from Phase 1 so any regression to goal-rewriting is caught immediately.</td></tr>
+<tr><td>The <code>@[synth_norm]</code> set isn't confluent &rarr; canonical form is unstable.</td>
+<td>Pin it with <code>#guard_msgs</code> normalization snapshots in Phase 1; the spec is the contract.</td></tr>
+<tr><td>A predicate normalizes to a head no rule expects.</td>
+<td>The residual is discharged by the same <code>convert</code>/<code>rflm</code> we use today, so coverage is preserved; the new direct-apply path is strictly additive.</td></tr>
+<tr><td>Fold path resists routing.</td>
+<td>Scoped out by design (Phase 4 is routing-only); no claim that the accu search is replaced.</td></tr>
+<tr><td>Mistaken for the dead Canonical experiment.</td>
+<td>This stays entirely in Prop and in the existing <code>s_*</code>/<code>CorrectGen</code> architecture &mdash; no
+<code>Desc</code>, no <code>reflect</code>, no external solver, no new subtype. <code>convert</code> is retained as the adaptor.</td></tr>
+</table>
+
+<footer>
+Scope note: this plan is deliberately incremental and reversible per phase. The biggest, most reliable
+win (Phases 1&ndash;2) lands first and de-risks the rest. <code>convert</code> is treated as the load-bearing
+primitive it is &mdash; the cleanliness of extraction and completeness up to provable equality both depend on
+its erased-proof, value-transparent shape &mdash; so the work is to hoist and unify its use, not to remove it.
+The fold machinery is essential complexity, not something to canonicalize away.
+</footer>
+
+</body>
+</html>

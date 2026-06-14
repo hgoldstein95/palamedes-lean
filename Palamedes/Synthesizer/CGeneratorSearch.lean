@@ -1,5 +1,6 @@
 import Palamedes.Gen
 import Palamedes.CorrectGen
+import Palamedes.SynthNorm
 import Palamedes.RuleSets
 import Palamedes.Total
 import Palamedes.Data.List
@@ -307,8 +308,49 @@ macro "norm_for_elements" : tactic =>
        | rfl
        | rw [getElem?_eq_some_iff_indexesOf_getElem?_eq_some]))
 
+/- The canonical-form contract (see `SynthNorm.lean`). Seeded with the head-exposing rewrites that
+   turn a `decide`/`Bool` predicate into one whose outermost connective is a `Prop` head (`=`, `∨`,
+   `∃`). Deliberately conservative: every lemma here only re-expresses the head, so it can never turn
+   a synthesizable subgoal into an unsynthesizable one.
+
+   NOTE: equality *orientation* (`eq_comm`) must NOT go in this global set. It is a leaf-only need
+   (`s_pure` wants `x = e`), but the fold/unfold path depends on the opposite orientation
+   `fold-expr = value` (e.g. `getType x Γ = some a`); the `coerce_to_fold` / `fold_accu_*` lemmas
+   match expression-on-the-left and silently stop matching once `eq_comm` flips it. Since the fold
+   path recurses through `normalize_and_apply`/`synth_canon`, a global `eq_comm` corrupts every fold
+   equality subgoal (verified: it breaks the whole STLC corpus). Orientation, if needed, has to be
+   handled rule-locally in the `s_pure` branch — never here. -/
+attribute [synth_norm] decide_eq_true_eq beq_iff_eq eq_iff_iff
+
+/- Canonicalize the goal predicate with a single root `convert`, exposing its outermost head so the
+   leaf rules can be routed by `apply`'s own unification. The `convert` keeps the (propositional)
+   canonicalization equality in its erased proof field, so extraction stays clean — unlike a
+   goal-side `simp`, which would inject an `Eq.mpr` cast into the generator term. -/
+macro "synth_canon" : tactic =>
+  `(tactic| (
+    apply convert ?pf ?arg
+    case' pf => (try simp only [synth_norm]); rflm))
+
 macro "normalize_and_apply" : tactic =>
-   `(tactic| (
+   `(tactic|
+      first
+      /- Preferred path: canonicalize once, then route the leaf rule directly. No per-combinator
+         equality proof, no `norm_for_*` cascade. Restricted to the rules whose head is
+         unambiguous: `s_pure` (`a = e`) and `s_bind` (`∃ a, _ ∧ _`). Disjunction is deliberately
+         left to the legacy path + case rules — a bare `apply s_pick` cannot tell a plain `∨` from a
+         case-split (the discrimination `norm_for_pick` encodes), so it would steal goals from
+         `s_caseNat`. Routing `∨` belongs to the Phase 3 scrutinee-picking metaprogram. Falls back
+         to the legacy path below when the `@[synth_norm]` set doesn't reach the lemma's head. -/
+      | (synth_canon
+         first
+         | apply s_pure _
+         | apply s_bind _ _
+         /- Reversed-orientation `s_pure` (`e = a`). `eq_comm` cannot live in `@[synth_norm]` (it
+            corrupts the fold path — see the note above), so the flip is handled *rule-locally* here:
+            a second `convert` parks `eq_comm` in its erased proof field, keeping extraction clean. -/
+         | (apply convert ?pf (s_pure _)
+            case pf => funext _; simp only [eq_iff_iff]; exact Eq.comm))
+      | (
       apply convert ?pf ?arg
       /- simplify the predicate before attempting to normalize it.
          this way we don't repeat simplification for each different normalization strategy -/
