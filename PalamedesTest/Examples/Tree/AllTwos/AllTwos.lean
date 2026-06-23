@@ -1,4 +1,5 @@
 import Palamedes.Synthesizer
+import InProgress.SpytialGen
 
 open Gen CorrectGen
 
